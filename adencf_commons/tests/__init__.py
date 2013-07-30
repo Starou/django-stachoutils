@@ -1,24 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
 from django.test import TestCase
-from django.test.testcases import to_list
 from django.conf import settings
-import tempfile
-import os, shutil
 
 from adencf_commons import lowerize, NO_CAPFIRST
-
-class PublishTestCase(TestCase):
-    def setUp(self):
-        self.old_dossier_watch_dir  = settings.DOSSIERS_WATCH_DIR 
-        settings.DOSSIERS_WATCH_DIR = os.path.join(tempfile.gettempdir(), 'watch')
-        if os.path.exists(settings.DOSSIERS_WATCH_DIR):
-            shutil.rmtree(settings.DOSSIERS_WATCH_DIR)
-        os.mkdir(settings.DOSSIERS_WATCH_DIR)
-
-    def tearDown(self):
-        shutil.rmtree(settings.DOSSIERS_WATCH_DIR)
-        settings.DOSSIERS_WATCH_DIR = self.old_dossier_watch_dir
 
 
 def get_obj_dict(obj, extras=('id',)):
@@ -29,11 +15,7 @@ def get_obj_dict(obj, extras=('id',)):
     return out
 
 
-###
-
-
-class UtilsTestCase(PublishTestCase):
-
+class UtilsTestCase(TestCase):
     def test_files_are_equal(self):
         from django.core.files.base import ContentFile
         from adencf_commons import files_are_equal
