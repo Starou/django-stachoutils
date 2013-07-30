@@ -1,0 +1,18 @@
+{% load adencf_extras %}
+{% load i18n %}
+<p class="paginator">
+{% if pagination_required %}
+{% for i in page_range %}
+    {% paginator_number page i get_params %}
+{% endfor %}
+{% endif %}
+{% if paginates_by_required %}
+<span class="paginates_by">
+    Paginer par:
+{% for i in paginates_by %}
+    {% paginate_by_number page i current_pagination get_params %}
+{% endfor %}
+</span>
+{% endif %}
+{{ nb_resultats }} entrée{{ nb_resultats|pluralize }}
+</p>

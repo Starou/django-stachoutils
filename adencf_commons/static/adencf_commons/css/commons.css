@@ -1,0 +1,17 @@
+.meter-wrap{
+    position: relative;
+}
+.meter-wrap, .meter-value, .meter-text {
+    /* The width and height of your image */
+    width: 105px; height: 15px;
+}
+.meter-wrap, .meter-value {
+    background: #bdbdbd;
+}
+.meter-text {
+    position: absolute;
+    top:0; left:0;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+}
