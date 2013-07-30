@@ -20,31 +20,6 @@ class PublishTestCase(TestCase):
         shutil.rmtree(settings.DOSSIERS_WATCH_DIR)
         settings.DOSSIERS_WATCH_DIR = self.old_dossier_watch_dir
 
-    
-def dict_diff(d1, d2):
-    """
-    >>> d1 = {'a': 12, 'b': 23}
-    >>> d2 = {'a': 11, 'b': 23, 'c': 16}
-    >>> dict_diff(d1, d2)
-    {'a': (12, 11), 'c': (None, 16)}
-    """
-    diff = {}
-    for key in d1.keys()+d2.keys():
-        both_has_key = True
-        try:
-            x = d1[key]
-        except KeyError:
-            diff[key] = (None, d2[key])
-            both_has_key = False
-        try:
-            x = d2[key]
-        except KeyError:
-            diff[key] = (d1[key], None)
-            both_has_key = False
-        if both_has_key and (d1[key] != d2[key]):
-            diff[key] = (d1[key], d2[key])
-    return diff
-    
 
 def get_obj_dict(obj, extras=('id',)):
     out = obj.__dict__.copy()
