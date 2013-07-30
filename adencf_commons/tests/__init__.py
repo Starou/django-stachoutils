@@ -20,56 +20,6 @@ class PublishTestCase(TestCase):
         shutil.rmtree(settings.DOSSIERS_WATCH_DIR)
         settings.DOSSIERS_WATCH_DIR = self.old_dossier_watch_dir
 
-    def assertFormSetError(self, response, formset, index, field, errors):
-        """
-        Asserts that a formset used to render the response has a specific error.
-        """
-        # Put context(s) into a list to simplify processing.
-        contexts = to_list(response.context)
-        if not contexts:
-            self.fail('Response did not use any contexts to render the response')
-
-        # Put error(s) into a list to simplify processing.
-        errors = to_list(errors)
-
-        # Search all contexts for the error.
-        found_formset = False
-        for i,context in enumerate(contexts):
-            if formset not in context:
-                continue
-            found_formset = True
-            for err in errors:
-                if field:
-                    if field in context[formset].forms[index].errors:
-                        field_errors = context[formset].forms[index].errors[field]
-                        self.failUnless(err in field_errors,
-                                "The field '%s' on formset '%s' [%s] in"
-                                " context %d does not contain the"
-                                " error '%s' (actual errors: %s)" %
-                                        (field, formset, index, i, err,
-                                        repr(field_errors)))
-                    elif field in context[formset].forms[index].fields:
-                        self.fail("The field '%s' on formset '%s' [%s] in context %d"
-                                  " contains no errors" % (field, form, index, i))
-                    else:
-                        self.fail("The formset '%s' [%s] in context %d does not"
-                                  " contain the field '%s'" %
-                                        (formset, index, i, field))
-                elif index is not None:
-                    non_field_errors = context[formset].forms[index].non_field_errors()
-                    self.failUnless(err in non_field_errors,
-                        "The formset '%s' [%s] in context %d does not contain the"
-                        " non-field error '%s' (actual errors: %s)" %
-                        (formset, index, i, err, non_field_errors))
-                else:
-                    print dir(context[formset])
-                    non_form_errors = context[formset].non_form_errors()
-                    self.failUnless(err in non_form_errors,
-                        "The formset '%s' in context %d does not contain the"
-                        " non-form error '%s' (actual errors: %s)" %
-                        (formset, i, err, non_form_errors))
-        if not found_formset:
-            self.fail("The formset '%s' was not used to render the response" % formset)
     
 def dict_diff(d1, d2):
     """
