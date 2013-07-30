@@ -3,8 +3,9 @@ AdenCf Commons
 ==============
 
 
-GIT
-'''
+Git How-to
+----------
+
 
 push de la branche master sur origin::
 
