@@ -4,7 +4,7 @@ import sys
 
 setup(
     name="Adencf Commons",
-    version="1.0",
+    version="1.1",
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
     description='',
