@@ -37,7 +37,18 @@ Branches::
     git checkout master
     git merge ticket-1
 
+Liste des branches::
+
+    git branch
+    git branch -a (+remotes)
+
+Suppression (locale)::
+
     git branch -d ticket-1
+
+Suppression d'une *remote* branche::
+
+    git push origin :ticket-1
 
 
 Faire une copie locale d'une remote branche : il faut la créer localement (?)
