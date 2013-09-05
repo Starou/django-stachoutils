@@ -3,7 +3,7 @@
 from django import forms
 from django.forms.widgets import flatatt
 from django.utils.html import escape, conditional_escape
-from django.utils.text import truncate_words
+from django.utils.text import Truncator
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
@@ -118,7 +118,7 @@ class ForeignKeyRawIdHiddenWidget(forms.HiddenInput):
                 onclick = "return showRelatedObjectPopup(this);"
             if hasattr(obj, "get_preview_url"):
                 preview = '<img src="%s" />' % (obj.get_preview_url() or '')
-            label = escape(truncate_words(obj, 14))
+            label = escape(Truncator(obj).words(14, truncate=" ..."))
             return ('&nbsp;<strong class="label"><a class="preview" href="%(url)s" ' 
                     'onclick="%(onclick)s">%(label)s'
                     '%(preview)s</a> </strong>' % {
