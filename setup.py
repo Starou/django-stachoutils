@@ -14,6 +14,7 @@ setup(
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
     description='Commons for Django',
+    url='https://github.com/Starou/django-stachoutils',
     long_description = README,
     packages=[
         'django_stachoutils', 
