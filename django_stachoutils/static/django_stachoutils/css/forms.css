@@ -1,0 +1,98 @@
+.aligned label {
+    width: auto;
+}
+form .aligned p.help {
+    float:left;
+    clear: both;
+    padding-left: 8px;
+    margin-left: 2em;
+}
+strong.label {
+    margin: 0 1em 0 0;
+    padding: 3px 0 0 0;
+    display: inline-block;
+    font-weight: normal;
+
+}
+input.ajax_related_lookup {
+    margin-left: 0;
+}
+.field-box {
+    float:left;
+    margin-right: 20px;
+}
+span.charcounter {
+    padding: 1px 3px;
+
+}
+
+/* FormField ImageDroppableHiddenInput */
+.droppableHiddenInput {
+    float: left;
+    width: 180px;
+    margin: 2px 1px 10px 22px;
+}
+
+.droppableHiddenInput .message {
+    float: left;
+    margin-top: 9px;
+}
+
+.droppableHiddenInput a.clear {
+    float:right;
+    display: inline;
+}
+.droppableHiddenInput .delete {
+    float: right;
+    padding: 20px 20px 0 0;
+    margin: -15px -15px 0 0;
+    background-color: transparent;
+    background: transparent url("../img/sprites.png") -18px 1px no-repeat;
+}
+.droppableHiddenInput .delete:hover {
+    cursor: pointer;
+    background-position: -18px -19px;
+}
+
+.droppableHiddenInput .droppableContainer {
+    position: relative;
+    float: left;
+    padding: 4px;
+    z-index: 10;
+    width: 180px;
+    height: 140px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.droppableHiddenInput .droppableContainer .droppable {
+    position: absolute;
+    display: table-cell;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    text-align: center;
+    vertical-align: middle;
+    border: dashed 2px #666666;
+}
+.droppableHiddenInput .droppableContainer .droppable.drophover {
+    border: dashed 2px #FF1493;
+}
+
+.droppableHiddenInput .droppableContainer .droppable .draggable {
+    height: 100%;
+}
+.draggable {
+    cursor: move;
+}
+
+.droppableHiddenInput .droppableContainer .droppable img {
+    opacity:0.6;
+    filter:alpha(opacity=60);
+    margin: 30px;
+}
+.droppableHiddenInput .message ul.messagelist {
+    padding: 0;
+    margin: 0;
+}
