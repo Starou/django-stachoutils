@@ -7,9 +7,9 @@ from django.contrib import admin, messages
 from django.db.models import Q
 from django.utils.http import urlencode, urlunquote
 
-from adencf_commons import inline_update
-from adencf_commons.options import paginate
-from adencf_commons.views.actions import regroup_actions
+from django_stachoutils import inline_update
+from django_stachoutils.options import paginate
+from django_stachoutils.views.actions import regroup_actions
 
 ORDER_BY_ATTR = 'o'
 ORDER_TYPE_ATTR = 'ot'

@@ -6,8 +6,8 @@ from django.utils.http import urlencode
 
 from django.template import Library, Context, Template
 
-from adencf_commons import urldecode
-from adencf_commons.views.generic import ORDER_BY_ATTR, ORDER_TYPE_ATTR
+from django_stachoutils import urldecode
+from django_stachoutils.views.generic import ORDER_BY_ATTR, ORDER_TYPE_ATTR
 
 
 DOT = '.'
@@ -79,7 +79,7 @@ def pagination(page, current_pagination, paginates_by=[], get_params={}):
         'get_params': get_params,
         'current_pagination': current_pagination,
     }
-pagination = register.inclusion_tag('adencf_commons/pagination.html')(pagination)
+pagination = register.inclusion_tag('django_stachoutils/pagination.html')(pagination)
 
 
 @register.filter

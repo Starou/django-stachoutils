@@ -15,7 +15,7 @@ from django.conf import settings
 from django.contrib.admin import widgets as admin_widgets
 from django.contrib.admin.views.main import TO_FIELD_VAR
 
-from adencf_commons.shortcuts import encode_default
+from django_stachoutils.shortcuts import encode_default
 
 
 class ForeignKeyRawIdHiddenWidget(forms.HiddenInput):
@@ -174,9 +174,9 @@ BUTTONS = [{'class': 'gras', 'text': u'Gras', 'accesskey': 'g'},
            {'class': 'sup', 'text': u'Supérieur', 'accesskey': 's'},
            {'class': 'bas', 'text': u'Bas de casse', 'accesskey': 'b'}]
 
-STATICS = {'js': ['adencf_commons/js/jquery.charcounter.js',
-                  'adencf_commons/js/jquery.fieldselection.js',
-                  'adencf_commons/js/widgets.js']}
+STATICS = {'js': ['django_stachoutils/js/jquery.charcounter.js',
+                  'django_stachoutils/js/jquery.fieldselection.js',
+                  'django_stachoutils/js/widgets.js']}
 
 class TexteEditeur(forms.Textarea):
     def render(self, name, value, attrs=None):

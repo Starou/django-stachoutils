@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import _get_queryset
 from django.utils import simplejson
 
-from adencf_commons import csv_utf8
+from django_stachoutils import csv_utf8
 
 
 def macroman_text_response(data, filename=None, encode=True):

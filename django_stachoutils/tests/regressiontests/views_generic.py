@@ -5,7 +5,7 @@ import unittest
 
 class GenericTestCase(unittest.TestCase):
     def test_regroup_actions(self):
-        from adencf_commons.views.actions import regroup_actions
+        from django_stachoutils.views.actions import regroup_actions
         
         def action1():
             pass

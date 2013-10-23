@@ -4,7 +4,7 @@ import os
 from django.test import TestCase
 from django.conf import settings
 
-from adencf_commons import lowerize, NO_CAPFIRST
+from django_stachoutils import lowerize, NO_CAPFIRST
 
 
 def get_obj_dict(obj, extras=('id',)):
@@ -18,7 +18,7 @@ def get_obj_dict(obj, extras=('id',)):
 class UtilsTestCase(TestCase):
     def test_files_are_equal(self):
         from django.core.files.base import ContentFile
-        from adencf_commons import files_are_equal
+        from django_stachoutils import files_are_equal
         MEDIA_ROOT = os.path.join(settings.MEDIA_ROOT, 'test')
         img_root = os.path.join(MEDIA_ROOT, 'images')
 

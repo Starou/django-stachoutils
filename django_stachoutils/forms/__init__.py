@@ -233,10 +233,10 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
 
     class Media:
         css = {
-            'all': ('adencf_commons/css/forms.css',
+            'all': ('django_stachoutils/css/forms.css',
             )
         }
-        js = ('adencf_commons/js/forms.js',)
+        js = ('django_stachoutils/js/forms.js',)
 
     def render(self, name, value, attrs=None):
         hidden_input = super(ImageDroppableHiddenInput, self).render(name, value, attrs=None)
