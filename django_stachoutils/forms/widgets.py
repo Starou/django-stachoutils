@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.contrib.admin.templatetags.admin_static import static
 from django.forms.widgets import flatatt
 from django.utils.html import escape, conditional_escape
 from django.utils.text import Truncator
@@ -21,11 +22,11 @@ class ForeignKeyRawIdHiddenWidget(forms.HiddenInput):
     class Media:
         css = {
             'all': (
-                'adencf_commons/css/forms.css',
+                static('django_yaaac/css/forms.css'),
             )
         }
         js = (
-            'adencf_commons/js/widgets.js',
+            static('django_yaaac/js/widgets.js'),
         )
     
     # TODO, passer onchange devant ajax_*.
