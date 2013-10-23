@@ -1,14 +1,20 @@
-from distutils.core import setup
 import os
-import sys
+from distutils.core import setup
+
+README = open(os.path.join(os.path.dirname(__file__), 'README.txt')).read()
+
+# allow setup.py to be run from any path
+os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
+
 
 setup(
     name="Stachou Utils",
     version="0.90",
+    license='BSD Licence',
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
     description='Commons for Django',
-    long_description = '',
+    long_description = README,
     packages=[
         'django_stachoutils', 
         'django_stachoutils.management', 
@@ -28,6 +34,16 @@ setup(
             'templates/django_stachoutils/*.html',
         ]
     },
-    data_files=[],
-    scripts = [],
+    classifiers=[
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+    ],
 )
