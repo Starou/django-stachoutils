@@ -1,5 +1,12 @@
-====================
-Django Stachou Utils
-====================
+======================
+Stachou's Django Utils
+======================
 
-Commons.
+
+Install
+=======
+
+
+::
+
+    pip install django-stachoutils
