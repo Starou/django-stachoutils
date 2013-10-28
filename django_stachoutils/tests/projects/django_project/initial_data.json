@@ -1,0 +1,184 @@
+[
+{
+  "pk": 1, 
+  "model": "my_app.instrument", 
+  "fields": {
+    "name": "Vocals"
+  }
+},
+{
+  "pk": 2, 
+  "model": "my_app.instrument", 
+  "fields": {
+    "name": "Guitare"
+  }
+},
+{
+  "pk": 3, 
+  "model": "my_app.instrument", 
+  "fields": {
+    "name": "Keyboards"
+  }
+},
+{
+  "pk": 4, 
+  "model": "my_app.instrument", 
+  "fields": {
+    "name": "Drums"
+  }
+},
+{
+  "pk": 5, 
+  "model": "my_app.instrument", 
+  "fields": {
+    "name": "Percussion"
+  }
+},
+{
+  "pk": 1, 
+  "model": "my_app.musicgenre", 
+  "fields": {
+    "name": "Rock"
+  }
+},
+{
+  "pk": 2, 
+  "model": "my_app.musicgenre", 
+  "fields": {
+    "name": "Blues/Rock"
+  }
+},
+{
+  "pk": 3, 
+  "model": "my_app.musicgenre", 
+  "fields": {
+    "name": "Cheese"
+  }
+},
+{
+  "pk": 1, 
+  "model": "auth.user", 
+  "fields": {
+    "username": "super", 
+    "first_name": "", 
+    "last_name": "", 
+    "is_active": true, 
+    "is_superuser": true, 
+    "is_staff": true, 
+    "groups": [], 
+    "user_permissions": [], 
+    "password": "pbkdf2_sha256$10000$IqJ553ehozEs$ANFweXaGqExj3D0BBODGbH5ZQ7idUznRUb6PoeIM+1g=", 
+    "email": "super@foo.org", 
+    "date_joined": "2013-09-23T14:46:14.468Z"
+  }
+},
+{
+  "pk": 1, 
+  "model": "my_app.band", 
+  "fields": {
+    "genre": [
+      "Rock"
+    ], 
+    "name": "Genesis"
+  }
+},
+{
+  "pk": 2, 
+  "model": "my_app.band", 
+  "fields": {
+    "genre": [
+      "Blues/Rock"
+    ], 
+    "name": "The Rolling Stones"
+  }
+},
+{
+  "pk": 3, 
+  "model": "my_app.band", 
+  "fields": {
+    "genre": [
+      "Rock"
+    ], 
+    "name": "The Stone Roses"
+  }
+},
+{
+  "pk": 4, 
+  "model": "my_app.band", 
+  "fields": {
+    "genre": [
+      "Blues/Rock"
+    ], 
+    "name": "SuperHeavy"
+  }
+},
+{
+  "pk": 5, 
+  "model": "my_app.band", 
+  "fields": {
+    "genre": [
+      "Cheese"
+    ], 
+    "name": "BonJovi"
+  }
+},
+{
+  "pk": 6, 
+  "model": "my_app.band", 
+  "fields": {
+    "genre": [
+      "Cheese"
+    ], 
+    "name": "The Bee Gees"
+  }
+},
+{
+  "pk": 1, 
+  "model": "my_app.bandmember", 
+  "fields": {
+    "band": [
+      "Genesis"
+    ], 
+    "first_name": "Phil", 
+    "last_name": "Collins",
+    "favorite_instrument": [
+      "Drums"
+    ]
+  }
+},
+{
+  "pk": 2, 
+  "model": "my_app.bandmember", 
+  "fields": {
+    "band": [
+      "Genesis"
+    ], 
+    "first_name": "Peter", 
+    "last_name": "Gabriel",
+    "favorite_instrument": [
+      "Vocals"
+    ]
+  }
+},
+{
+  "pk": 3, 
+  "model": "my_app.bandmember", 
+  "fields": {
+    "band": [
+      "Genesis"
+    ], 
+    "first_name": "Tony", 
+    "last_name": "Banks",
+    "favorite_instrument": null
+  }
+},
+{
+  "pk": 4, 
+  "model": "my_app.bandmember", 
+  "fields": {
+    "first_name": "Phil", 
+    "last_name": "Spector",
+    "favorite_instrument": null
+  }
+}
+]

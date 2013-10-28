@@ -1,0 +1,12 @@
+from django.contrib import admin
+from django.contrib.admin.templatetags.admin_static import static
+from my_app import models
+
+
+class MyAdmin(admin.AdminSite):
+    pass
+
+    
+
+admin_site = MyAdmin(name='my-admin')
+admin_site.register(models.MusicGenre)
