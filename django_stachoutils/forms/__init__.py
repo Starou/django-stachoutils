@@ -3,6 +3,7 @@
 from django.shortcuts import get_object_or_404
 
 from django import forms
+from django.conf import settings
 from django.utils.html import  escape
 from django.utils.safestring import mark_safe
 
@@ -243,11 +244,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
         image_tag = '<img />'
         if value:
             rel_obj = self.related_model.objects.get(pk=value) # TODO: Faire un get_object_or_none 
-            from django.template import Context, Template
-            t = Template('{% load thumbnail %}{% thumbnail img_field "120" as im %}<img src="{{ im.url }}"'
-                         'width="{{ im.width }}" height="{{ im.height }}">{% endthumbnail %}')
-            d = {"img_field": getattr(rel_obj, self.related_fieldname)}
-            image_tag = mark_safe(t.render(Context(d)))
+            image_tag = self._get_thumbnail(rel_obj)
 
         tag = (
             '<div class="droppableHiddenInput">%s'
@@ -258,6 +255,17 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
             '</div>' %(hidden_input, self.image_container_html, image_tag, self.message)
               )
         return mark_safe(tag)
+
+    def _get_thumbnail(self, rel_obj):
+        from django.template import Context, Template
+        if "django_thumbor" in settings.INSTALLED_APPS:
+            t = Template('{% load thumbor_tags %}<img src="{{ img_field.url }}" width="120">')
+        else:
+            t = Template('{% load thumbnail %}{% thumbnail img_field "120" as im %}<img src="{{ im.url }}"'
+                         'width="{{ im.width }}" height="{{ im.height }}">{% endthumbnail %}')
+        d = {"img_field": getattr(rel_obj, self.related_fieldname)}
+        return mark_safe(t.render(Context(d)))
+
 
 class ImageModelChoiceField(forms.ModelChoiceField):
     def __init__(self, related_fieldname, queryset, *args, **kwargs):
