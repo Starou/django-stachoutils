@@ -259,7 +259,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
     def _get_thumbnail(self, rel_obj):
         from django.template import Context, Template
         if "django_thumbor" in settings.INSTALLED_APPS:
-            t = Template('{% load thumbor_tags %}<img src="{{ img_field.url }}" width="120">')
+            t = Template('{% load thumbor_tags %}<img src="{% thumbor_url img_field.url width=120 %}" width="120">')
         else:
             t = Template('{% load thumbnail %}{% thumbnail img_field "120" as im %}<img src="{{ im.url }}"'
                          'width="{{ im.width }}" height="{{ im.height }}">{% endthumbnail %}')
