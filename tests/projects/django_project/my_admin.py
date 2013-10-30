@@ -8,8 +8,9 @@ class MyAdmin(admin.AdminSite):
     pass
 
 
-class 
+class BandMemberAdmin(ModelAdmin):
+    pass
     
 
 admin_site = MyAdmin(name='my-admin')
-admin_site.register(models.MusicGenre)
+admin_site.register(models.BandMember, BandMemberAdmin)
