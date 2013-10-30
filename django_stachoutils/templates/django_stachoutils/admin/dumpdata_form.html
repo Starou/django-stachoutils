@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+{% load admin_static %}
+
+{% block extrastyle %}<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/forms.css" />{{ block.super }}{% endblock %}
+{% block extrahead %}{{ block.super }}<script type="text/javascript" src="/admin/jsi18n/"></script>{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <form enctype="multipart/form-data" method="post" action="">
+    <table>
+    {% csrf_token %}
+    {{ form.as_table }}
+    <tr><th></th><td><input type="submit" value="Exporter" /></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}
