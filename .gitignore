@@ -5,3 +5,4 @@ MANIFEST
 *.swp
 *.pyc
 *.pyo
+*.sqlite
