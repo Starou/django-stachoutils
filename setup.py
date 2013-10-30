@@ -23,7 +23,6 @@ setup(
         'django_stachoutils.forms', 
         'django_stachoutils.views', 
         'django_stachoutils.templatetags', 
-        'django_stachoutils.tests', 
     ],
     package_data={
         'django_stachoutils': [
