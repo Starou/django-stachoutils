@@ -1,6 +1,4 @@
-import django_yaaac as yaaac
 from django.conf.urls import patterns, include, url
-
 from my_admin import admin_site
 
 urlpatterns = patterns('',
