@@ -69,7 +69,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
     # Search.
     if request.GET.get('q'):
         query = request.GET['q']
-        q_filters = [ Q(**{s[1]: query}) for s in search ]
+        q_filters = [Q(**{s[1]: query}) for s in search]
         f = q_filters.pop()
         for filt in q_filters:
             f = f | filt
@@ -98,7 +98,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
 
     # Filters.
     closed_filters = user_settings.get('%s_closed_filters'%list_id, [])
-    filters = [ get_filter(Model, current_filters, closed_filters, f) for f in filters ]
+    filters = [get_filter(Model, current_filters, closed_filters, f) for f in filters]
 
     # Exec action.
     if request.method == 'POST':
