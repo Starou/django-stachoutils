@@ -29,18 +29,16 @@ class TemplateTagsTestCase(unittest.TestCase):
             ]),
             (u'charg\xe9 de client\xe8le', False, [
                 ('valide__exact=1', u'Tout', None),
-                ('valide__exact=1&assistant__exact=8', u'Isabelle Giboulot', False),
-                ('valide__exact=1&assistant__exact=6', u'Marie-Fran\xe7oise Bonfils', True),
-                ('valide__exact=1&assistant__exact=41', u'\xc9milie Gonin', False),
-                ('valide__exact=1&assistant__exact=1445', u'S\xe9verine Thibault', False),
+                ('valide__exact=1&assistant__exact=8', u'Isabelle G.', False),
+                ('valide__exact=1&assistant__exact=6', u'Marie-Fran\xe7oise B.', True),
+                ('valide__exact=1&assistant__exact=41', u'\xc9milie G.', False),
+                ('valide__exact=1&assistant__exact=1445', u'S\xe9verine T.', False),
                 ('assistant__isnull=True&valide__exact=1&assistant__exact=6', u'Aucun', None)
             ]),
         ]
 
-        self.assertEqual(current_filters_html(filters), [
-            (u'BAT demandé', u'Non'),
-            (u'chargé de clientèle', u'Marie-Fran\xe7oise Bonfils'),
-        ])
+        self.assertEqual(current_filters_html(filters),
+                         u'<ul><li>BAT demand\xe9: Non</li><li>charg\xe9 de client\xe8le: Marie-Fran\xe7oise B.</li></ul>')
 
 
 def suite():

@@ -145,6 +145,15 @@ def trend_class(value):
         return UP_STYLE
 
 
+@register.filter
+def current_filters_html(filters):
+    """Process a filter structure from generic_list. """
+    # Liste des filtres sélectionnés.
+    out = [(filter[0], [choice[1] for choice in filter[2] if choice[2]][0]) for filter in filters]
+    # Enlève les non-filtres.
+    return u'<ul>%s</ul>' % "".join([u'<li>%s: %s</li>' % (k, v) for k, v in out if (v != u"Tout")])
+
+
 # Générateur des lignes de tableaux d'index génériques.
 
 
