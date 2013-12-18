@@ -151,7 +151,8 @@ def current_filters_html(filters):
     # Liste des filtres sélectionnés.
     out = [(filter[0], [choice[1] for choice in filter[2] if choice[2]][0]) for filter in filters]
     # Enlève les non-filtres.
-    return u'<ul>%s</ul>' % "".join([u'<li>%s: %s</li>' % (k, v) for k, v in out if (v != u"Tout")])
+    return mark_safe(u'<ul>%s</ul>' % "".join([u'<li>%s: %s</li>' % (k, v)
+                                               for k, v in out if (v != u"Tout")]))
 
 
 # Générateur des lignes de tableaux d'index génériques.
