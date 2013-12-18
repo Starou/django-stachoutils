@@ -149,10 +149,10 @@ def trend_class(value):
 def current_filters(filters):
     """Process a filter structure from generic_list. """
     # Liste des filtres sélectionnés.
-    out = [(filter[0], [choice[1] for choice in filter[2] if choice[2]][0]) for filter in filters]
+    out = [(filter[0], [choice[1] for choice in filter[2] if choice[2]]) for filter in filters]
     # Enlève les non-filtres.
-    return [mark_safe(u'%s: <strong>%s</strong>' % (k, v))
-            for k, v in out if (v != u"Tout")]
+    return [mark_safe(u'%s: <strong>%s</strong>' % (k, v[0]))
+            for k, v in out if (v and v[0] != u"Tout")]
 
 
 # Générateur des lignes de tableaux d'index génériques.
