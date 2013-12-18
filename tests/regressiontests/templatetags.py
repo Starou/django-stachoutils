@@ -8,7 +8,7 @@ import unittest
 class TemplateTagsTestCase(unittest.TestCase):
     def test_current_filters_html(self):
         os.environ['DJANGO_SETTINGS_MODULE'] = "settings"
-        from django_stachoutils.templatetags.stachoutils_extras import current_filters_html
+        from django_stachoutils.templatetags.stachoutils_extras import current_filters
         filters = [
             (u'statut', False, [
                 ('valide__exact=1&assistant__exact=6', u'Tout', True),
@@ -37,8 +37,9 @@ class TemplateTagsTestCase(unittest.TestCase):
             ]),
         ]
 
-        self.assertEqual(current_filters_html(filters),
-                         u'<ul><li>BAT demand\xe9: Non</li><li>charg\xe9 de client\xe8le: Marie-Fran\xe7oise B.</li></ul>')
+        self.assertEqual(current_filters(filters),
+                         [u'BAT demand\xe9: <strong>Non</strong>',
+                          u'charg\xe9 de client\xe8le: <strong>Marie-Fran\xe7oise B.</strong>'])
 
 
 def suite():
