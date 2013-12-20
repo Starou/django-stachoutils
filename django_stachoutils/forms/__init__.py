@@ -52,7 +52,7 @@ class NestedModelForm(forms.ModelForm):
 
     def _get_errors(self):
         if self._errors is None:
-            super(NestedModelForm, self)._get_errors()
+            super(NestedModelForm, self).errors
             if not self.is_bound: # Stop further processing.
                 return self._errors
             if self.has_changed() or self.nested_form.has_changed():
