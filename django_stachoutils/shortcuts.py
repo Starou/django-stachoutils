@@ -15,7 +15,7 @@ from django_stachoutils import csv_utf8
 def macroman_text_response(data, filename=None, encode=True):
     if encode:
         data = data.encode('macroman')
-    response = HttpResponse(data, mimetype="text/plain; charset=macintosh")
+    response = HttpResponse(data, content_type="text/plain; charset=macintosh")
     if filename:
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
@@ -28,7 +28,7 @@ def encode_default(d):
     raise TypeError
 
 def json_response(data):
-    return HttpResponse(simplejson.dumps(data, default=encode_default), mimetype='application/json')
+    return HttpResponse(simplejson.dumps(data, default=encode_default), content_type='application/json')
 
 def get_object_or_none(klass, *args, **kwargs):
     queryset = _get_queryset(klass)
@@ -38,13 +38,13 @@ def get_object_or_none(klass, *args, **kwargs):
         return None
 
 def xml_response(data, filename=None):
-    response = HttpResponse(data, mimetype='application/xml')
+    response = HttpResponse(data, content_type='application/xml')
     if filename:
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
 
 def zip_response(files, filename):
-    response = HttpResponse(mimetype='application/zip')
+    response = HttpResponse(content_type='application/zip')
     response['Content-Disposition'] = 'filename=%s' % filename
 
     buffer = StringIO()
@@ -61,7 +61,7 @@ def zip_response(files, filename):
     return response
 
 def csv_response(rows, filename, kwargs={'delimiter' :',', 'quoting': csv.QUOTE_ALL}):
-    response = HttpResponse(mimetype='text/csv')
+    response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
 
     writer = csv_utf8.UnicodeWriter(response, **kwargs)
