@@ -1,14 +1,13 @@
-import sys
+import csv
 import decimal
 import datetime
+import json
+import sys
 import zipfile
-import csv
-from cStringIO import StringIO
 
+from cStringIO import StringIO
 from django.http import HttpResponse
 from django.shortcuts import _get_queryset
-from django.utils import simplejson
-
 from django_stachoutils import csv_utf8
 
 
@@ -28,7 +27,7 @@ def encode_default(d):
     raise TypeError
 
 def json_response(data):
-    return HttpResponse(simplejson.dumps(data, default=encode_default), content_type='application/json')
+    return HttpResponse(json.dumps(data, default=encode_default), content_type='application/json')
 
 def get_object_or_none(klass, *args, **kwargs):
     queryset = _get_queryset(klass)
