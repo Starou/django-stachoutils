@@ -67,7 +67,7 @@ class ModelAdmin(admin.ModelAdmin):
 
                 stream = serializers.serialize(fmt, objects, indent=indent,
                                                use_natural_keys=use_natural_keys)
-                return HttpResponse(stream, mimetype='application/json')
+                return HttpResponse(stream, content_type='application/json')
         return render_to_response('django_stachoutils/admin/dumpdata_form.html', {
             'title': "Dump data",
             'is_popup': request.REQUEST.has_key('_popup'),
