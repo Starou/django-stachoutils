@@ -7,14 +7,6 @@ from django.conf import settings
 from django_stachoutils import lowerize, NO_CAPFIRST
 
 
-def get_obj_dict(obj, extras=('id',)):
-    out = obj.__dict__.copy()
-    del out['_state']
-    for extra in extras:
-        del out[extra]
-    return out
-
-
 class UtilsTestCase(TestCase):
     def test_files_are_equal(self):
         from django.core.files.base import ContentFile
