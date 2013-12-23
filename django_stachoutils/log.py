@@ -7,6 +7,12 @@ from django.core import mail
 from django.conf import settings
 
 
+# Python < 2.7.
+class NullHandler(logging.Handler):
+    def emit(self, record):
+        pass
+
+
 # http://www.red-dove.com/python_logging.html
 class BufferingSMTPHandler(logging.handlers.BufferingHandler):
     def __init__(self, mailhost, fromaddr, toaddrs, subject, capacity):
