@@ -207,22 +207,6 @@ class ModelForm(forms.ModelForm):
         help_text_html = u'',
         errors_on_separate_row = True)
 
-
-# Required fields.
-def add_required_label_tag(original_function):
-  """Adds the 'required' CSS class and an asterisks to required field labels."""
-  def required_label_tag(self, contents=None, attrs=None):
-    contents = contents or escape(self.label)
-    if self.field.required:
-      attrs = {'class': 'required'}
-    return original_function(self, contents, attrs)
-  return required_label_tag
-
-def decorate_bound_field():
-  from django.forms.forms import BoundField
-  BoundField.label_tag = add_required_label_tag(BoundField.label_tag)
-
-
 # Image Fields.
 
 class ImageDroppableHiddenInput(forms.HiddenInput):
