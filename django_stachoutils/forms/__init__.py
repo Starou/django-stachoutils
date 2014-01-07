@@ -241,14 +241,27 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
         return mark_safe(tag)
 
     def _get_thumbnail(self, rel_obj):
-        from django.template import Context, Template
+        image_field = getattr(rel_obj, self.related_fieldname)       
         if "django_thumbor" in settings.INSTALLED_APPS:
-            t = Template('{% load thumbor_tags %}<img src="{% thumbor_url img_field.url width=120 %}" width="120">')
+            from django_thumbor import generate_url
+            thumbor_server = settings.THUMBOR_SERVER_EXTERNAL
+            url = image_field.url
+            storage = image_field.storage
+            if hasattr(storage, "key"):
+                try:
+                    url = storage.key(image_field.name)
+                # Cas du ThumborMigrationStorage avec image non-migrée sur Thumbor.
+                except NotImplementedError:
+                    pass
+                else:
+                    thumbor_server = settings.THUMBOR_SERVER
+            return mark_safe('<img src="%s" width="120">' % generate_url(url, thumbor_server=thumbor_server, width=120))
         else:
+            from django.template import Context, Template
             t = Template('{% load thumbnail %}{% thumbnail img_field "120" as im %}<img src="{{ im.url }}"'
                          'width="{{ im.width }}" height="{{ im.height }}">{% endthumbnail %}')
-        d = {"img_field": getattr(rel_obj, self.related_fieldname)}
-        return mark_safe(t.render(Context(d)))
+            d = {"img_field": image_field}
+            return mark_safe(t.render(Context(d)))
 
 
 class ImageModelChoiceField(forms.ModelChoiceField):
