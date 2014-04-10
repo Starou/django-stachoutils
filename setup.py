@@ -9,14 +9,13 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="django-stachoutils",
-    version="0.91.5",
+    version="0.91.6",
     license='BSD Licence',
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
     description='Commons for Django',
     url='https://github.com/Starou/django-stachoutils',
     long_description=README,
-    include_package_data=True,
     packages=[
         'django_stachoutils',
         'django_stachoutils.management',
@@ -42,6 +41,7 @@ setup(
             'static/django_stachoutils/poshytip/*.js',
             'static/django_stachoutils/poshytip/*/*.css',
             'static/django_stachoutils/poshytip/*/*.gif',
+            'static/django_stachoutils/poshytip/*/*.png',
             'templates/django_stachoutils/*.html',
         ]
     },
