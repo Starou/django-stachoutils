@@ -4,7 +4,6 @@ from django.shortcuts import get_object_or_404
 
 from django import forms
 from django.conf import settings
-from django.utils.html import  escape
 from django.utils.safestring import mark_safe
 
 from django.forms.models import ModelFormMetaclass
@@ -12,17 +11,18 @@ from django.forms.models import ModelFormMetaclass
 
 NESTED_NON_FIELD_ERRORS = '__nested__'
 
+
 class NestedModelFormOptions(object):
     def __init__(self, options=None):
-        self.Form = getattr(options, 'form', None) # Class.
-        self.fk = getattr(options, 'fk', None) # fk name.
+        self.Form = getattr(options, 'form', None)  # Class.
+        self.fk = getattr(options, 'fk', None)  # fk name.
 
 
 class NestedModelFormMetaclass(ModelFormMetaclass):
     """ Ajoute les attributs self._nested.Form et self._nested.fk"""
     def __new__(cls, name, bases, attrs):
         new_class = super(NestedModelFormMetaclass, cls).__new__(cls, name, bases, attrs)
-        new_class._nested = NestedModelFormOptions(getattr(new_class, 'Nested', None)) # Declarez une class Nested.
+        new_class._nested = NestedModelFormOptions(getattr(new_class, 'Nested', None))  # Declarez une class Nested.
         return new_class
 
 
@@ -38,9 +38,9 @@ class NestedModelForm(forms.ModelForm):
             if kwargs['initial'].has_key('NESTED'):
                 nested_initial = kwargs['initial'].pop('NESTED')
         super(NestedModelForm, self).__init__(*args, **kwargs)
-        nested_id = self.initial.get(self._nested.fk, None) # self.initial est un merge du paramètre 'initial' et des  attrs de l'instance.
-        if self.data.has_key('%s-%s'%(self.prefix, self._nested.fk)): # Le post écrase initial si présent. 
-            nested_id = self.data['%s-%s'%(self.prefix, self._nested.fk)]
+        nested_id = self.initial.get(self._nested.fk, None)  # self.initial est un merge du paramètre 'initial' et des  attrs de l'instance.
+        if self.data.has_key('%s-%s' % (self.prefix, self._nested.fk)):  # Le post écrase initial si présent.
+            nested_id = self.data['%s-%s' % (self.prefix, self._nested.fk)]
         if nested_id:
             nested_instance = get_object_or_404(self._nested.Form.Meta.model, pk=nested_id)
         self._init_nested_form(nested_instance, nested_initial)
@@ -53,7 +53,7 @@ class NestedModelForm(forms.ModelForm):
     def _get_errors(self):
         if self._errors is None:
             super(NestedModelForm, self).errors
-            if not self.is_bound: # Stop further processing.
+            if not self.is_bound:  # Stop further processing.
                 return self._errors
             if self.has_changed() or self.nested_form.has_changed():
                 self.nested_form.empty_permitted = True
@@ -76,7 +76,7 @@ class NestedModelForm(forms.ModelForm):
         host_has_changed = super(NestedModelForm, self).has_changed(*args, **kwargs)
         if host_has_changed or nested_has_changed:
             return True
-        self.nested_form._errors = {} # Why do we need to do that ? If not, next
+        self.nested_form._errors = {}  # Why do we need to do that ? If not, next
         # call to errors (i.e. from the template) will revalidate and add errors although
         # It (the nested form) has not changed.
         return False
@@ -97,7 +97,8 @@ class NestedModelForm(forms.ModelForm):
 
 class ModelFormOptions(object):
     def __init__(self, options=None):
-        self.inlines = getattr(options, 'inlines', {}) 
+        self.inlines = getattr(options, 'inlines', {})
+
 
 class ModelFormMetaclass(ModelFormMetaclass):
     """ Ajoute les attributs self._forms.inlines """
@@ -105,6 +106,7 @@ class ModelFormMetaclass(ModelFormMetaclass):
         new_class = super(ModelFormMetaclass, cls).__new__(cls, name, bases, attrs)
         new_class._forms = ModelFormOptions(getattr(new_class, 'Forms', None))
         return new_class
+
 
 class ModelForm(forms.ModelForm):
     """
@@ -119,11 +121,11 @@ class ModelForm(forms.ModelForm):
 
     >>> class ImageProgram(models.Model):
     ...     image = models.ImageField('image')
-    ...     program = models.ForeignKey(Programm)
-    
+    ...     program = models.ForeignKey(Program)
+
     >>> class Ringtone(models.Model):
     ...     sound = models.FileField('sound')
-    ...     program = models.ForeignKey(Programm)
+    ...     program = models.ForeignKey(Program)
 
     Use It in your admin.py instead of django.forms.ModelForm:
     >>> class ProgramAdminForm(ModelForm):
@@ -155,7 +157,7 @@ class ModelForm(forms.ModelForm):
     <table>
     {{ program_form.inlineformsets.images.as_table }}
     </table>
-    
+
 
     """
     __metaclass__ = ModelFormMetaclass
@@ -196,18 +198,20 @@ class ModelForm(forms.ModelForm):
             for i in range(0, fset.total_form_count()):
                 f = fset.forms[i]
                 if f.errors:
-                    self._errors['_%s_%d' %(fset.prefix, i)] = f.non_field_errors # Pourquoi non_field_errors ?
+                    self._errors['_%s_%d' % (fset.prefix, i)] = f.non_field_errors  # Pourquoi non_field_errors ?
 
     # This should be in forms.Form.
     def as_tr(self):
         return self._html_output(
-        normal_row = u'<td%(html_class_attr)s>%(field)s</td>',
-        error_row = u'%s',
-        row_ender = '',
-        help_text_html = u'',
-        errors_on_separate_row = True)
+            normal_row=u'<td%(html_class_attr)s>%(field)s</td>',
+            error_row=u'%s',
+            row_ender='',
+            help_text_html=u'',
+            errors_on_separate_row=True
+        )
 
 # Image Fields.
+
 
 class ImageDroppableHiddenInput(forms.HiddenInput):
     def __init__(self, *args, **kwargs):
@@ -218,8 +222,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
 
     class Media:
         css = {
-            'all': ('django_stachoutils/css/forms.css',
-            )
+            'all': ('django_stachoutils/css/forms.css',)
         }
         js = ('django_stachoutils/js/forms.js',)
 
@@ -227,7 +230,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
         hidden_input = super(ImageDroppableHiddenInput, self).render(name, value, attrs=None)
         image_tag = '<img />'
         if value:
-            rel_obj = self.related_model.objects.get(pk=value) # TODO: Faire un get_object_or_none 
+            rel_obj = self.related_model.objects.get(pk=value)  # TODO: Faire un get_object_or_none
             image_tag = self._get_thumbnail(rel_obj)
 
         tag = (
@@ -236,12 +239,12 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
             '        <div class="droppable"><div class="draggable">%s</div></div>'
             '    </div>'
             '    <div class="message">%s</div>'
-            '</div>' %(hidden_input, self.image_container_html, image_tag, self.message)
-              )
+            '</div>' % (hidden_input, self.image_container_html, image_tag, self.message)
+        )
         return mark_safe(tag)
 
     def _get_thumbnail(self, rel_obj):
-        image_field = getattr(rel_obj, self.related_fieldname)       
+        image_field = getattr(rel_obj, self.related_fieldname)
         if "django_thumbor" in settings.INSTALLED_APPS:
             from django_thumbor import generate_url
             thumbor_server = settings.THUMBOR_SERVER_EXTERNAL
