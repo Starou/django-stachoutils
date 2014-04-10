@@ -1,5 +1,7 @@
 include LICENCE.txt
 include README.txt
-recursive-include django_stachoutils/static *
+recursive-include django_stachoutils/static *.css *.js *.png *.jpg *.gif *.html
+recursive-include django_stachoutils/templates *.html
 recursive-include tests *
-recursive-exclude * .DS_Store 
+recursive-exclude tests *.pyc .DS_Store
+global-exclude .DS_Store
