@@ -1,6 +1,5 @@
 import os
 from distutils.core import setup
-from setuptools import find_packages
 
 README = open(os.path.join(os.path.dirname(__file__), 'README.txt')).read()
 
@@ -18,7 +17,34 @@ setup(
     url='https://github.com/Starou/django-stachoutils',
     long_description=README,
     include_package_data=True,
-    packages=find_packages(),
+    packages=[
+        'django_stachoutils',
+        'django_stachoutils.management',
+        'django_stachoutils.management.commands',
+        'django_stachoutils.forms',
+        'django_stachoutils.views',
+        'django_stachoutils.templatetags',
+    ],
+    # I fucking hate distutils-wasting-time-machine.
+    # python setup.py build does not give a shit about what is in MANIFEST.in
+    # and here in package_data there is now fucking way to use ** glob style so
+    # you have to maintain that fucking list.
+    # A workaround is to use from setuptools import find_packages and
+    # set include_package_data=True but in that case you cannot upload to Pypi!
+    # Or maybe the doc sucks. Or maybe I am stupid.
+    package_data={
+        'django_stachoutils': [
+            'static/django_stachoutils/css/*.css',
+            'static/django_stachoutils/js/*.js',
+            'static/django_stachoutils/img/*.png',
+            'static/django_stachoutils/img/*.jpg',
+            'static/django_stachoutils/img/*.gif',
+            'static/django_stachoutils/poshytip/*.js',
+            'static/django_stachoutils/poshytip/*/*.css',
+            'static/django_stachoutils/poshytip/*/*.gif',
+            'templates/django_stachoutils/*.html',
+        ]
+    },
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
