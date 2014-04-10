@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib import admin, messages
@@ -13,6 +13,7 @@ from django_stachoutils.views.actions import regroup_actions
 ORDER_BY_ATTR = 'o'
 ORDER_TYPE_ATTR = 'ot'
 
+
 def generic_change_response(request, url_continue, url_add_another, url_default):
     if "_continue" in request.POST:
         return HttpResponseRedirect(url_continue)
@@ -20,6 +21,7 @@ def generic_change_response(request, url_continue, url_add_another, url_default)
         return HttpResponseRedirect(url_add_another)
     else:
         return HttpResponseRedirect(url_default)
+
 
 def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None,
                     actions=[], filters=(), links=(), search=(), default_order=None,
@@ -39,11 +41,11 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
     actions_par_groupe = []
     if ClassAdmin and actions:
         adm = ClassAdmin(Model, admin.site)
-        admin_actions = adm.get_actions(request) # {'invalider': (<unbound method ProgrammeAdmin.invalider>, 'invalider', u'Invalider en...'), ...}
+        admin_actions = adm.get_actions(request)  # {'invalider': (<unbound method ProgrammeAdmin.invalider>, 'invalider', u'Invalider en...'), ...}
         for group, actions_in_group in actions:
-            actions_dispos = [(callable(action) and action.func_name or action,\
-                               admin_actions.has_key(action) and admin_actions[action][2] or action.short_description)
-                              for action in actions_in_group if admin_actions.has_key(action) or callable(action)]
+            actions_dispos = [(callable(action) and action.func_name or action,
+                              action in admin_actions and admin_actions[action][2] or action.short_description)
+                              for action in actions_in_group if action in admin_actions or callable(action)]
             if actions_dispos:
                 actions_par_groupe.append((group, actions_dispos))
 
@@ -63,7 +65,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
         return render_to_response(template, c, context_instance=RequestContext(request))
 
     # Filter columns according to the user permissions.
-    columns = [c for c in columns if has_column_perm(request.user, c)]
+    columns = [col for col in columns if has_column_perm(request.user, col)]
 
     # Search.
     if request.GET.get('q'):
@@ -96,7 +98,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
     page = paginate(request, queryset, paginate_by_default)
 
     # Filters.
-    closed_filters = user_settings.get('%s_closed_filters'%list_id, [])
+    closed_filters = user_settings.get('%s_closed_filters' % list_id, [])
     filters = [get_filter(Model, current_filters, closed_filters, f) for f in filters]
 
     # Exec action.
@@ -132,7 +134,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
         'paginates_by': request.GET.get('paginates_by', paginates_by),
         'columns': columns,
         'actions': actions_par_groupe,
-        'filtres': filters, # renommer en filters.
+        'filtres': filters,  # renommer en filters.
         'links': links,
         'search': [s[0] for s in search],
         'get_params': dict(request.GET.items()),
@@ -182,7 +184,7 @@ def get_filter(model, current_filters, closed_filters, filtr):
         try:
             mod = mod._meta.get_field(rel_model).rel.to
         except:
-            mod = getattr(mod, '%s_set'%rel_model).related.model
+            mod = getattr(mod, '%s_set' % rel_model).related.model
 
     field = mod._meta.get_field(attr)
     name = field.verbose_name
@@ -264,8 +266,8 @@ class Filter(object):
             self.label = instance.__unicode__()
             self.value = str(instance.pk)
         self.current_filters = current_filters
-        self.key = '%s__%s'%(filter_string, test)
-        self.isnull = '%s__isnull'%(filter_string,)
+        self.key = '%s__%s' % (filter_string, test)
+        self.isnull = '%s__isnull' % (filter_string,)
         self._url = None
         self._is_selected = None
 
@@ -275,7 +277,8 @@ class Filter(object):
             filters = self.get_base_filters()
             out = filters.copy()
             for k, v in filters.iteritems():
-                if not v: del out[k] # supp les filtres vides.
+                if not v:
+                    del out[k]  # supp les filtres vides.
             self._url = urlencode(out)
         return self._url
     url = property(_get_url)
@@ -285,14 +288,14 @@ class Filter(object):
         # on update le parametre si deja present dans l'url.
         filters.update({self.key: self.value})
         # on vire l'eventuel filtre is_null.
-        if filters.has_key(self.isnull): del filters[self.isnull]
+        if self.isnull in filters:
+            del filters[self.isnull]
         return filters
 
     def _get_is_selected(self):
         """L'url d'un filtre doit conserver les filtres en cours pour être additifs. """
         if self._is_selected is None:
             selected = self.current_filters.get(self.key, None)
-            empty_selected = self.current_filters.get(self.isnull, None)
             self._is_selected = (self.value == selected)
         return self._is_selected
     is_selected = property(_get_is_selected)
@@ -315,8 +318,7 @@ class FilterAll(Filter):
 
     def _get_is_selected(self):
         if self._is_selected is None:
-            if not self.current_filters.has_key(self.key) and not\
-                   self.current_filters.has_key(self.isnull):
+            if self.key not in self.current_filters and self.isnull not in self.current_filters:
                 self._is_selected = True
         return self._is_selected
     is_selected = property(_get_is_selected)
@@ -335,7 +337,7 @@ class FilterNone(Filter):
         self.value = True
 
     def _get_is_selected(self):
-        if self.current_filters.has_key(self.isnull):
+        if self.isnull in self.current_filters:
             self._is_selected = True
         return self._is_selected
     is_selected = property(_get_is_selected)
