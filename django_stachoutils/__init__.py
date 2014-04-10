@@ -80,7 +80,7 @@ def clean_lettrine(txt):
 # see also: http://en.wikipedia.org/wiki/Roman_numerals
 # tested with Python24       vegaseat        25jan2007
 def int_to_roman(number):
-    numerals = { 1 : "I", 4 : "IV", 5 : "V", 9 : "IX", 10 : "X", 40 : "XL", 
+    numerals = { 1 : "I", 4 : "IV", 5 : "V", 9 : "IX", 10 : "X", 40 : "XL",
         50 : "L", 90 : "XC", 100 : "C", 400 : "CD", 500 : "D", 900 : "CM", 1000 : "M" }
     result = ""
     for value, numeral in sorted(numerals.items(), reverse=True):
@@ -107,20 +107,6 @@ def simple_decorator(decorator):
     new_decorator.__doc__ = decorator.__doc__
     new_decorator.__dict__.update(decorator.__dict__)
     return new_decorator
-
-
-def inline_update(klass, object_id, attr, val):
-    """Traitement des edition en ligne ajax. """
-    obj = klass.objects.get(pk=object_id)
-    response = getattr(obj, attr)
-    try:
-        setattr(obj, attr, val)
-        obj.save()
-    except ValidationError:
-        pass
-    else:
-        response = getattr(obj, attr)
-    return str(response)
 
 
 def camelize(txt):

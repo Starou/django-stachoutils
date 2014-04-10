@@ -175,6 +175,10 @@ def _table_header(columns, get_params, padding=0, sortable=True):
         if c.has_key('label'):
             style = []
             link = u'%s' % c['label']
+            edit_tag = ''
+            edit_url = c.get('edit_url')
+            if edit_url:
+                edit_tag = '<input class="edit_url" type="hidden" value="%s"/>' % edit_url
             if sortable:
                 order_type = 'asc'
                 order_by = _get_params.get(ORDER_BY_ATTR)
@@ -187,8 +191,12 @@ def _table_header(columns, get_params, padding=0, sortable=True):
                         style.append('descending')
                 _get_params.update({ORDER_BY_ATTR: i + padding, ORDER_TYPE_ATTR: order_type})
                 link = u'<a href="?%s">%s</a>' % (urlencode(_get_params), link)
-            out.append(u'<th%s>%s<input class="fieldname" type="hidden" value="%s"/></th>' % (
-                (style and ' class="%s"'%' '.join(style) or ''), link, c['field']))
+            out.append(u'<th%s>%s<input class="fieldname" type="hidden" value="%s"/>%s</th>' % (
+                (style and ' class="%s"'%' '.join(style) or ''),
+                link,
+                c['field'],
+                edit_tag
+            ))
     return out
 
 
@@ -208,7 +216,7 @@ def _table_row(columns, instance):
             style, filters = [], u''
             if c.has_key('label'):
                 value = instance
-                # related lookup. On utilise pas qset.values() en amont qui eviterait ce truc récursif 
+                # related lookup. On utilise pas qset.values() en amont qui eviterait ce truc récursif
                 # car empêche d'accéder des attr virtuels sur les instances.
                 for attr in c['field'].split('__'):
                     if value:

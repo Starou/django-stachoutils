@@ -7,7 +7,6 @@ from django.contrib import admin, messages
 from django.db.models import Q
 from django.utils.http import urlencode, urlunquote
 
-from django_stachoutils import inline_update
 from django_stachoutils.options import paginate
 from django_stachoutils.views.actions import regroup_actions
 
@@ -22,7 +21,7 @@ def generic_change_response(request, url_continue, url_add_another, url_default)
     else:
         return HttpResponseRedirect(url_default)
 
-def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None, 
+def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None,
                     actions=[], filters=(), links=(), search=(), default_order=None,
                     paginate_by_default=100, paginates_by=[], qset_modifier=None,
                     qset_modifier_args=[], extra_params={}):
@@ -92,7 +91,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
     queryset = queryset.filter(**filters_for_queryset(current_filters)).distinct()
     if qset_modifier:
         queryset = qset_modifier(queryset, *qset_modifier_args)
-    
+
     count_across = queryset.count()
     page = paginate(request, queryset, paginate_by_default)
 
@@ -102,8 +101,6 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
 
     # Exec action.
     if request.method == 'POST':
-        if request.is_ajax():
-            return HttpResponse(inline_update(Model, request.POST['id'], request.POST['attr'], request.POST['value']))
         action = request.POST.get('action')
         selected = request.POST.getlist('_selected_action')
         if not action:
@@ -127,7 +124,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
                         return response
                     else:
                         return HttpResponseRedirect("")
-        
+
     c = {
         'object_list': page.object_list,
         'page': page,
@@ -169,12 +166,12 @@ def get_filter(model, current_filters, closed_filters, filtr):
         'attr':  filtr,
         'filter_test':  'exact',
     }
- 
+
     if filtr.__class__.__name__ == 'tuple':
         p['attr'] = filtr[0]
         p.update(filtr[1])
 
-    choices, empty_choice, attr, filter_test = p['choices'], p['empty_choice'], p['attr'], p['filter_test'] 
+    choices, empty_choice, attr, filter_test = p['choices'], p['empty_choice'], p['attr'], p['filter_test']
 
     filter_string = attr
     attrs = attr.split('__')
@@ -202,7 +199,7 @@ def get_filter(model, current_filters, closed_filters, filtr):
 
     choices = [(lambda f=F(o, attr, filter_string, filter_test, current_filters): (f.url, f.label, f.is_selected))() for o in choices]
     choices.insert(0, (lambda f=FilterAll(attr, filter_string, filter_test, current_filters): (f.url, f.label, f.is_selected))())
-    if empty_choice: 
+    if empty_choice:
         choices.append((lambda f=FilterNone(model, attr, filter_string, current_filters): (f.url, f.label, f.is_selected))())
     return (name, (name in closed_filters), choices)
 

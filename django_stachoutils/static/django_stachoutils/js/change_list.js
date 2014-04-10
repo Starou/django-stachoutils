@@ -29,18 +29,21 @@ function setStyleInvalidRows(static_url, rxStatus) {
 }
 
 $(document).ready(function () {
-    // http://www.appelsiini.net/projects/jeditable
-    var fields = [];
-    $('table > thead > tr input.fieldname').each(function(i, elt) { fields.push($(elt).val()); });
-
-    $("td.editable").editable($("input[name=inline_url]").val(), {
-        indicator: 'Saving...',
-        tooltip: 'Cliquer pour modifier',
-        submitdata: function(value, settings){
-            return  {
-                'attr': fields[$(this).prevUntil().length-1],
-                'id': $(this).siblings('td.pk').children().val()
-            }
+    // http://vitalets.github.io/x-editable/index.html
+    var url = $("input[name='edit_inline_url']").val();
+    $("td.editable").editable({
+        type: 'text',
+        pk: 0,  // overriden in params but must be initialized here to fire the ajax call.
+        url: url,
+        params: function(params) {
+            return {
+                name: $('table > thead > tr > th:nth-child(' + ($(this).index() + 1) + ') > input.fieldname').val(),
+                pk: $(this).siblings(".pk").find("input").val(),
+                value: params.value
+            };
+        },
+        success: function(response, newValue) {
+            if(!response.success) return response.errors.toString();
         }
     });
 });
