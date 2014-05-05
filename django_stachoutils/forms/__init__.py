@@ -34,12 +34,11 @@ class NestedModelForm(forms.ModelForm):
         self.nested_form = None
         self._non_nested_errors = None
         nested_initial, nested_instance = {}, None
-        if kwargs.has_key('initial'):
-            if kwargs['initial'].has_key('NESTED'):
-                nested_initial = kwargs['initial'].pop('NESTED')
+        if ('initial' in kwargs) and ('NESTED' in kwargs['initial']):
+            nested_initial = kwargs['initial'].pop('NESTED')
         super(NestedModelForm, self).__init__(*args, **kwargs)
         nested_id = self.initial.get(self._nested.fk, None)  # self.initial est un merge du paramètre 'initial' et des  attrs de l'instance.
-        if self.data.has_key('%s-%s' % (self.prefix, self._nested.fk)):  # Le post écrase initial si présent.
+        if '%s-%s' % (self.prefix, self._nested.fk) in self.data:  # Le post écrase initial si présent.
             nested_id = self.data['%s-%s' % (self.prefix, self._nested.fk)]
         if nested_id:
             nested_instance = get_object_or_404(self._nested.Form.Meta.model, pk=nested_id)
@@ -66,7 +65,7 @@ class NestedModelForm(forms.ModelForm):
     def _get_non_nested_errors(self):
         if self._non_nested_errors is None:
             self._non_nested_errors = self.errors.copy()
-            if self._non_nested_errors.has_key(NESTED_NON_FIELD_ERRORS):
+            if NESTED_NON_FIELD_ERRORS in self._non_nested_errors:
                 del self._non_nested_errors[NESTED_NON_FIELD_ERRORS]
         return self._non_nested_errors
     non_nested_errors = property(_get_non_nested_errors)
@@ -116,6 +115,7 @@ class ModelForm(forms.ModelForm):
     You should use It in the admin's forms if you need the inherit them in your apps because there is not
     multi-inherance.
 
+    >>> from myapp import models
     >>> class Program(models.Model):
     ...     name = models.CharField(max_length=100, blank=True)
 
@@ -129,16 +129,20 @@ class ModelForm(forms.ModelForm):
 
     Use It in your admin.py instead of django.forms.ModelForm:
     >>> class ProgramAdminForm(ModelForm):
-    ... class Meta:
-    ...     model = Program
-    ...     def clean(self):
-    ...         cleaned_data = self.cleaned_data
-    ...         # stuff
-    ...         return cleaned_data
+    ...     class Meta:
+    ...         model = Program
+    ...         def clean(self):
+    ...             cleaned_data = self.cleaned_data
+    ...             # stuff
+    ...             return cleaned_data
 
     In your app, say you declare the following inline formsets:
-    >>> ImageProgramFormSet = inlineformset_factory(Program, ImageProgram, form=ImageProgramForm, max_num=6)
-    >>> RingToneFormSet = inlineformset_factory(Program, RingTone, form=RingtoneProgramForm)
+    >>> from django.forms.models import inlineformset_factory
+    >>> from myapp.forms import ImageProgramForm, RingtoneProgramForm
+    >>> ImageProgramFormSet = inlineformset_factory(models.Program, models.ImageProgram,
+    ...                                             form=ImageProgramForm, max_num=6)
+    >>> RingToneFormSet = inlineformset_factory(models.Program, models.RingTone,
+    ...                                         form=RingtoneProgramForm)
 
     You can bind them in your program's form:
     >>> class MyProgramForm(ProgramAdminForm):
@@ -149,7 +153,8 @@ class ModelForm(forms.ModelForm):
     ...         }
 
     And instanciate It:
-    >>> program_form = MyProgramForm(request.POST, request.FILES, prefix='prog')
+    >>> def my_view(request):
+    ...     program_form = MyProgramForm(request.POST, request.FILES, prefix='prog')
 
     In the template, you access the inlines like that :
     {{ program_form.inlineformsets.images.management_form }}
@@ -210,9 +215,11 @@ class ModelForm(forms.ModelForm):
             errors_on_separate_row=True
         )
 
+
 # Image Fields.
 
 
+# TODO: Déplacer dans widgets.py.
 class ImageDroppableHiddenInput(forms.HiddenInput):
     def __init__(self, *args, **kwargs):
         super(ImageDroppableHiddenInput, self).__init__(*args, **kwargs)
@@ -269,7 +276,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
 
 class ImageModelChoiceField(forms.ModelChoiceField):
     def __init__(self, related_fieldname, queryset, *args, **kwargs):
-        if not kwargs.has_key('widget'):
+        if 'widget' not in kwargs:
             kwargs['widget'] = ImageDroppableHiddenInput
         super(ImageModelChoiceField, self).__init__(queryset, *args, **kwargs)
         self.widget.related_model = queryset.model
