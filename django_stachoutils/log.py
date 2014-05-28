@@ -44,7 +44,7 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
             self.buffer = []
 
 
-class BaseEmailHander(logging.Handler):
+class BaseEmailHandler(logging.Handler):
     """Beneficie de la conf SMTP dans settings par rapport à logging.handlers.SMTPHandler. """
     def emit(self, record):
         subject = u'%s[%s] : %s' % (settings.EMAIL_SUBJECT_PREFIX, record.levelname, record.subject)
