@@ -5,6 +5,7 @@ import logging.handlers
 import string
 from django.core import mail
 from django.conf import settings
+from django.contrib import messages
 
 
 # Python < 2.7.
@@ -55,3 +56,21 @@ class BaseEmailHandler(logging.Handler):
         subject = u'%s[%s] : %s' % (settings.EMAIL_SUBJECT_PREFIX, record.levelname, self.subject)
         message = record.msg
         mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, self.recipient_list, fail_silently=True)
+
+
+levelname_to_int = {
+    'DEBUG': messages.DEBUG,
+    'INFO': messages.INFO,
+    'WARNING': messages.WARNING,
+    'ERROR': messages.ERROR,
+}
+
+
+class MessagelHandler(logging.Handler):
+    """An handler proxiing to messages. """
+
+    def __init__(self):
+        logging.Handler.__init__(self)
+
+    def emit(self, record):
+        messages.add_message(record.request, levelname_to_int[record.levelname], record.getMessage())
