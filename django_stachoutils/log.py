@@ -46,7 +46,12 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
 
 class BaseEmailHandler(logging.Handler):
     """Beneficie de la conf SMTP dans settings par rapport à logging.handlers.SMTPHandler. """
+    def __init__(self, subject=""):
+        """Allow one to set the subject in settings.LOGGING DictConfig. """
+        logging.Handler.__init__(self)
+        self.subject = subject
+
     def emit(self, record):
-        subject = u'%s[%s] : %s' % (settings.EMAIL_SUBJECT_PREFIX, record.levelname, record.subject)
+        subject = u'%s[%s] : %s' % (settings.EMAIL_SUBJECT_PREFIX, record.levelname, self.subject)
         message = record.msg
         mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, self.recipient_list, fail_silently=True)
