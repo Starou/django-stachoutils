@@ -85,7 +85,7 @@ pagination = register.inclusion_tag('django_stachoutils/pagination.html')(pagina
 @register.filter
 def iconify(value):
     """Transforme un boolean en image."""
-    return mark_safe("<img src='%simages/front/icon-%s.gif' />" %(
+    return mark_safe("<img src='%sdjango_stachoutils/img/icon-%s.gif' />" %(
         settings.STATIC_URL, value and 'yes' or 'no'))
 
 
