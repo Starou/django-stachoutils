@@ -12,8 +12,8 @@ from django_stachoutils.views.generic import ORDER_BY_ATTR, ORDER_TYPE_ATTR
 
 DOT = '.'
 # TODO: mettre ca dans les settings.
-PAGE_VAR='page'
-PAGINATE_BY_VAR='paginate_by'
+PAGE_VAR = 'page'
+PAGINATE_BY_VAR = 'paginate_by'
 register = Library()
 
 
@@ -25,7 +25,7 @@ def paginator_number(page, i, get_params={}):
     else:
         params = get_params.copy()
         params.update({PAGE_VAR: i + 1})
-        return mark_safe(u'<a href="?%s"%s>%d</a> ' % (urlencode(params), (i == page.paginator.num_pages-1 and ' class="end"' or ''), i + 1))
+        return mark_safe(u'<a href="?%s"%s>%d</a> ' % (urlencode(params), (i == page.paginator.num_pages - 1 and ' class="end"' or ''), i + 1))
 paginator_number = register.simple_tag(paginator_number)
 
 
@@ -85,18 +85,25 @@ pagination = register.inclusion_tag('django_stachoutils/pagination.html')(pagina
 @register.filter
 def iconify(value):
     """Transforme un boolean en image."""
-    return mark_safe("<img src='%sdjango_stachoutils/img/icon-%s.gif' />" %(
+    return mark_safe("<img src='%sdjango_stachoutils/img/icon-%s.gif' />" % (
         settings.STATIC_URL, value and 'yes' or 'no'))
+
+
+@register.filter
+def processing(value):
+    """Show a kind of alert if True."""
+    return mark_safe("<img src='%sdjango_stachoutils/img/%s' />" % (
+        settings.STATIC_URL, value and 'processing.png' or 'icon-yes.gif'))
 
 
 @register.filter
 def default_if_newrecord(record, default):
    # if isinstance(record, ):
    #     return value.strip()
-   if record.pk:
-       return record
-   else:
-       return default
+    if record.pk:
+        return record
+    else:
+        return default
 
 
 @register.filter
@@ -131,11 +138,12 @@ def progressbar(value):
                     %s
                 </div>
             </div>
-        </div>""" %(color, value, value,))
+        </div>""" % (color, value, value,))
 
 
 DOWN_STYLE = 'down'
 UP_STYLE = 'up'
+
 
 @register.filter
 def trend_class(value):
@@ -178,7 +186,7 @@ def _table_header(columns, get_params, padding=0, sortable=True):
             if sortable:
                 order_type = 'asc'
                 order_by = _get_params.get(ORDER_BY_ATTR)
-                if order_by and order_by == str(i+padding):
+                if order_by and order_by == str(i + padding):
                     style.append('sorted')
                     if _get_params[ORDER_TYPE_ATTR] == 'asc':
                         style.append('ascending')
@@ -188,7 +196,7 @@ def _table_header(columns, get_params, padding=0, sortable=True):
                 _get_params.update({ORDER_BY_ATTR: i + padding, ORDER_TYPE_ATTR: order_type})
                 link = u'<a href="?%s">%s</a>' % (urlencode(_get_params), link)
             out.append(u'<th%s>%s<input class="fieldname" type="hidden" value="%s"/></th>' % (
-                (style and ' class="%s"'%' '.join(style) or ''), link, c['field']
+                (style and ' class="%s"' % ' '.join(style) or ''), link, c['field']
             ))
     return out
 
@@ -240,7 +248,7 @@ def _table_row(columns, instance):
                     style.append('editable')
                 t = (value and value or '-')
                 if c.get('filters') and t != '-':
-                    t = Template(u'{{ value%s }}'% get_template_filters(c['filters'])).render(Context({'value': t}))
+                    t = Template(u'{{ value%s }}' % get_template_filters(c['filters'])).render(Context({'value': t}))
                 out.append(u'<td class="%s">%s</td>' % (u' '.join(style), t))
     return out
 
