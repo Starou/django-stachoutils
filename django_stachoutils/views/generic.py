@@ -79,11 +79,12 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
     # Queryset.
     order_by, ordering = request.GET.get(ORDER_BY_ATTR, None), None
     if order_by:
-        order_field = columns[int(order_by)].get('order_field', columns[int(order_by)].get('field'))
+        column = columns[int(order_by)]
+        order_fields = column.get('order_fields', (column.get('field'), ))
         order_type = ''
         if request.GET[ORDER_TYPE_ATTR] == 'desc':
             order_type = '-'
-        ordering = ('%s%s' % (order_type, order_field),)
+        ordering = ['%s%s' % (order_type, order_field) for order_field in order_fields]
     elif default_order:
         ordering = default_order
     if ordering:
