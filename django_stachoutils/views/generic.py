@@ -135,7 +135,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
         'paginates_by': request.GET.get('paginates_by', paginates_by),
         'columns': columns,
         'actions': actions_par_groupe,
-        'filtres': filters,  # renommer en filters.
+        'filters': filters,
         'links': links,
         'search': [s[0] for s in search],
         'get_params': dict(request.GET.items()),
