@@ -155,10 +155,9 @@ def trend_class(value):
 
 @register.filter
 def current_filters(filters):
-    """Process a filter structure from generic_list. """
-    # Liste des filtres sélectionnés.
-    out = [(filter[0], [choice[1] for choice in filter[2] if choice[2]]) for filter in filters]
-    # Enlève les non-filtres.
+    """HTML render of the active filters from a generic_list. """
+    # Selected filter, except 'All'.
+    out = [(f[0], [choice[1] for choice in f[1] if choice[2]]) for f in filters]
     return [mark_safe(u'%s: <strong>%s</strong>' % (k, v[0]))
             for k, v in out if (v and v[0] != u"Tout")]
 

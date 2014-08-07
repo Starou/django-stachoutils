@@ -34,7 +34,6 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
      ]
     """
     list_id = Model._meta.verbose_name
-    user_settings = request.session.get('preferences', {})
 
     # Actions.
     actions = regroup_actions(actions)
@@ -99,8 +98,7 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
     page = paginate(request, queryset, paginate_by_default)
 
     # Filters.
-    closed_filters = user_settings.get('%s_closed_filters' % list_id, [])
-    filters = [get_filter(Model, current_filters, closed_filters, f) for f in filters]
+    filters = [get_filter(Model, current_filters, f) for f in filters]
 
     # Exec action.
     if request.method == 'POST':
@@ -162,7 +160,7 @@ def has_column_perm(user, column):
     return True
 
 
-def get_filter(model, current_filters, closed_filters, filtr):
+def get_filter(model, current_filters, filtr):
     p = {
         'choices': None,
         'empty_choice': False,
