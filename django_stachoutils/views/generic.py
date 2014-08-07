@@ -23,10 +23,10 @@ def generic_change_response(request, url_continue, url_add_another, url_default)
         return HttpResponseRedirect(url_default)
 
 
-def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None,
-                    actions=[], filters=(), links=(), search=(), default_order=None,
-                    paginate_by_default=100, paginates_by=[], qset_modifier=None,
-                    qset_modifier_args=[], extra_params={}):
+def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
+                 actions=[], filters=(), links=(), search=(), default_order=None,
+                 paginate_by_default=100, paginates_by=[], qset_modifier=None,
+                 qset_modifier_args=[], extra_params={}):
     """
      actions_par_groupe = [
         ('groupeA', [('action_1', 'libellé de l'action 1'),
