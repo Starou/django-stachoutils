@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.template import Library, Context, Template
 from django.utils.safestring import mark_safe
 from django.utils.http import urlencode
-
-from django.template import Library, Context, Template
+from django.utils.translation import ugettext as _
 
 from django_stachoutils import urldecode
 from django_stachoutils.views.generic import ORDER_BY_ATTR, ORDER_TYPE_ATTR
@@ -159,7 +159,7 @@ def current_filters(filters):
     # Selected filter, except 'All'.
     out = [(f[0], [choice[1] for choice in f[1] if choice[2]]) for f in filters]
     return [mark_safe(u'%s: <strong>%s</strong>' % (k, v[0]))
-            for k, v in out if (v and v[0] != u"Tout")]
+            for k, v in out if (v and v[0] != _("All"))]
 
 
 # Générateur des lignes de tableaux d'index génériques.

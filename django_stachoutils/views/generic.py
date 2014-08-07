@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponseRedirect
-from django.template import RequestContext
-from django.shortcuts import render_to_response
 from django.contrib import admin, messages
 from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.utils.http import urlencode, urlunquote
-
+from django.utils.translation import ugettext as _
 from django_stachoutils.options import paginate
 from django_stachoutils.views.actions import regroup_actions
 
@@ -325,7 +325,7 @@ class FilterAll(Filter):
 
     def __init__(self, attr, filter_string, test, current_filters):
         super(FilterAll, self).__init__(None, attr, filter_string, test, current_filters)
-        self.label = u'Tout'
+        self.label = _("All")
         self.value = None
 
     def _get_is_selected(self):
