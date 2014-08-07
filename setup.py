@@ -9,7 +9,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="django-stachoutils",
-    version="0.92.3",
+    version="0.92.4",
     license='BSD Licence',
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',

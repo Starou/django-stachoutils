@@ -128,9 +128,21 @@ def mod(value, arg):
 
 @register.filter
 def progressbar(value):
+    if isinstance(value, tuple):
+        progress = value[0]
+        total = value[1]
+        perc_completed = 0
+        if total > 0:
+            perc_completed = progress / total * 100
+            label = "%s/%s" % (progress, total)
+    else:
+        perc_completed = int(value)
+        label = perc_completed
+
     color = '#009ACD'
-    if int(value) == 100:
+    if perc_completed == 100:
         color = '#BCEE68'
+
     return mark_safe("""
         <div class="meter-wrap">
             <div class="meter-value" style="background-color: %s; width: %s%%;">
@@ -138,7 +150,7 @@ def progressbar(value):
                     %s
                 </div>
             </div>
-        </div>""" % (color, value, value,))
+        </div>""" % (color, perc_completed, label))
 
 
 DOWN_STYLE = 'down'
