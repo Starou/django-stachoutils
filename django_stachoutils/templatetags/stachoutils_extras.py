@@ -177,9 +177,9 @@ def _table_header(columns, get_params, padding=0, sortable=True):
     out = []
     for i, c in enumerate(columns):
         _get_params = get_params.copy()
-        if c.has_key('with'):
+        if 'with' in c:
             out += _table_header(c['columns'], _get_params, i, False)
-        if c.has_key('label'):
+        if 'label' in c:
             style = []
             link = u'%s' % c['label']
             if sortable:
