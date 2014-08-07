@@ -29,7 +29,8 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
                     qset_modifier_args=[], extra_params={}):
     """
      actions_par_groupe = [
-        ('groupeA', [('action_1', 'libellé de l'action 1'), ('action_3', 'libellé de l'action 3')]),
+        ('groupeA', [('action_1', 'libellé de l'action 1'),
+                     ('action_3', 'libellé de l'action 3')]),
         ('groupeB', [('action_2', 'libellé de l'action 2')]),
      ]
     """
@@ -40,11 +41,15 @@ def liste_generique(request, queryset, columns, template, Model, ClassAdmin=None
     actions_par_groupe = []
     if ClassAdmin and actions:
         adm = ClassAdmin(Model, admin.site)
-        admin_actions = adm.get_actions(request)  # {'invalider': (<unbound method ProgrammeAdmin.invalider>, 'invalider', u'Invalider en...'), ...}
+        # {'invalider': (<unbound method ProgrammeAdmin.invalider>,
+        #  'invalider', u'Invalider en...'), ...}
+        admin_actions = adm.get_actions(request)
         for group, actions_in_group in actions:
-            actions_dispos = [(callable(action) and action.func_name or action,
-                              action in admin_actions and admin_actions[action][2] or action.short_description)
-                              for action in actions_in_group if action in admin_actions or callable(action)]
+            actions_dispos = [
+                (callable(action) and action.func_name or action,
+                 action in admin_actions and admin_actions[action][2] or action.short_description)
+                for action in actions_in_group if action in admin_actions or callable(action)
+            ]
             if actions_dispos:
                 actions_par_groupe.append((group, actions_dispos))
 
@@ -172,7 +177,8 @@ def get_filter(model, current_filters, filtr):
         p['attr'] = filtr[0]
         p.update(filtr[1])
 
-    choices, empty_choice, attr, filter_test = p['choices'], p['empty_choice'], p['attr'], p['filter_test']
+    choices, empty_choice = p['choices'], p['empty_choice']
+    attr, filter_test = p['attr'], p['filter_test']
 
     filter_string = attr
     attrs = attr.split('__')
@@ -198,14 +204,21 @@ def get_filter(model, current_filters, filtr):
         )
         F = FilterSimple
 
-    choices = [(lambda f=F(o, attr, filter_string, filter_test, current_filters): (f.url, f.label, f.is_selected))() for o in choices]
-    choices.insert(0, (lambda f=FilterAll(attr, filter_string, filter_test, current_filters): (f.url, f.label, f.is_selected))())
+    choices = [
+        (lambda f=F(o, attr, filter_string, filter_test, current_filters): (
+            f.url, f.label, f.is_selected))()
+        for o in choices
+    ]
+    choices.insert(0, (lambda f=FilterAll(attr, filter_string, filter_test, current_filters): (
+        f.url, f.label, f.is_selected))())
     if empty_choice:
-        choices.append((lambda f=FilterNone(model, attr, filter_string, current_filters): (f.url, f.label, f.is_selected))())
-    return (name, (name in closed_filters), choices)
+        choices.append((lambda f=FilterNone(model, attr, filter_string, current_filters): (
+            f.url, f.label, f.is_selected))())
+    return (name, choices)
 
 
-def get_current_filter(request, declared_filters, model, ignore=['page', 'paginates_by', 'q', ORDER_BY_ATTR, ORDER_TYPE_ATTR]):
+def get_current_filter(request, declared_filters, model,
+                       ignore=['page', 'paginates_by', 'q', ORDER_BY_ATTR, ORDER_TYPE_ATTR]):
     flat_declared_filters = [(hasattr(f, 'encode') and f or f[0]) for f in declared_filters]
     out = {}
     for k, v in request.GET.items():
