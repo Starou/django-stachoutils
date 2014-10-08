@@ -58,6 +58,12 @@ class BaseEmailHandler(logging.Handler):
         mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, self.recipient_list, fail_silently=True)
 
 
+class AdminEmailHandler(BaseEmailHandler):
+    def emit(self, record):
+        self.recipient_list = [email for name, email in settings.ADMINS]
+        BaseEmailHandler.emit(self, record)
+
+
 levelname_to_int = {
     'DEBUG': messages.DEBUG,
     'INFO': messages.INFO,
