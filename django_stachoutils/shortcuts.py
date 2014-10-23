@@ -1,7 +1,6 @@
 import csv
 import decimal
 import datetime
-import json
 import sys
 import zipfile
 
@@ -19,15 +18,14 @@ def macroman_text_response(data, filename=None, encode=True):
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
 
+
 def encode_default(d):
-    if isinstance(d, decimal.Decimal): 
+    if isinstance(d, decimal.Decimal):
         return float(str(d))
-    elif  isinstance(d, datetime.date) or isinstance(d, datetime.datetime):
+    elif isinstance(d, datetime.date) or isinstance(d, datetime.datetime):
         return d.isoformat()
     raise TypeError
 
-def json_response(data):
-    return HttpResponse(json.dumps(data, default=encode_default), content_type='application/json')
 
 def get_object_or_none(klass, *args, **kwargs):
     queryset = _get_queryset(klass)
@@ -36,11 +34,13 @@ def get_object_or_none(klass, *args, **kwargs):
     except queryset.model.DoesNotExist:
         return None
 
+
 def xml_response(data, filename=None):
     response = HttpResponse(data, content_type='application/xml')
     if filename:
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
+
 
 def zip_response(files, filename):
     response = HttpResponse(content_type='application/zip')
@@ -59,13 +59,15 @@ def zip_response(files, filename):
     response.write(ret_zip)
     return response
 
-def csv_response(rows, filename, kwargs={'delimiter' :',', 'quoting': csv.QUOTE_ALL}):
+
+def csv_response(rows, filename, kwargs={'delimiter': ',', 'quoting': csv.QUOTE_ALL}):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
 
     writer = csv_utf8.UnicodeWriter(response, **kwargs)
     writer.writerows(rows)
     return response
+
 
 def createAndAppendElement(document, parentNode, tagName, text=None):
     node = document.createElement(tagName)
