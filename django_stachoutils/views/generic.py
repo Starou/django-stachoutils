@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django import VERSION as DJ_VERSION
 from django.contrib import admin, messages
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -189,7 +190,10 @@ def get_filter(model, current_filters, filtr):
         try:
             mod = mod._meta.get_field(rel_model).rel.to
         except:
-            mod = getattr(mod, '%s_set' % rel_model).related.model
+            if DJ_VERSION >= (1, 8):
+                mod = getattr(mod, '%s_set' % rel_model).related.related_model
+            else:
+                mod = getattr(mod, '%s_set' % rel_model).related.model
 
     field = mod._meta.get_field(attr)
     name = field.verbose_name
