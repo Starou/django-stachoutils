@@ -283,3 +283,33 @@ def get_template_filters(filters):
         else:
             t.append(u'|%s:"%s"' % (f[0], f[1]))
     return u''.join(t)
+
+
+## Inline-extras ##
+
+
+def inline_visible(inlines_visibles, inline_name, current_instance_number):
+    visible = True
+    current_instance_number = str(current_instance_number)
+    if inline_name in inlines_visibles:
+        visible = False
+        visibles = inlines_visibles[inline_name].split(",")
+        if current_instance_number in visibles:
+            visible = True
+    return visible
+
+
+@register.simple_tag
+def inline_display_class(inlines_visibles, inline_name, current_instance_number):
+    out = ""
+    if not inline_visible(inlines_visibles, inline_name, current_instance_number):
+        out = "closed"
+    return mark_safe(out)
+
+
+@register.simple_tag
+def inline_display_style(inlines_visibles, inline_name, current_instance_number):
+    out = ""
+    if not inline_visible(inlines_visibles, inline_name, current_instance_number):
+        out = "display: none;"
+    return mark_safe(out)

@@ -1,0 +1,7 @@
+a.toggle {
+    background: url("../img/filters.png") no-repeat scroll left top transparent;
+    padding-right: 13px;
+}
+.closed a.toggle, a.toggle.closed {
+    background-position: 0 -18px;
+}
