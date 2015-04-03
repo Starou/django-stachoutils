@@ -7,12 +7,15 @@ $(document).ready(function() {
     // replie/déplie des inlines.
     $(".inline-group").on("click", ".toggle", function(){
         var h3 = $(this).parent("h3");
-        var [visibles_input_name, current_index] = $(this).parents(".inline-related").attr("id").split("-");
-        var visibles_input_name = visibles_input_name + "_visible";
+        var name_and_index = $(this).parents(".inline-related").attr("id").split("-");
+        var visibles_input_name = name_and_index[0];
+        var current_index = name_and_index[1];
+        visibles_input_name = visibles_input_name + "_visible";
         var visibles_input = $("input[name='" + visibles_input_name + "']");
         var visibles_input_values = visibles_input.val().split(",");
         var array_index_of_current = visibles_input_values.indexOf(current_index);
         h3.toggleClass("closed");
+
 
         // Update valeur champ caché.
         if (h3.hasClass("closed")) {
