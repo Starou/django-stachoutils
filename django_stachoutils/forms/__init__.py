@@ -46,7 +46,8 @@ class NestedModelForm(forms.ModelForm):
 
     def _init_nested_form(self, instance, initial):
         prefix = '%s_%s' % (self.prefix, self._nested.fk.upper())
-        self.nested_form = self._nested.Form(self.data or None, self.files or None, prefix=prefix, initial=initial, instance=instance)
+        self.nested_form = self._nested.Form(self.data or None, self.files or None,
+                                             prefix=prefix, initial=initial, instance=instance)
         self.forms.append(self.nested_form)
 
     def _get_errors(self):
@@ -111,9 +112,10 @@ class ModelForm(forms.ModelForm):
     """
     Add to ModelForm the ability to declare inline formsets.
 
-    It save you from the boiler-plate implementation of cross validation/saving of such forms in the views.
-    You should use It in the admin's forms if you need the inherit them in your apps because there is not
-    multi-inherance.
+    It save you from the boiler-plate implementation of cross validation/saving of such forms
+    in the views.
+    You should use It in the admin's forms if you need the inherit them in your apps because
+    there is not multi-inherance.
 
     >>> from myapp import models
     >>> class Program(models.Model):
@@ -171,9 +173,12 @@ class ModelForm(forms.ModelForm):
         super(ModelForm, self).__init__(*args, **kwargs)
         if hasattr(self._forms, 'inlines'):
             self.inlineformsets = {}
+            fset_initial = kwargs.get('initial', {}).get("_INLINES", {})
             for key, FormSet in self._forms.inlines.items():
+                initial = fset_initial.get(key, {})
                 self.inlineformsets[key] = FormSet(self.data or None, self.files or None,
-                                                   prefix=self._get_formset_prefix(key), instance=self.instance)
+                                                   prefix=self._get_formset_prefix(key),
+                                                   initial=initial, instance=self.instance)
 
     def save(self, *args, **kwargs):
         instance = super(ModelForm, self).save(*args, **kwargs)
