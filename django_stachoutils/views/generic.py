@@ -110,12 +110,13 @@ def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
     if request.method == 'POST':
         action = request.POST.get('action')
         selected = request.POST.getlist('_selected_action')
+        url_from = request.path + "?%s" % request.GET.urlencode()
         if not action:
             messages.add_message(request, messages.WARNING, "Veuillez sélectionner une action")
         if not selected:
             messages.add_message(request, messages.WARNING, "Veuillez sélectionner un ou plusieurs élements")
         if not action or not selected:
-            return HttpResponseRedirect(request.path + "?%s" % request.GET.urlencode())
+            return HttpResponseRedirect(url_from)
 
         # l'action est un callable.
         for group, actions_in_group in actions:
@@ -130,7 +131,7 @@ def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
                     if response:
                         return response
                     else:
-                        return HttpResponseRedirect("")
+                        return HttpResponseRedirect(url_from)
 
     c = {
         'object_list': page.object_list,
