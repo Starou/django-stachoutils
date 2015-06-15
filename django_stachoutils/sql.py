@@ -125,3 +125,17 @@ else:
                 expression,
                 output_field=IntegerField(),
                 **extra)
+
+
+    class CountCase2(Aggregate):
+        function = 'Count'
+        template = "%(function)s(CASE WHEN %(when)s THEN 1 ELSE null END)"
+
+        def __init__(self, expression, **extra):
+            if isinstance(extra['when'], basestring):
+                quote = extra.get('quote', "'")
+                extra['when'] = "(%s%s%s)" % (quote, extra['when'], quote)
+            super(CountCase2, self).__init__(
+                expression,
+                output_field=IntegerField(),
+                **extra)
