@@ -184,6 +184,8 @@ class ModelForm(forms.ModelForm):
         instance = super(ModelForm, self).save(*args, **kwargs)
         if hasattr(self._forms, 'inlines'):
             for fset in self.inlineformsets.values():
+                if not fset.has_changed():
+                    continue
                 fset.save()
         return instance
 
@@ -207,6 +209,8 @@ class ModelForm(forms.ModelForm):
         for key, fset in self.inlineformsets.items():
             for i in range(0, fset.total_form_count()):
                 f = fset.forms[i]
+                if not f.has_changed():
+                    continue
                 if f.errors:
                     self._errors['_%s_%d' % (fset.prefix, i)] = f.non_field_errors  # Pourquoi non_field_errors ?
 
