@@ -3,6 +3,8 @@
 from django import VERSION as DJ_VERSION
 from django.contrib import admin, messages
 from django.db.models import Q
+from django.db.models.query import QuerySet
+from django.db.models.fields import BooleanField
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -13,6 +15,8 @@ from django_stachoutils.views.actions import regroup_actions
 
 ORDER_BY_ATTR = 'o'
 ORDER_TYPE_ATTR = 'ot'
+
+FILTER_IGNORE_DEFAULT = ['page', 'paginates_by', 'q', ORDER_BY_ATTR, ORDER_TYPE_ATTR]
 
 
 def generic_change_response(request, url_continue, url_add_another, url_default):
@@ -94,12 +98,10 @@ def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
         ordering = default_order
     if ordering:
         queryset = queryset.order_by(*ordering)
-    # Apply filters.
-    current_filters = get_current_filter(request, filters, Model)
-    queryset = queryset.filter(**filters_for_queryset(current_filters)).distinct()
-    if qset_modifier:
-        queryset = qset_modifier(queryset, *qset_modifier_args)
 
+    # Apply filters.
+    current_filters = get_current_filters(request, filters, Model)
+    queryset = filter_queryset(queryset, filters, current_filters, qset_modifier, qset_modifier_args)
     count_across = queryset.count()
     page = paginate(request, queryset, paginate_by_default)
 
@@ -167,77 +169,139 @@ def has_column_perm(user, column):
     return True
 
 
-def get_filter(model, current_filters, filtr):
-    p = {
+def filter_queryset(queryset, filters, current_filters, modifier, modifier_args):
+    filter_attrs = {}
+    filters_as_dict = dict([(f[0], f[1] if len(f) == 2 else {}) for f in filters])
+    for key, value in current_filters.items():
+        root_key = key.replace('__exact', '')
+        filter_params = filters_as_dict.get(root_key)
+        # filter can provide its own custom queryset filtering
+        # or just be a parameter to the main filtering call.
+        try:
+            queryset = filter_params['queryset'](queryset, value)
+        except KeyError:
+            filter_attrs[key] = value
+
+    queryset = queryset.filter(**filters_for_queryset(filter_attrs)).distinct()
+    if modifier:
+        queryset = modifier(queryset, *modifier_args)
+    return queryset
+
+
+def filters_for_queryset(current_filters):
+    qset_filter_params = current_filters.copy()
+    for k, v in current_filters.items():
+        if k[-4:] == '__in':
+            qset_filter_params[str(k)] = v.split(',')
+    return qset_filter_params
+
+
+def get_filter(model, current_filters, filter_params):
+    """
+    o filter_params may be a 1 elt or a 2 elts tuple
+
+    Return a tuple:
+
+    "filter title",
+    [
+        (label, url, is_selected),  # filter value #1
+        (label, url, is_selected),  # filter value #2
+        ...
+    ]
+    """
+
+    params = {
+        'filter_key':  filter_params[0],
+        'title': None,
+        'queryset': None,
         'choices': None,
         'empty_choice': False,
-        'attr':  filtr,
         'filter_test':  'exact',
     }
+    try:
+        params.update(filter_params[1])
+    except IndexError:
+        pass
 
-    if filtr.__class__.__name__ == 'tuple':
-        p['attr'] = filtr[0]
-        p.update(filtr[1])
+    choices, empty_choice = params['choices'], params['empty_choice']
+    filter_key, filter_test = params['filter_key'], params['filter_test']
+    title = params['title']
 
-    choices, empty_choice = p['choices'], p['empty_choice']
-    attr, filter_test = p['attr'], p['filter_test']
+    field, attrib = None, None
 
-    filter_string = attr
-    attrs = attr.split('__')
-    rel_models = attrs[:-1]
-    attr = attrs[-1]
-    mod = model
-    for rel_model in rel_models:
-        try:
-            mod = mod._meta.get_field(rel_model).rel.to
-        except:
-            if DJ_VERSION >= (1, 8):
-                mod = getattr(mod, '%s_set' % rel_model).related.related_model
-            else:
-                mod = getattr(mod, '%s_set' % rel_model).related.model
+    def discover_field(model, filter_key):
+        attrs = filter_key.split('__')
+        rel_models = attrs[:-1]
+        attr = attrs[-1]
+        mod = model
+        for rel_model in rel_models:
+            try:
+                mod = mod._meta.get_field(rel_model).rel.to
+            except:
+                if DJ_VERSION >= (1, 8):
+                    mod = getattr(mod, '%s_set' % rel_model).related.related_model
+                else:
+                    mod = getattr(mod, '%s_set' % rel_model).related.model
 
-    field = mod._meta.get_field(attr)
-    name = field.verbose_name
+        field = mod._meta.get_field(attr)
 
-    if getattr(field, 'rel'):
-        choices = choices or field.rel.to.objects.all()
-        F = Filter
-    elif field.__class__.__name__ == 'BooleanField':
-        choices = (
-            {'label': 'Oui', 'value': '1'},
-            {'label': 'Non', 'value': '0'},
-        )
-        F = FilterSimple
+        return field, attr
 
-    choices = [
-        (lambda f=F(o, attr, filter_string, filter_test, current_filters): (
-            f.url, f.label, f.is_selected))()
-        for o in choices
-    ]
-    choices.insert(0, (lambda f=FilterAll(attr, filter_string, filter_test, current_filters): (
-        f.url, f.label, f.is_selected))())
-    if empty_choice:
-        choices.append((lambda f=FilterNone(model, attr, filter_string, current_filters): (
+    if not title:
+        field, attrib = discover_field(model, filter_key)
+        title = field.verbose_name
+
+    if choices:
+        FilterKlass = FilterSimple
+        if type(choices) == QuerySet:
+            FilterKlass = Filter
+    else:
+        if not field:
+            field, attrib = discover_field(model, filter_key)
+        if type(field) == BooleanField:
+            FilterKlass = FilterSimple
+            choices = [
+                ('1', 'Oui'),
+                ('2', 'Non'),
+            ]
+        else:
+            FilterKlass = Filter
+            choices = field.rel.to.objects.all()
+
+    def get_displayed_choices(FilterKlass, choices, current_filters, filter_test, filter_key, model, attrib):
+        displayed_choices = [
+            (lambda f=FilterKlass(o, attrib, filter_key, filter_test, current_filters): (
+                f.url, f.label, f.is_selected))()
+            for o in choices
+        ]
+        displayed_choices.insert(0, (lambda f=FilterAll(attrib, filter_key, filter_test, current_filters): (
             f.url, f.label, f.is_selected))())
-    return (name, choices)
+        if empty_choice:
+            displayed_choices.append((lambda f=FilterNone(model, attrib, filter_key, current_filters): (
+                f.url, f.label, f.is_selected))())
+
+        return displayed_choices
+
+    displayed_choices = get_displayed_choices(FilterKlass, choices, current_filters,
+                                              filter_test, filter_key, model, attrib)
 
 
-def get_current_filter(request, declared_filters, model,
-                       ignore=['page', 'paginates_by', 'q', ORDER_BY_ATTR, ORDER_TYPE_ATTR]):
-    flat_declared_filters = [(hasattr(f, 'encode') and f or f[0]) for f in declared_filters]
-    out = {}
+    return title, displayed_choices
+
+
+def get_current_filters(request, filters, model, ignore=FILTER_IGNORE_DEFAULT):
+    """ Return {'key': 'value', ...} """
+
+    filters_keys = [f[0] for f in filters]
+
+    current_filters = {}
     for k, v in request.GET.items():
-        if k.replace('__exact', '') in flat_declared_filters or is_a_filter(model, k):
-            out[str(k)] = str(urlunquote(v))
-    return out
+        if k.replace('__exact', '') in filters_keys or is_a_filter(model, k):
+            current_filters[str(k)] = str(urlunquote(v))
+    return current_filters
 
 
-def filters_for_queryset(filters):
-    out = filters.copy()
-    for k, v in filters.items():
-        if k[-4:] == '__in':
-            out[str(k)] = v.split(',')
-    return out
+##
 
 LOOKUPS = [
     'exact',
@@ -321,8 +385,8 @@ class Filter(object):
 class FilterSimple(Filter):
     def __init__(self, choice, attr, filter_string, test, current_filters):
         super(FilterSimple, self).__init__(None, attr, filter_string, test, current_filters)
-        self.label = choice['label']
-        self.value = choice['value']
+        self.label = choice[1]
+        self.value = str(choice[0])
 
 
 class FilterAll(Filter):
