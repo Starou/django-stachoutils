@@ -15,14 +15,15 @@ NESTED_NON_FIELD_ERRORS = '__nested__'
 class NestedModelFormOptions(object):
     def __init__(self, options=None):
         self.Form = getattr(options, 'form', None)  # Class.
-        self.fk = getattr(options, 'fk', None)  # fk name.
+        self.fk = getattr(options, 'fk', None)      # fk name.
 
 
 class NestedModelFormMetaclass(ModelFormMetaclass):
     """ Ajoute les attributs self._nested.Form et self._nested.fk"""
     def __new__(cls, name, bases, attrs):
         new_class = super(NestedModelFormMetaclass, cls).__new__(cls, name, bases, attrs)
-        new_class._nested = NestedModelFormOptions(getattr(new_class, 'Nested', None))  # Declarez une class Nested.
+        # Declarez une class Nested.
+        new_class._nested = NestedModelFormOptions(getattr(new_class, 'Nested', None))
         return new_class
 
 
@@ -37,8 +38,10 @@ class NestedModelForm(forms.ModelForm):
         if ('initial' in kwargs) and ('NESTED' in kwargs['initial']):
             nested_initial = kwargs['initial'].pop('NESTED')
         super(NestedModelForm, self).__init__(*args, **kwargs)
-        nested_id = self.initial.get(self._nested.fk, None)  # self.initial est un merge du paramètre 'initial' et des  attrs de l'instance.
-        if '%s-%s' % (self.prefix, self._nested.fk) in self.data:  # Le post écrase initial si présent.
+        # self.initial est un merge du paramètre 'initial' et des attrs de l'instance.
+        nested_id = self.initial.get(self._nested.fk, None)
+        # POST écrase initial si présent.
+        if '%s-%s' % (self.prefix, self._nested.fk) in self.data:
             nested_id = self.data['%s-%s' % (self.prefix, self._nested.fk)]
         if nested_id:
             nested_instance = get_object_or_404(self._nested.Form.Meta.model, pk=nested_id)
