@@ -160,16 +160,24 @@ def set_columns_labels(model, columns):
 
 def get_ordering_params(request, model, columns, default_order):
     order_by, ordering = request.GET.get(ORDER_BY_ATTR, None), None
+
     if order_by:
         column = columns[int(order_by)]
-        attr = getattr(model, column['field'])
 
         if 'ordering' in column:
             order_fields = column.get('ordering')
-        elif hasattr(attr, 'ordering'):
-            order_fields = attr.ordering
         else:
-            order_fields = [column.get('field')]
+            attr_name = column['field']
+            try:
+                attr = getattr(model, attr_name)
+            # Some fields are not reachable but we don't care,
+            # we are looking for a method here.
+            except AttributeError:
+                attr = None
+            if hasattr(attr, 'ordering'):
+                order_fields = attr.ordering
+            else:
+                order_fields = [attr_name]
 
         order_type = ''
         if request.GET[ORDER_TYPE_ATTR] == 'desc':
