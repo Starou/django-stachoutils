@@ -2,6 +2,7 @@
 
 from django import VERSION as DJ_VERSION
 from django.contrib import admin, messages
+from django.contrib.admin.utils import label_for_field
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.db.models.fields import BooleanField
@@ -28,7 +29,7 @@ def generic_change_response(request, url_continue, url_add_another, url_default)
         return HttpResponseRedirect(url_default)
 
 
-def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
+def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
                  actions=[], filters=(), links=(), search=(), default_order=None,
                  paginate_by_default=100, paginates_by=[], qset_modifier=None,
                  qset_modifier_args=[], extra_params={}):
@@ -39,13 +40,14 @@ def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
         ('groupeB', [('action_2', 'libellé de l'action 2')]),
      ]
     """
-    list_id = Model._meta.verbose_name
+    list_id = model._meta.verbose_name
+    set_columns_labels(model, columns)
 
     # Actions.
     actions = regroup_actions(actions)
     actions_par_groupe = []
     if ClassAdmin and actions:
-        adm = ClassAdmin(Model, admin.site)
+        adm = ClassAdmin(model, admin.site)
         # {'invalider': (<unbound method ProgrammeAdmin.invalider>,
         #  'invalider', u'Invalider en...'), ...}
         admin_actions = adm.get_actions(request)
@@ -86,27 +88,19 @@ def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
         queryset = queryset.filter(f)
 
     # Queryset.
-    order_by, ordering = request.GET.get(ORDER_BY_ATTR, None), None
-    if order_by:
-        column = columns[int(order_by)]
-        order_fields = column.get('order_fields', (column.get('field'), ))
-        order_type = ''
-        if request.GET[ORDER_TYPE_ATTR] == 'desc':
-            order_type = '-'
-        ordering = ['%s%s' % (order_type, order_field) for order_field in order_fields]
-    elif default_order:
-        ordering = default_order
+    ordering = get_ordering_params(request, model, columns, default_order)
     if ordering:
         queryset = queryset.order_by(*ordering)
 
     # Apply filters.
-    current_filters = get_current_filters(request, filters, Model)
-    queryset = filter_queryset(queryset, filters, current_filters, qset_modifier, qset_modifier_args)
+    current_filters = get_current_filters(request, filters, model)
+    queryset = filter_queryset(queryset, filters, current_filters, qset_modifier,
+                               qset_modifier_args)
     count_across = queryset.count()
     page = paginate(request, queryset, paginate_by_default)
 
     # Filters.
-    filters = [get_filter(Model, current_filters, f) for f in filters]
+    filters = [get_filter(model, current_filters, f) for f in filters]
 
     # Exec action.
     if request.method == 'POST':
@@ -116,7 +110,8 @@ def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
         if not action:
             messages.add_message(request, messages.WARNING, "Veuillez sélectionner une action")
         if not selected:
-            messages.add_message(request, messages.WARNING, "Veuillez sélectionner un ou plusieurs élements")
+            messages.add_message(request, messages.WARNING,
+                                 "Veuillez sélectionner un ou plusieurs élements")
         if not action or not selected:
             return HttpResponseRedirect(url_from)
 
@@ -153,6 +148,39 @@ def generic_list(request, queryset, columns, template, Model, ClassAdmin=None,
     }
     c.update(extra_params)
     return render_to_response(template, c, context_instance=RequestContext(request))
+
+
+def set_columns_labels(model, columns):
+    for col in columns:
+        if 'columns' in col:
+            set_columns_labels(model, col['columns'])
+        elif 'label' not in col:
+            col['label'] = label_for_field(col['field'], model)
+
+
+def get_ordering_params(request, model, columns, default_order):
+    order_by, ordering = request.GET.get(ORDER_BY_ATTR, None), None
+    if order_by:
+        column = columns[int(order_by)]
+        attr = getattr(model, column['field'])
+
+        if 'ordering' in column:
+            order_fields = column.get('ordering')
+        elif hasattr(attr, 'ordering'):
+            order_fields = attr.ordering
+        else:
+            order_fields = [column.get('field')]
+
+        order_type = ''
+        if request.GET[ORDER_TYPE_ATTR] == 'desc':
+            order_type = '-'
+
+        ordering = ['%s%s' % (order_type, order_field) for order_field in order_fields]
+
+    elif default_order:
+        ordering = default_order
+
+    return ordering
 
 
 def has_column_perm(user, column):
@@ -268,7 +296,8 @@ def get_filter(model, current_filters, filter_params):
             FilterKlass = Filter
             choices = field.rel.to.objects.all()
 
-    def get_displayed_choices(FilterKlass, choices, current_filters, filter_test, filter_key, model, attrib):
+    def get_displayed_choices(FilterKlass, choices, current_filters, filter_test,
+                              filter_key, model, attrib):
         displayed_choices = [
             (lambda f=FilterKlass(o, attrib, filter_key, filter_test, current_filters): (
                 f.url, f.label, f.is_selected))()
