@@ -33,7 +33,8 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
                 if not port:
                     port = smtplib.SMTP_PORT
                 smtp = smtplib.SMTP(self.mailhost, port)
-                msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (self.fromaddr, string.join(self.toaddrs, ","), self.subject)
+                msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (
+                    self.fromaddr, string.join(self.toaddrs, ","), self.subject)
                 for record in self.buffer:
                     s = self.format(record)
                     print s
@@ -41,7 +42,8 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
                 smtp.sendmail(self.fromaddr, self.toaddrs, msg)
                 smtp.quit()
             except:
-                self.handleError(None)  # no particular record
+                for record in self.buffer:
+                    self.handleError(record)
             self.buffer = []
 
 
