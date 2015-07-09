@@ -215,7 +215,7 @@ def filter_queryset(queryset, filters, current_filters, modifier, modifier_args)
         # or just be a parameter to the main filtering call.
         try:
             queryset = filter_params['queryset'](queryset, value)
-        except KeyError:
+        except (KeyError, TypeError):
             filter_attrs[key] = value
 
     queryset = queryset.filter(**filters_for_queryset(filter_attrs)).distinct()
