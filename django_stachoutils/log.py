@@ -8,6 +8,14 @@ from django.conf import settings
 from django.contrib import messages
 
 
+levelname_to_int = {
+    'DEBUG': messages.DEBUG,
+    'INFO': messages.INFO,
+    'WARNING': messages.WARNING,
+    'ERROR': messages.ERROR,
+}
+
+
 # Python < 2.7.
 class NullHandler(logging.Handler):
     def emit(self, record):
@@ -57,7 +65,8 @@ class BaseEmailHandler(logging.Handler):
     def emit(self, record):
         subject = u'%s[%s] : %s' % (settings.EMAIL_SUBJECT_PREFIX, record.levelname, self.subject)
         message = record.msg
-        mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, self.recipient_list, fail_silently=True)
+        mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, self.recipient_list,
+                       fail_silently=True)
 
 
 class AdminEmailHandler(BaseEmailHandler):
@@ -66,12 +75,22 @@ class AdminEmailHandler(BaseEmailHandler):
         BaseEmailHandler.emit(self, record)
 
 
-levelname_to_int = {
-    'DEBUG': messages.DEBUG,
-    'INFO': messages.INFO,
-    'WARNING': messages.WARNING,
-    'ERROR': messages.ERROR,
-}
+class BufferingAdminEmailHandler(BufferingSMTPHandler):
+    def __init__(self, subject="", capacity=1000):
+        BufferingSMTPHandler.__init__(self, settings.EMAIL_HOST, settings.SERVER_EMAIL,
+                                      [email for name, email in settings.ADMINS],
+                                      subject, capacity)
+
+    def flush(self):
+        if len(self.buffer) > 0:
+            msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (
+                self.fromaddr,
+                string.join(self.toaddrs, ","),
+                self.subject)
+            body = "\r\n".join([self.format(r) for r in self.buffer])
+            email = EmailMessage(self.subject, msg + body, self.fromaddr, self.toaddrs)
+            email.send()
+            self.buffer = []
 
 
 class MessagelHandler(logging.Handler):
