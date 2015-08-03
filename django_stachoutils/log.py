@@ -88,7 +88,7 @@ class BufferingAdminEmailHandler(BufferingSMTPHandler):
                 string.join(self.toaddrs, ","),
                 self.subject)
             body = "\r\n".join([self.format(r) for r in self.buffer])
-            email = EmailMessage(self.subject, msg + body, self.fromaddr, self.toaddrs)
+            email = mail.EmailMessage(self.subject, msg + body, self.fromaddr, self.toaddrs)
             email.send()
             self.buffer = []
 
