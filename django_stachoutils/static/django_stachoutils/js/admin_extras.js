@@ -4,7 +4,11 @@ function not_empty(val) {
 
 
 $(document).ready(function() {
-    // replie/déplie des inlines.
+    /* fold/unfold inlines.
+     * You need to add an hidden input in the change_form.html like:
+     * <input type="hidden" name="myrelation_set_visible" value="0" />
+     * where `myrelation_set' is the inline prefix in the html page.
+     */
     $(".inline-group").on("click", ".toggle", function(){
         var h3 = $(this).parent("h3");
         var name_and_index = $(this).parents(".inline-related").attr("id").split("-");
