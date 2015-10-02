@@ -60,6 +60,34 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
             if actions_dispos:
                 actions_par_groupe.append((group, actions_dispos))
 
+    # Exec action.
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        selected = request.POST.getlist('_selected_action')
+        url_from = request.path + "?%s" % request.GET.urlencode()
+        if not action:
+            messages.add_message(request, messages.WARNING, "Veuillez sélectionner une action")
+        if not selected:
+            messages.add_message(request, messages.WARNING,
+                                 "Veuillez sélectionner un ou plusieurs élements")
+        if not action or not selected:
+            return HttpResponseRedirect(url_from)
+
+        # l'action est un callable.
+        for group, actions_in_group in actions:
+            for act in actions_in_group:
+                if callable(act) and act.func_name == action:
+                    # On filtre les objets selectionnés si le queryset est un vrai queryset.
+                    if not int(request.POST.get('select_across', 0)) and hasattr(queryset, 'filter'):
+                        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+                        queryset = queryset.filter(pk__in=selected)
+                    response = act(None, request, queryset)
+                    # response is actually a ResponseLike instance: TODO
+                    if response:
+                        return response
+                    else:
+                        return HttpResponseRedirect(url_from)
+
     # Si le queryset est une liste, on skip pas mal de choses.
     if not hasattr(queryset, 'filter'):
         c = {
@@ -101,34 +129,6 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
 
     # Filters.
     filters = [get_filter(model, current_filters, f) for f in filters]
-
-    # Exec action.
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        selected = request.POST.getlist('_selected_action')
-        url_from = request.path + "?%s" % request.GET.urlencode()
-        if not action:
-            messages.add_message(request, messages.WARNING, "Veuillez sélectionner une action")
-        if not selected:
-            messages.add_message(request, messages.WARNING,
-                                 "Veuillez sélectionner un ou plusieurs élements")
-        if not action or not selected:
-            return HttpResponseRedirect(url_from)
-
-        # l'action est un callable.
-        for group, actions_in_group in actions:
-            for act in actions_in_group:
-                if callable(act) and act.func_name == action:
-                    # On filtre les objets selectionnés si le queryset est un vrai queryset.
-                    if not int(request.POST.get('select_across', 0)) and hasattr(queryset, 'filter'):
-                        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-                        queryset = queryset.filter(pk__in=selected)
-                    response = act(None, request, queryset)
-                    # response is actually a ResponseLike instance: TODO
-                    if response:
-                        return response
-                    else:
-                        return HttpResponseRedirect(url_from)
 
     c = {
         'object_list': page.object_list,
