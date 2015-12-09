@@ -222,7 +222,7 @@ class ModelForm(forms.ModelForm):
         return self._html_output(
             normal_row=u'<td%(html_class_attr)s>%(field)s</td>',
             error_row=u'%s',
-            row_ender='',
+            row_ender='<span class="row_end"></span>',
             help_text_html=u'',
             errors_on_separate_row=True
         )
