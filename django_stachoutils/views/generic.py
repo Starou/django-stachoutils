@@ -247,12 +247,12 @@ def get_filter(model, current_filters, filter_params):
     """
 
     params = {
-        'filter_key':  filter_params[0],
+        'filter_key': filter_params[0],
         'title': None,
         'queryset': None,
         'choices': None,
         'empty_choice': False,
-        'filter_test':  'exact',
+        'filter_test': 'exact',
     }
     try:
         params.update(filter_params[1])
@@ -298,7 +298,7 @@ def get_filter(model, current_filters, filter_params):
             FilterKlass = FilterSimple
             choices = [
                 ('1', 'Oui'),
-                ('2', 'Non'),
+                ('0', 'Non'),
             ]
         else:
             FilterKlass = Filter
@@ -321,7 +321,6 @@ def get_filter(model, current_filters, filter_params):
 
     displayed_choices = get_displayed_choices(FilterKlass, choices, current_filters,
                                               filter_test, filter_key, model, attrib)
-
 
     return title, displayed_choices
 
