@@ -7,8 +7,13 @@ from django.conf import settings
 from django.forms.models import ModelFormMetaclass
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
+from django.utils.http import quote
 from django.utils.safestring import mark_safe
 
+if "django_thumbor" in settings.INSTALLED_APPS:
+    from django_thumbor import generate_url
+else:
+    from django.template import Context, Template
 
 NESTED_NON_FIELD_ERRORS = '__nested__'
 
@@ -228,7 +233,6 @@ class ModelForm(forms.ModelForm):
             errors_on_separate_row=True
         )
 
-
     def labels_as_tr(self):
         out = []
         for name in self.fields.keys():
@@ -282,25 +286,32 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
     def _get_thumbnail(self, rel_obj):
         image_field = getattr(rel_obj, self.related_fieldname)
         if "django_thumbor" in settings.INSTALLED_APPS:
-            from django_thumbor import generate_url
-            thumbor_server = settings.THUMBOR_SERVER_EXTERNAL
-            url = image_field.url
-            storage = image_field.storage
-            if hasattr(storage, "key"):
-                try:
-                    url = storage.key(image_field.name)
-                # Cas du ThumborMigrationStorage avec image non-migrée sur Thumbor.
-                except NotImplementedError:
-                    pass
-                else:
-                    thumbor_server = settings.THUMBOR_SERVER
-            return mark_safe('<img src="%s" width="120">' % generate_url(url, thumbor_server=thumbor_server, width=120))
+            return get_thumbor_thumbnail_tag(image_field)
         else:
-            from django.template import Context, Template
             t = Template('{% load thumbnail %}{% thumbnail img_field "120" as im %}<img src="{{ im.url }}"'
                          'width="{{ im.width }}" height="{{ im.height }}">{% endthumbnail %}')
             d = {"img_field": image_field}
             return mark_safe(t.render(Context(d)))
+
+
+def get_thumbor_thumbnail_tag(image, width=120):
+    return mark_safe('<img src="%s" width="%d">' % (
+        get_thumbor_thumbnail_url(image, width=width),
+        width))
+
+
+def get_thumbor_thumbnail_url(image, **kwargs):
+    storage = image.storage
+    thumbor_server = settings.THUMBOR_SERVER_EXTERNAL
+    url = quote(image.url)
+    if hasattr(storage, "key"):
+        try:
+            url = storage.key(image.name)
+        except NotImplementedError:
+            pass
+        else:
+            thumbor_server = settings.THUMBOR_SERVER
+    return generate_url(url, thumbor_server=thumbor_server, **kwargs)
 
 
 class ImageModelChoiceField(forms.ModelChoiceField):
