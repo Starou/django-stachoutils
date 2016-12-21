@@ -216,12 +216,14 @@ class ModelForm(forms.ModelForm):
     def _clean_form(self):
         super(ModelForm, self)._clean_form()
         for key, fset in self.inlineformsets.items():
+            if any(fset.errors):
+                self._errors['_%s' % fset.prefix] = fset.non_form_errors()
             for i in range(0, fset.total_form_count()):
                 f = fset.forms[i]
                 if not f.has_changed():
                     continue
                 if f.errors:
-                    self._errors['_%s_%d' % (fset.prefix, i)] = f.non_field_errors  # Pourquoi non_field_errors ?
+                    self._errors['_%s_%d' % (fset.prefix, i)] = f.non_field_errors()
 
     # This should be in forms.Form.
     def as_tr(self):
