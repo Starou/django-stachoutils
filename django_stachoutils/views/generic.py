@@ -274,7 +274,9 @@ def get_filter(model, current_filters, filter_params):
             try:
                 mod = mod._meta.get_field(rel_model).rel.to
             except:
-                if DJ_VERSION >= (1, 8):
+                if DJ_VERSION >= (1, 9):
+                    mod = getattr(mod, '%s_set' % rel_model).rel.related_model
+                elif DJ_VERSION >= (1, 8):
                     mod = getattr(mod, '%s_set' % rel_model).related.related_model
                 else:
                     mod = getattr(mod, '%s_set' % rel_model).related.model
