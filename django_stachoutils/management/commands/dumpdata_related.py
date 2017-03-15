@@ -1,5 +1,3 @@
-import warnings
-
 from collections import OrderedDict
 from optparse import make_option
 
@@ -7,7 +5,6 @@ from django.apps import apps
 from django.core.management.base import BaseCommand, CommandError
 from django.core import serializers
 from django.db import router, DEFAULT_DB_ALIAS
-from django.utils.deprecation import RemovedInDjango19Warning
 
 
 class Command(BaseCommand):
@@ -22,8 +19,6 @@ class Command(BaseCommand):
                  'Defaults to the "default" database.'),
         make_option('-e', '--exclude', dest='exclude', action='append', default=[],
             help='An appname or appname.ModelName to exclude (use multiple --exclude to exclude multiple apps/models).'),
-        make_option('-n', '--natural', action='store_true', dest='use_natural_keys', default=False,
-            help='Use natural keys if they are available (deprecated: use --natural-foreign instead).'),
         make_option('--natural-foreign', action='store_true', dest='use_natural_foreign_keys', default=False,
             help='Use natural foreign keys if they are available.'),
         make_option('--natural-primary', action='store_true', dest='use_natural_primary_keys', default=False,
@@ -52,11 +47,7 @@ class Command(BaseCommand):
         excludes = options.get('exclude')
         output = options.get('output')
         show_traceback = options.get('traceback')
-        use_natural_keys = options.get('use_natural_keys')
-        if use_natural_keys:
-            warnings.warn("``--natural`` is deprecated; use ``--natural-foreign`` instead.",
-                RemovedInDjango19Warning)
-        use_natural_foreign_keys = options.get('use_natural_foreign_keys') or use_natural_keys
+        use_natural_foreign_keys = options.get('use_natural_foreign_keys')
         use_natural_primary_keys = options.get('use_natural_primary_keys')
         use_base_manager = options.get('use_base_manager')
         pks = options.get('primary_keys')
