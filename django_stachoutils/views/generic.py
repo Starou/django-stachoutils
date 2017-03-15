@@ -7,8 +7,7 @@ from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.db.models.fields import BooleanField
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.utils.http import urlencode, urlunquote
 from django.utils.translation import ugettext as _
 from django_stachoutils.options import paginate
@@ -101,7 +100,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
             'list_id': list_id,
         }
         c.update(extra_params)
-        return render_to_response(template, c, context_instance=RequestContext(request))
+        return render(request, template, c)
 
     # Filter columns according to the user permissions.
     columns = [col for col in columns if has_column_perm(request.user, col)]
@@ -147,7 +146,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         'count_across': count_across,
     }
     c.update(extra_params)
-    return render_to_response(template, c, context_instance=RequestContext(request))
+    return render(request, template, c)
 
 
 def set_columns_labels(model, columns):
