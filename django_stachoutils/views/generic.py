@@ -7,8 +7,7 @@ from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.db.models.fields import BooleanField
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.utils.http import urlencode, urlunquote
 from django.utils.translation import ugettext as _
 from django_stachoutils.options import paginate
@@ -101,7 +100,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
             'list_id': list_id,
         }
         c.update(extra_params)
-        return render_to_response(template, c, context_instance=RequestContext(request))
+        return render(request, template, c)
 
     # Filter columns according to the user permissions.
     columns = [col for col in columns if has_column_perm(request.user, col)]
@@ -147,7 +146,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         'count_across': count_across,
     }
     c.update(extra_params)
-    return render_to_response(template, c, context_instance=RequestContext(request))
+    return render(request, template, c)
 
 
 def set_columns_labels(model, columns):
@@ -272,6 +271,8 @@ def get_filter(model, current_filters, filter_params):
         mod = model
         for rel_model in rel_models:
             try:
+                # As of Django 1.9, Field.rel has been replaced with remote_field.
+                # This may not works (not encountered yet).
                 mod = mod._meta.get_field(rel_model).rel.to
             except:
                 if DJ_VERSION >= (1, 9):

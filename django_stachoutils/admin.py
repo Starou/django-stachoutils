@@ -7,8 +7,7 @@ from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 
 
 class DumpdataForm(forms.Form):
@@ -48,7 +47,6 @@ class ModelAdmin(admin.ModelAdmin):
         elif request.method == "POST":
             form = DumpdataForm(request.POST)
             if form.is_valid():
-                json = {}
                 fmt = form.cleaned_data['dump_format']
                 indent = form.cleaned_data['indent_level']
                 use_natural_keys = form.cleaned_data['use_natural_keys']
@@ -68,11 +66,11 @@ class ModelAdmin(admin.ModelAdmin):
                 stream = serializers.serialize(fmt, objects, indent=indent,
                                                use_natural_keys=use_natural_keys)
                 return HttpResponse(stream, content_type='application/json')
-        return render_to_response('django_stachoutils/admin/dumpdata_form.html', {
+        return render(request, 'django_stachoutils/admin/dumpdata_form.html', {
             'title': "Dump data",
             'is_popup': request.REQUEST.has_key('_popup'),
             'form': form,
-        }, context_instance=RequestContext(request))
+        })
     dumpdata.short_description = u'Dump the selected objects'
 
 

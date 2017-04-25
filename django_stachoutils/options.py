@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.template import RequestContext
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.utils.translation import ugettext as _
 from django.utils.encoding import force_unicode
 from django.utils.text import capfirst
-from django.utils.http import urlencode
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
@@ -27,12 +25,11 @@ def detail_historique(request, model, object_id):
         'root_path': '',
         'app_label': app_label,
     }
-    context_instance = RequestContext(request)
-    return render_to_response([
+    return render(request, [
         "admin/%s/%s/object_history.html" % (app_label, opts.object_name.lower()),
         "admin/%s/object_history.html" % app_label,
         "admin/object_history.html"
-    ], context, context_instance=context_instance)
+    ], context)
 
 
 def log_addition(request, object):
