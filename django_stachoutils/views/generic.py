@@ -271,6 +271,8 @@ def get_filter(model, current_filters, filter_params):
         mod = model
         for rel_model in rel_models:
             try:
+                # As of Django 1.9, Field.rel has been replaced with remote_field.
+                # This may not works (not encountered yet).
                 mod = mod._meta.get_field(rel_model).rel.to
             except:
                 if DJ_VERSION >= (1, 9):
