@@ -2,7 +2,6 @@
 
 from django import forms
 from django.db import models
-from django.conf.urls import patterns
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
@@ -28,9 +27,9 @@ class ModelAdmin(admin.ModelAdmin):
         return actions
 
     def get_urls(self):
-        return patterns('',
+        return [
             (r'^dumpdata/$', self.admin_site.admin_view(self.dumpdata_form)),
-        ) + super(ModelAdmin, self).get_urls()
+        ] + super(ModelAdmin, self).get_urls()
 
     def dumpdata(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -58,7 +57,7 @@ class ModelAdmin(admin.ModelAdmin):
                 objects = list(queryset)
                 dependancies = []
                 for obj in queryset:
-                    append_obj_dependancies(obj, dependancies) 
+                    append_obj_dependancies(obj, dependancies)
                 objects = dependancies + objects
                 #TODO sort object by appname.modelname.
                 # use_natural_keys fout la merde dans les dossiers pour les ref user.
