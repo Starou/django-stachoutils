@@ -5,7 +5,7 @@ class ExceptionUserInfoMiddleware(object):
     Add to settings.MIDDLEWARE_CLASSES and keep it outermost(i.e. on top if possible). This allows
     it to catch exceptions in other middlewares as well.
     """
-    
+
     def process_exception(self, request, exception):
         """
         Process the exception.
@@ -14,8 +14,10 @@ class ExceptionUserInfoMiddleware(object):
         - `request`: request that caused the exception
         - `exception`: actual exception being raised
         """
-        
+
         try:
+            # TODO replace with `is_authenticated` attribute when support
+            # for django < 1.10 is dropped and django-2.0 is supported.
             if request.user.is_authenticated():
                 request.META['USERNAME'] = str(request.user.username)
                 request.META['USER_EMAIL'] = str(request.user.email)
