@@ -5,7 +5,6 @@ import re
 import string
 
 from datetime import datetime
-from django.core.exceptions import ValidationError
 from django.utils import formats, dateformat
 from django.utils.encoding import force_unicode
 from django.utils.functional import allow_lazy

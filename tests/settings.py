@@ -6,5 +6,10 @@ DATABASES = {
     }
 }
 
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.contenttypes',
+]
+
 MEDIA_URL = 'http://media.my_project.com/'
 MEDIA_ROOT = '/media'
