@@ -45,6 +45,7 @@ class Instrument(models.Model):
 class MusicGenre(models.Model):
     objects = MusicGenreManager()
     name = models.CharField(max_length=64, unique=True)
+    history = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
