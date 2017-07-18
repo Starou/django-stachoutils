@@ -7,7 +7,7 @@ from my_app import models
 
 class BandMemberAdmin(admin.ModelAdmin):
     formfield_overrides = {
-        TextField: {'widget': AdminTexteEditeur},
+        TextField: {'widget': AdminTexteEditeur(attrs={"class": "vMediumTextField"})},
         CharField: {'widget': TextInputCounter(max_signs=35)},
     }
 
