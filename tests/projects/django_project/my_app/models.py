@@ -78,6 +78,7 @@ class BandMember(models.Model):
     last_name = models.CharField(max_length=100)
     band = models.ForeignKey("Band", null=True, blank=True)
     favorite_instrument = models.ForeignKey("Instrument", null=True, blank=True)
+    story = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = (('first_name', 'last_name'),)

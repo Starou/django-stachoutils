@@ -12,9 +12,13 @@ BUTTONS = [{'class': 'gras', 'text': u'Gras', 'accesskey': 'g'},
            {'class': 'sup', 'text': u'Supérieur', 'accesskey': 's'},
            {'class': 'bas', 'text': u'Bas de casse', 'accesskey': 'b'}]
 
-STATICS = {'js': ['django_stachoutils/js/jquery.charcounter.js',
-                  'django_stachoutils/js/jquery.fieldselection.js',
-                  'django_stachoutils/js/widgets.js']}
+STATICS = {
+    'js': [
+        'django_stachoutils/js/jquery.charcounter.js',
+        'django_stachoutils/js/jquery.fieldselection.js',
+        'django_stachoutils/js/widgets.js',
+    ]
+}
 
 
 class TexteEditeur(forms.Textarea):
@@ -65,7 +69,7 @@ class TextareaCounter(AdminTexteEditeur):
                         '});'
                     '});'
                 '</script>' % {
-                    'id': attrs['id'], 
+                    'id': attrs['id'],
                     'direction': self.direction,
                     'label': label,
                     'max_signs': self.max_signs})
@@ -97,7 +101,7 @@ class TextInputCounter(forms.TextInput):
                         '});'
                     '});'
                 '</script>' % {
-                    'id': attrs['id'], 
+                    'id': attrs['id'],
                     'direction': self.direction,
                     'label': label,
                     'max_signs': self.max_signs})
