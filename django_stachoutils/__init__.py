@@ -7,7 +7,7 @@ import string
 from datetime import datetime
 from django.utils import formats, dateformat
 from django.utils.encoding import force_unicode
-from django.utils.functional import allow_lazy
+from django.utils.functional import keep_lazy_text
 from django.utils.http import urlunquote
 
 
@@ -47,6 +47,7 @@ def format_xml_entity(str):
     return strip_accents(str).upper().translate(xml_entity_table)
 
 
+@keep_lazy_text
 def truncate_chars(s, num):
     "Truncates a string after a certain number of characters."
     string = force_unicode(s)
@@ -54,7 +55,6 @@ def truncate_chars(s, num):
     if len(string) > length:
         string = string[:length] + '...'
     return string
-truncate_chars = allow_lazy(truncate_chars, unicode)
 
 
 rx_lettrine = re.compile("(\w)(\s)([\w-]+)([,.]{0,1}\s.*)", re.UNICODE|re.IGNORECASE)
