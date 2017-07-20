@@ -273,7 +273,7 @@ def get_filter(model, current_filters, filter_params):
             try:
                 # As of Django 1.9, Field.rel has been replaced with remote_field.
                 # This may not works (not encountered yet).
-                mod = mod._meta.get_field(rel_model).rel.to
+                mod = mod._meta.get_field(rel_model).remote_field.model
             except:
                 if DJ_VERSION >= (1, 9):
                     mod = getattr(mod, '%s_set' % rel_model).rel.related_model
@@ -305,7 +305,7 @@ def get_filter(model, current_filters, filter_params):
             ]
         else:
             FilterKlass = Filter
-            choices = field.rel.to.objects.all()
+            choices = field.remote_field.model.objects.all()
 
     def get_displayed_choices(FilterKlass, choices, current_filters, filter_test,
                               filter_key, model, attrib):
