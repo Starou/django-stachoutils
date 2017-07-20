@@ -32,7 +32,7 @@ class TextareaCounter(AdminTexteEditeur):
         self.direction = direction
         super(TextareaCounter, self).__init__(attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         textarea = super(TextareaCounter, self).render(name, value, attrs)
         jscounter = ''
         if self.max_signs:
@@ -64,7 +64,7 @@ class TextInputCounter(forms.TextInput):
         self.direction = direction
         super(TextInputCounter, self).__init__(attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         textinput = super(TextInputCounter, self).render(name, value, attrs)
         jscounter = ''
         if self.max_signs:
