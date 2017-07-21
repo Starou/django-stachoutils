@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from django.forms.widgets import flatatt
-from django.utils.html import conditional_escape
-from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.contrib.admin import widgets as admin_widgets
 
-
-BUTTONS = [{'class': 'gras', 'text': u'Gras', 'accesskey': 'g'},
-           {'class': 'sup', 'text': u'Supérieur', 'accesskey': 's'},
-           {'class': 'bas', 'text': u'Bas de casse', 'accesskey': 'b'}]
 
 STATICS = {
     'js': [
@@ -22,18 +15,7 @@ STATICS = {
 
 
 class TexteEditeur(forms.Textarea):
-    def render(self, name, value, attrs=None):
-        if value is None: value = ''
-        final_attrs = self.build_attrs(attrs, name=name)
-        html = []
-        html.append(u'<div class="editeur"><div class="toolbar">')
-        for button in BUTTONS:
-            html.append(u'<button type="button" accesskey="%(accesskey)s" class="%(class)s">%(text)s</button>' % button)
-        html.append(u'</div>')
-        html.append(u'<textarea%s>%s</textarea>' % (flatatt(final_attrs),
-                                                    conditional_escape(force_unicode(value))))
-        html.append(u'</div>')
-        return mark_safe(u'\n'.join(html))
+    template_name = 'django_stachoutils/forms/widgets/texte_editeur.html'
 
     def _media(self):
         return forms.Media(**STATICS)
@@ -50,7 +32,7 @@ class TextareaCounter(AdminTexteEditeur):
         self.direction = direction
         super(TextareaCounter, self).__init__(attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         textarea = super(TextareaCounter, self).render(name, value, attrs)
         jscounter = ''
         if self.max_signs:
@@ -82,7 +64,7 @@ class TextInputCounter(forms.TextInput):
         self.direction = direction
         super(TextInputCounter, self).__init__(attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         textinput = super(TextInputCounter, self).render(name, value, attrs)
         jscounter = ''
         if self.max_signs:

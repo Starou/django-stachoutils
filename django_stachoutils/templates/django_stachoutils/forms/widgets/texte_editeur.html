@@ -1,0 +1,9 @@
+<div class="editeur">
+  <div class="toolbar">
+    <button type="button" accesskey="g" class="gras">Gras</button>
+    <button type="button" accesskey="s" class="sup">Supérieur</button>
+    <button type="button" accesskey="b" class="bas">Bas de casse</button>
+  </div>
+  <textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+</div>
