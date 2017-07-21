@@ -9,7 +9,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="django-stachoutils",
-    version="2.2.1",
+    version="2.2.2",
     license='BSD Licence',
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
@@ -43,6 +43,7 @@ setup(
             'static/django_stachoutils/poshytip/*/*.gif',
             'static/django_stachoutils/poshytip/*/*.png',
             'templates/django_stachoutils/*.html',
+            'templates/django_stachoutils/forms/widgets/*.html',
         ]
     },
     classifiers=[
