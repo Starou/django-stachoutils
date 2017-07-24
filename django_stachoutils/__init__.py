@@ -136,17 +136,3 @@ def urldecode(url):
             k, v = param.split('=')
             out[k] = urlunquote(v)
     return out
-
-
-NO_CAPFIRST = ['de', 'des', 'du', 'le', 'la', 'les', 'd', 'l', 'a', 'au', 'aux']
-def lowerize(txt, excluded=[]):
-    words = txt.split(' ')
-    cap_words = []
-    for i, word in enumerate(words):
-        if not word:
-            continue
-        word = word.lower()
-        if not (word in excluded and i>0):
-            word = word[0].capitalize() + word[1:]
-        cap_words.append(word)
-    return " ".join(cap_words)
