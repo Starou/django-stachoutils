@@ -8,5 +8,5 @@ class OverwriteStorage(FileSystemStorage):
             os.unlink(os.path.join(self.location, name))
         return super(OverwriteStorage, self)._save(name, content)
 
-    def get_available_name(self, name):
+    def get_available_name(self, name, max_length=None):
         return name
