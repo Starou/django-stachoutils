@@ -6,3 +6,4 @@ MANIFEST
 *.pyc
 *.pyo
 *.sqlite
+.vagrant

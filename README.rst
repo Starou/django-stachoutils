@@ -8,7 +8,6 @@ This is mostly some common libs shared between several Django project I am worki
 Install
 =======
 
-
 ::
 
     pip install django-stachoutils
@@ -18,9 +17,10 @@ Tests
 
 ::
 
+    vagrant up
+    vagrant ssh
     cd tests
     make tests
-
 
 There is a demo project you can run (login: ``super:user``):
 
