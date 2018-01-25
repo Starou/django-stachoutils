@@ -34,18 +34,18 @@ def format_number(value=None, separator=','):
 
 # From http://stackoverflow.com/questions/517923/what-is-the-best-way-to-remove-accents-in-a-python-unicode-string
 import unicodedata
-def strip_accents(str):
-    #return ''.join([c for c in unicodedata.normalize('NFD', str) if not unicodedata.combining(c)])
-    return unicodedata.normalize('NFD', unicode(str)).encode('ascii', 'ignore')
+def strip_accents(txt):
+    #return ''.join([c for c in unicodedata.normalize('NFD', txt) if not unicodedata.combining(c)])
+    return unicodedata.normalize('NFD', unicode(txt)).encode('ascii', 'ignore')
 
 
-def latin1_safe_xml_encode(str):
-    return unicode(str.encode('latin-1', 'xmlcharrefreplace'), 'latin-1')
+def latin1_safe_xml_encode(txt):
+    return unicode(txt.encode('latin-1', 'xmlcharrefreplace'), 'latin-1')
 
 
 xml_entity_table = string.maketrans(' \'', '--')
-def format_xml_entity(str):
-    return strip_accents(str).upper().translate(xml_entity_table)
+def format_xml_entity(txt):
+    return strip_accents(txt).upper().translate(xml_entity_table)
 
 
 @keep_lazy_text
@@ -92,8 +92,8 @@ def int_to_roman(number):
 
 # Inspired by http://stackoverflow.com/questions/92438/stripping-non-printable-characters-from-a-string-in-python
 non_printable_re = re.compile('[%s]' % re.escape(''.join(map(unichr, range(0, 9) + range(11, 13) + range(14, 32) + range(127, 160)))))
-def filter_non_printable(str):
-    return non_printable_re.sub('', str)
+def filter_non_printable(txt):
+    return non_printable_re.sub('', txt)
 
 
 def simple_decorator(decorator):

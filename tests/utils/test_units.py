@@ -17,6 +17,10 @@ class StachoutilsTestCase(unittest.TestCase):
         from django_stachoutils import format_xml_entity
         self.assertEqual(format_xml_entity(u"Côtes d'Armor"), 'COTES-D-ARMOR')
 
+    def test_latin1_safe_xml_encode(self):
+        from django_stachoutils import latin1_safe_xml_encode
+        self.assertEqual(latin1_safe_xml_encode(u"ϟϟ"), '&#991;&#991;')
+
 
 def suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(StachoutilsTestCase)
