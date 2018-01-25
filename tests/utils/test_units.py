@@ -9,6 +9,14 @@ class StachoutilsTestCase(unittest.TestCase):
         self.assertEqual(truncate_chars("A quick brown fox jumps", 7), "A quick...")
         self.assertEqual(truncate_chars(u"¿ Holà señor, como estas ?", 12), u"¿ Holà señor...")
 
+    def test_strip_accents(self):
+        from django_stachoutils import strip_accents
+        self.assertEqual(strip_accents(u"Midi-Pyrénées"), 'Midi-Pyrenees')
+
+    def test_format_xml_entity(self):
+        from django_stachoutils import format_xml_entity
+        self.assertEqual(format_xml_entity(u"Côtes d'Armor"), 'COTES-D-ARMOR')
+
 
 def suite():
     suite = unittest.TestLoader().loadTestsFromTestCase(StachoutilsTestCase)
