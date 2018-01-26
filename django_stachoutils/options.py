@@ -104,7 +104,7 @@ def _log_for_forms(f):
 def paginate(request, queryset, paginate_by=50):
     if request.GET.get('paginate_by') == 'All':
         paginate_by = queryset.count()
-    elif request.GET.has_key('paginate_by'):
+    elif 'paginate_by' in request.GET:
         try:
             paginate_by = int(request.GET['paginate_by'])
         except ValueError:
