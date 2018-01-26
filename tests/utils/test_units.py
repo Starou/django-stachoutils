@@ -23,11 +23,11 @@ class StachoutilsTestCase(unittest.TestCase):
 
     def test_strip_accents(self):
         from django_stachoutils import strip_accents
-        self.assertEqual(strip_accents(u"Midi-Pyrénées"), 'Midi-Pyrenees')
+        self.assertEqual(strip_accents(u"Midi-Pyrénées"), b'Midi-Pyrenees')
 
     def test_format_xml_entity(self):
         from django_stachoutils import format_xml_entity
-        self.assertEqual(format_xml_entity(u"Côtes d'Armor"), 'COTES-D-ARMOR')
+        self.assertEqual(format_xml_entity(u"Côtes d'Armor"), b'COTES-D-ARMOR')
 
     def test_latin1_safe_xml_encode(self):
         from django_stachoutils import latin1_safe_xml_encode
