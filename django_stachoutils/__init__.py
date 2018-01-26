@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from builtins import chr, map, range, str
 import hashlib
 import re
-import string
 
 from datetime import datetime
 from django.utils import formats, dateformat
@@ -43,8 +42,12 @@ def strip_accents(txt):
 def latin1_safe_xml_encode(txt):
     return str(txt.encode('latin-1', 'xmlcharrefreplace'), 'latin-1')
 
-
-xml_entity_table = string.maketrans(' \'', '--')
+import sys
+if sys.version_info.major == 2:
+    import string
+    xml_entity_table = string.maketrans(b' \'', b'--')
+else:
+    xml_entity_table = bytes.maketrans(b' \'', b'--')
 def format_xml_entity(txt):
     return strip_accents(txt).upper().translate(xml_entity_table)
 
