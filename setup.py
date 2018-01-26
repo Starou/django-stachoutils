@@ -16,6 +16,7 @@ setup(
     description='Commons for Django',
     url='https://github.com/Starou/django-stachoutils',
     long_description=README,
+    install_requires=['future'],
     packages=[
         'django_stachoutils',
         'django_stachoutils.management',
