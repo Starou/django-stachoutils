@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.utils.translation import ugettext as _
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.text import capfirst
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -18,9 +18,9 @@ def detail_historique(request, model, object_id):
     ).select_related().order_by('action_time')
     obj = get_object_or_404(model, pk=object_id)
     context = {
-        'title': _('Change history: %s') % force_unicode(obj),
+        'title': _('Change history: %s') % force_text(obj),
         'action_list': action_list,
-        'module_name': capfirst(force_unicode(opts.verbose_name_plural)),
+        'module_name': capfirst(force_text(opts.verbose_name_plural)),
         'object': obj,
         'root_path': '',
         'app_label': app_label,
@@ -37,7 +37,7 @@ def log_addition(request, object):
         user_id         = request.user.pk,
         content_type_id = ContentType.objects.get_for_model(object).pk,
         object_id       = object.pk,
-        object_repr     = force_unicode(object),
+        object_repr     = force_text(object),
         action_flag     = ADDITION
     )
 
@@ -47,7 +47,7 @@ def log_change(request, object, message):
         user_id         = request.user.pk,
         content_type_id = ContentType.objects.get_for_model(object).pk,
         object_id       = object.pk,
-        object_repr     = force_unicode(object),
+        object_repr     = force_text(object),
         action_flag     = CHANGE,
         change_message  = message
     )
@@ -68,7 +68,7 @@ def log_change_for_user(user, object, message):
         user_id         = user.pk,
         content_type_id = ContentType.objects.get_for_model(object).pk,
         object_id       = object.pk,
-        object_repr     = force_unicode(object),
+        object_repr     = force_text(object),
         action_flag     = CHANGE,
         change_message  = message
     )
