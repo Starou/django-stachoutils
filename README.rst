@@ -2,8 +2,8 @@
 Stachou's Django Utils
 ======================
 
-.. image:: https://coveralls.io/repos/Starou/django-stachoutils/badge.png
-  :target: https://coveralls.io/r/Starou/django-stachoutils
+.. image:: https://coveralls.io/repos/github/Starou/django-stachoutils/badge.svg?branch=master
+  :target: https://coveralls.io/github/Starou/django-stachoutils?branch=master
 
 .. image:: https://img.shields.io/pypi/v/django_stachoutils.svg
     :target: https://pypi.python.org/pypi/django-stachoutils/
