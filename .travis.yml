@@ -1,0 +1,22 @@
+sudo: required
+dist: trusty
+language: python
+
+python:
+  - 2.7
+
+env:
+  - DJANGO_VERSION=1.11.11
+
+install:
+  - pip install -q Django==$DJANGO_VERSION
+  - pip install -q coverage
+  - pip install -q coveralls
+  - pip install .
+
+before_script:
+  - cd tests
+
+script: make coverage
+
+after_script: coveralls
