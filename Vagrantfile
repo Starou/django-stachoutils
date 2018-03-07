@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
 
     stachoutils.vm.provision "pip2-install", type: :shell, privileged: false, inline: <<-SHELL
       source ~/venv_py2/bin/activate
-      pip install django==1.11
+      pip install coverage django==1.11
     SHELL
 
     stachoutils.vm.provision "bashrc", type: :shell, privileged: false, inline: <<-SHELL
