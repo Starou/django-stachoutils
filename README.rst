@@ -2,6 +2,23 @@
 Stachou's Django Utils
 ======================
 
+.. image:: https://img.shields.io/pypi/v/django_stachoutils.svg
+    :target: https://pypi.python.org/pypi/django-stachoutils/
+    :alt: Current version
+
+.. image:: https://img.shields.io/pypi/pyversions/django_stachoutils.svg
+    :target: https://pypi.python.org/pypi/django-stachoutils/
+    :alt: Supported Python versions
+
+.. image:: https://img.shields.io/pypi/l/django_stachoutils.svg
+    :target: https://pypi.python.org/pypi/django-stachoutils/
+    :alt: License
+
+.. image:: https://travis-ci.org/Starou/django-stachoutils.svg
+    :target: https://travis-ci.org/Starou/django-stachoutils
+    :alt: Travis C.I.
+
+
 This is mostly some common libs shared between several Django project I am working on.
 
 
