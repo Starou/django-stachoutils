@@ -3,10 +3,10 @@
 import unittest
 
 
-class GenericTestCase(unittest.TestCase):
+class ActionsTestCase(unittest.TestCase):
     def test_regroup_actions(self):
         from django_stachoutils.views.actions import regroup_actions
-        
+
         def action1():
             pass
         action1.group = "groupA"
@@ -14,7 +14,6 @@ class GenericTestCase(unittest.TestCase):
         def action2():
             pass
         action2.group = "groupB"
-
 
         def action3():
             pass
@@ -38,5 +37,5 @@ class GenericTestCase(unittest.TestCase):
 
 
 def suite():
-    suite = unittest.TestLoader().loadTestsFromTestCase(GenericTestCase)
+    suite = unittest.TestLoader().loadTestsFromTestCase(ActionsTestCase)
     return suite
