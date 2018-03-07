@@ -10,9 +10,13 @@ env:
 
 install:
   - pip install -q Django==$DJANGO_VERSION
+  - pip install -q coverage
+  - pip install -q coveralls
   - pip install .
 
 before_script:
   - cd tests
 
-script: make tests
+script: make coverage
+
+after_script: coveralls
