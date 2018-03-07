@@ -6,7 +6,7 @@ import unittest
 class GenericTestCase(unittest.TestCase):
     def test_regroup_actions(self):
         from django_stachoutils.views.actions import regroup_actions
-        
+
         def action1():
             pass
         action1.group = "groupA"
