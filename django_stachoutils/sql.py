@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from past.builtins import basestring
 from django import VERSION as DJ_VERSION
 
 if DJ_VERSION < (1, 8):
