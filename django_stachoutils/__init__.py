@@ -127,7 +127,7 @@ def files_are_equal(f1, f2):
 
 def _digest_file(f, chunk_size=8192):
     md5 = hashlib.md5()
-    for chunk in iter(lambda: f.read(chunk_size), ""):
+    for chunk in iter(lambda: f.read(chunk_size), b""):
         md5.update(chunk)
     f.seek(0)
     return md5.digest()
