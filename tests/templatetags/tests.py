@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import os
-import django
-import unittest
+from django.test import TestCase
 
 
-class TemplateTagsTestCase(unittest.TestCase):
+class TemplateTagsTestCase(TestCase):
     def test_current_filters_html(self):
-        os.environ['DJANGO_SETTINGS_MODULE'] = "settings"
-        django.setup()
         from django_stachoutils.templatetags.stachoutils_extras import current_filters
         filters = [
             (u'statut', [
@@ -74,9 +70,3 @@ class TemplateTagsTestCase(unittest.TestCase):
         self.assertEqual(current_filters(filters),
                          [u'BAT demandé: <strong>Non</strong>',
                           u'chargé de clientèle: <strong>Marie-Françoise B.</strong>'])
-
-
-
-def suite():
-    suite = unittest.TestLoader().loadTestsFromTestCase(TemplateTagsTestCase)
-    return suite
