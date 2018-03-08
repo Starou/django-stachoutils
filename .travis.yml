@@ -12,6 +12,7 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -q coverage
   - pip install -q coveralls
+  - pip install -q Pillow
   - pip install .
 
 before_script:

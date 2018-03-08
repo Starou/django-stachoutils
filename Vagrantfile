@@ -28,12 +28,12 @@ Vagrant.configure(2) do |config|
 
     stachoutils.vm.provision "pip2-install", type: :shell, privileged: false, inline: <<-SHELL
       source ~/venv_py2/bin/activate
-      pip install coverage django==1.11 future
+      pip install coverage django==1.11 future Pillow
     SHELL
 
     stachoutils.vm.provision "pip3-install", type: :shell, privileged: false, inline: <<-SHELL
       source ~/venv_py3/bin/activate
-      pip3 install coverage django==1.11 future
+      pip3 install coverage django==1.11 future Pillow
     SHELL
 
     stachoutils.vm.provision "bashrc", type: :shell, privileged: false, inline: <<-SHELL
