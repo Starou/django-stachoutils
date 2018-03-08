@@ -22,15 +22,6 @@ class CarForm(ModelForm):
 
 
 class ModelFormTestCase(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        super(ModelFormTestCase, cls).setUpClass()
-
-
-    @classmethod
-    def setUpTestData(cls):
-        pass
-
     def test_render_model_form(self):
         form = CarForm()
         self.assertHTMLEqual(

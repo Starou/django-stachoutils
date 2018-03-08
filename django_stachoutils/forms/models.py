@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from builtins import range
+from builtins import object
 from django import forms
 from django.forms.models import ModelFormMetaclass
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from future.utils import with_metaclass
 
 
 # http://djangosnippets.org/snippets/2248/
@@ -22,7 +25,7 @@ class ModelFormMetaclass(ModelFormMetaclass):
         return new_class
 
 
-class ModelForm(forms.ModelForm):
+class ModelForm(with_metaclass(ModelFormMetaclass, forms.ModelForm)):
     """
     Add to ModelForm the ability to declare inline formsets.
 
@@ -81,7 +84,6 @@ class ModelForm(forms.ModelForm):
 
 
     """
-    __metaclass__ = ModelFormMetaclass
 
     def __init__(self, *args, **kwargs):
         super(ModelForm, self).__init__(*args, **kwargs)
@@ -154,6 +156,3 @@ class ModelForm(forms.ModelForm):
             out.append(u"<th>%s</th>" % force_text(label))
 
         return mark_safe(u'<tr>%s</tr>' % ''.join(out))
-
-
-
