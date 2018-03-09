@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import object
 from django import forms
 from django.conf import settings
 from django.contrib.admin import widgets as admin_widgets
@@ -108,7 +109,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
         self.image_container_html = ''
         self.message = ''
 
-    class Media:
+    class Media(object):
         css = {
             'all': ('django_stachoutils/css/forms.css',)
         }
