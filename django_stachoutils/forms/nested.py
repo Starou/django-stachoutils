@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from builtins import object
 from django import forms
 from django.forms.models import ModelFormMetaclass
 from django.shortcuts import get_object_or_404
+from future.utils import with_metaclass
 
 NESTED_NON_FIELD_ERRORS = '__nested__'
 
@@ -22,9 +24,7 @@ class NestedModelFormMetaclass(ModelFormMetaclass):
         return new_class
 
 
-class NestedModelForm(forms.ModelForm):
-    __metaclass__ = NestedModelFormMetaclass
-
+class NestedModelForm(with_metaclass(NestedModelFormMetaclass, forms.ModelForm)):
     def __init__(self, *args, **kwargs):
         self.forms = []
         self.nested_form = None
