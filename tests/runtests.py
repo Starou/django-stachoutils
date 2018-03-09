@@ -31,6 +31,7 @@ ALWAYS_INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django_stachoutils',
+    'sorl.thumbnail',
 ]
 
 ALWAYS_MIDDLEWARE_CLASSES = (
