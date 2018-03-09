@@ -19,3 +19,14 @@ class Person(models.Model):
     name = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     gender = models.CharField(choices=[('male', 'Male'), ('female', 'Female')], max_length=6)
+    house = models.ForeignKey('House', null=True)
+
+
+def house_photo_path(instance, filename):
+    return 'houses/{}_{}.jpg'.format(instance.address, instance.city)
+
+
+class House(models.Model):
+    address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to=house_photo_path, null=True)
