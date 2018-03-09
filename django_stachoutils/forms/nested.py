@@ -89,4 +89,3 @@ class NestedModelForm(forms.ModelForm):
             setattr(instance, self._nested.fk, self.nested_instance)
             instance.save()
         return instance
-
