@@ -17,3 +17,6 @@ INSTALLED_APPS = [
 
 MEDIA_URL = 'http://media.my_project.com/'
 MEDIA_ROOT = os.path.join(CURRENT_DIR, 'media')
+
+THUMBOR_SERVER = 'http://my_thumbor.com:8888'
+THUMBOR_SERVER_EXTERNAL = THUMBOR_SERVER
