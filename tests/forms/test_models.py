@@ -32,6 +32,15 @@ class ModelFormTestCase(TestCase):
                    <td><input type="text" name="brand" required id="id_brand" maxlength="100" /></td></tr>"""
         )
         self.assertHTMLEqual(
+            form.as_tr(),
+            """<td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
+               <td><input type="text" name="brand" required id="id_brand" maxlength="100" /></td>"""
+        )
+        self.assertHTMLEqual(
+            form.labels_as_tr(),
+            """<tr><th><label for="id_name">Name</label></th><th><label for="id_brand">Brand</label></th></tr>"""
+        )
+        self.assertHTMLEqual(
             form.inlineformsets['options'].management_form.as_table(),
             """<input type="hidden" name="None_OPTIONS-TOTAL_FORMS" value="3" id="id_None_OPTIONS-TOTAL_FORMS" />
             <input type="hidden" name="None_OPTIONS-INITIAL_FORMS" value="0" id="id_None_OPTIONS-INITIAL_FORMS" />
