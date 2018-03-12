@@ -1,10 +1,13 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import csv
 import decimal
 import datetime
 import sys
 import zipfile
 
-from cStringIO import StringIO
+from io import BytesIO
 from django.http import HttpResponse
 from django.shortcuts import _get_queryset
 from django_stachoutils import csv_utf8
@@ -46,12 +49,12 @@ def zip_response(files, filename):
     response = HttpResponse(content_type='application/zip')
     response['Content-Disposition'] = 'filename=%s' % filename
 
-    buffer = StringIO()
+    buffer = BytesIO()
     zip = zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED)
-    for name, f in files:
+    for name, bytes in files:
         if sys.version_info < (2, 6):
             name = name.encode('latin1')
-        zip.writestr(name, f)
+        zip.writestr(name, bytes)
     zip.close()
     buffer.flush()
     ret_zip = buffer.getvalue()
