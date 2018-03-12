@@ -57,3 +57,10 @@ class ResponseExtrasTestCase(TestCase):
                                      "price": decimal.Decimal("14.99")},
                                     default=shortcuts.encode_default),
                          '{"date": "2018-03-14", "price": 14.99}')
+
+    def test_get_object_or_none(self):
+        from .models import Car
+        c1 = Car.objects.create(brand="Subaru", name="Impreza")
+        c2 = Car.objects.create(brand="Saab", name="9.3")
+        self.assertIsNone(shortcuts.get_object_or_none(Car, brand="Ford", name="Mustang"))
+        self.assertEqual(shortcuts.get_object_or_none(Car, brand="Subaru", name="Impreza"), c1)
