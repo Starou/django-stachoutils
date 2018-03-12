@@ -47,7 +47,7 @@ class ResponseTestCase(TestCase):
                                            'quoting': csv.QUOTE_MINIMAL})
         self.assertEqual(
             response.content,
-            'Num\xc3\xa9ro de Serie|Marque|Mod\xc3\xa8le|Ann\xc3\xa9e\r\nSB2323|Saab|9.3 2.0t|2007\r\nLDNV005|Lada|Niva|2009\r\n'
+            b'Num\xc3\xa9ro de Serie|Marque|Mod\xc3\xa8le|Ann\xc3\xa9e\r\nSB2323|Saab|9.3 2.0t|2007\r\nLDNV005|Lada|Niva|2009\r\n'
         )
 
 
