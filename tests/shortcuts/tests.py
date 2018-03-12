@@ -8,6 +8,7 @@ import os
 import zipfile
 
 from io import BytesIO
+from xml.dom import minidom
 from django.conf import settings
 from django.test import TestCase
 from django_stachoutils import shortcuts
@@ -61,6 +62,12 @@ class ResponseExtrasTestCase(TestCase):
     def test_get_object_or_none(self):
         from .models import Car
         c1 = Car.objects.create(brand="Subaru", name="Impreza")
-        c2 = Car.objects.create(brand="Saab", name="9.3")
+        Car.objects.create(brand="Saab", name="9.3")
         self.assertIsNone(shortcuts.get_object_or_none(Car, brand="Ford", name="Mustang"))
         self.assertEqual(shortcuts.get_object_or_none(Car, brand="Subaru", name="Impreza"), c1)
+
+    def test_create_and_append_element(self):
+        impl = minidom.getDOMImplementation('')
+        doc = impl.createDocument(None, 'my_elements', None)
+        node = shortcuts.createAndAppendElement(doc, doc.documentElement, 'my_node')
+        self.assertXMLEqual(node.toxml(), '<my_node/>')
