@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import csv
 import datetime
 import decimal
 import json
@@ -34,6 +35,20 @@ class ResponseTestCase(TestCase):
         fp.write(response.content)
         archive = zipfile.ZipFile(fp, mode='r')
         self.assertEqual(archive.namelist(), ['jardin.jpg', 'terrasse.jpg'])
+
+    def test_csv_response(self):
+        rows = [
+            [u"Numéro de Serie", u"Marque", u"Modèle", u"Année"],
+            [u"SB2323", u"Saab", u"9.3 2.0t", u"2007"],
+            [u"LDNV005", u"Lada", u"Niva", u"2009"],
+        ]
+        response = shortcuts.csv_response(rows, "my_data.csv",
+                                          {'delimiter': '|',
+                                           'quoting': csv.QUOTE_MINIMAL})
+        self.assertEqual(
+            response.content,
+            'Num\xc3\xa9ro de Serie|Marque|Mod\xc3\xa8le|Ann\xc3\xa9e\r\nSB2323|Saab|9.3 2.0t|2007\r\nLDNV005|Lada|Niva|2009\r\n'
+        )
 
 
 class ResponseExtrasTestCase(TestCase):
