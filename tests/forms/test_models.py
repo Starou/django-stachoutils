@@ -110,3 +110,36 @@ class ModelFormTestCase(TestCase):
         self.assertEqual(my_car.name, '900 Turbo 16')
         self.assertEqual(my_car.caroption_set.all().count(), 3)
 
+        form = CarForm({
+            'id': my_car.pk,
+            'name': '900 Turbo 16',
+            'brand': 'Saab',
+            'None_OPTIONS-INITIAL_FORMS': '3',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+            'None_OPTIONS-0-id': 1,
+            'None_OPTIONS-0-name': 'Climatisation',
+            'None_OPTIONS-1-id': 2,
+            'None_OPTIONS-1-name': 'Cruise-Control',
+            'None_OPTIONS-2-id': 3,
+            'None_OPTIONS-2-name': 'Alarm',
+        }, instance=my_car)
+        self.assertFalse(form.has_changed())
+
+        form = CarForm({
+            'id': my_car.pk,
+            'name': '900 Turbo 16',
+            'brand': 'Saab',
+            'None_OPTIONS-INITIAL_FORMS': '3',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+            'None_OPTIONS-0-id': 1,
+            'None_OPTIONS-0-name': 'Air-conditioning',
+            'None_OPTIONS-1-id': 2,
+            'None_OPTIONS-1-name': 'Cruise-Control',
+            'None_OPTIONS-2-id': 3,
+            'None_OPTIONS-2-name': 'Alarm',
+        }, instance=my_car)
+        self.assertTrue(form.has_changed())
