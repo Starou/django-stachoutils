@@ -13,7 +13,7 @@ class Car(models.Model):
 
 class CarOption(models.Model):
     car = models.ForeignKey('Car')
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=15)
 
 
 class Person(models.Model):

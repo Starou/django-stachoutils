@@ -45,7 +45,7 @@ class ModelFormTestCase(TestCase):
                <input type="hidden" name="None_OPTIONS-MIN_NUM_FORMS" value="0" id="id_None_OPTIONS-MIN_NUM_FORMS" />
                <input type="hidden" name="None_OPTIONS-MAX_NUM_FORMS" value="1000" id="id_None_OPTIONS-MAX_NUM_FORMS" />
                <tr><th><label for="id_None_OPTIONS-0-name">Name:</label></th>
-                   <td><input type="text" name="None_OPTIONS-0-name" id="id_None_OPTIONS-0-name" maxlength="100" /></td>
+                   <td><input type="text" name="None_OPTIONS-0-name" id="id_None_OPTIONS-0-name" maxlength="15" /></td>
                </tr>
                <tr><th><label for="id_None_OPTIONS-0-DELETE">Delete:</label></th>
                    <td><input type="checkbox" name="None_OPTIONS-0-DELETE" id="id_None_OPTIONS-0-DELETE" />
@@ -55,7 +55,7 @@ class ModelFormTestCase(TestCase):
                </tr>
                <tr>
                  <th><label for="id_None_OPTIONS-1-name">Name:</label></th>
-                 <td><input type="text" name="None_OPTIONS-1-name" id="id_None_OPTIONS-1-name" maxlength="100" /></td>
+                 <td><input type="text" name="None_OPTIONS-1-name" id="id_None_OPTIONS-1-name" maxlength="15" /></td>
               </tr>
               <tr>
                 <th><label for="id_None_OPTIONS-1-DELETE">Delete:</label></th>
@@ -66,7 +66,7 @@ class ModelFormTestCase(TestCase):
               </tr>
               <tr>
                 <th><label for="id_None_OPTIONS-2-name">Name:</label></th>
-                <td><input type="text" name="None_OPTIONS-2-name" id="id_None_OPTIONS-2-name" maxlength="100" /></td>
+                <td><input type="text" name="None_OPTIONS-2-name" id="id_None_OPTIONS-2-name" maxlength="15" /></td>
               </tr>
               <tr>
                 <th><label for="id_None_OPTIONS-2-DELETE">Delete:</label></th>
@@ -81,6 +81,15 @@ class ModelFormTestCase(TestCase):
     def test_bound_model_form(self):
         form = CarForm({
             'name': '9.3 2.0t',
+            'None_OPTIONS-INITIAL_FORMS': '0',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+        })
+        self.assertFalse(form.is_valid())
+
+        form = CarForm({
+            'name': '9.3 2.0t',
             'brand': 'Saab',
             'None_OPTIONS-INITIAL_FORMS': '0',
             'None_OPTIONS-TOTAL_FORMS': '3',
@@ -92,6 +101,19 @@ class ModelFormTestCase(TestCase):
         self.assertEqual(my_car.brand, 'Saab')
         self.assertEqual(my_car.name, '9.3 2.0t')
         self.assertEqual(my_car.caroption_set.all().count(), 0)
+
+        form = CarForm({
+            'name': '900 Turbo 16',
+            'brand': 'Saab',
+            'None_OPTIONS-INITIAL_FORMS': '0',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+            'None_OPTIONS-0-name': 'Climatisation',
+            'None_OPTIONS-1-name': 'Cruise-Control',
+            'None_OPTIONS-2-name': 'Super extra audio sound system',
+        })
+        self.assertFalse(form.is_valid())
 
         form = CarForm({
             'name': '900 Turbo 16',
