@@ -33,6 +33,11 @@ class PaginateTestCase(TestCase):
         self.assertEqual(len(pages.object_list), 2)
         self.assertEqual(pages.next_page_number(), 3)
 
+        request = rf.get('/?page=2&paginate_by=All')
+        pages = options.paginate(request, queryset)
+        self.assertEqual(len(pages.object_list), 7)
+        self.assertRaises(EmptyPage, pages.next_page_number)
+
         # With an invalid 'page' parameter, paginate will returns the first one.
         request = rf.get('/?page=two')
         pages = options.paginate(request, queryset, paginate_by=4)
