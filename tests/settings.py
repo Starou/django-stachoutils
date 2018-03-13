@@ -21,10 +21,11 @@ MEDIA_ROOT = os.path.join(CURRENT_DIR, 'media')
 THUMBOR_SERVER = 'http://my_thumbor.com:8888'
 THUMBOR_SERVER_EXTERNAL = THUMBOR_SERVER
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '/tmp/django_mail'
-#EMAIL_HOST = 'smtp'
-EMAIL_SUBJECT_PREFIX = "[DJANGO PROJECT] "
+
+ADMINS=[('Some dude', 'admin@myproject.com')]
+EMAIL_SUBJECT_PREFIX='[Project Lambda]'
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+EMAIL_HOST = 'localhost'
 
 LOGGING = {
     'version': 1,
@@ -63,6 +64,16 @@ LOGGING = {
         'stachoutils.logger1': {
             'handlers': ['message'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'stachoutils.logger2': {
+            'handlers': ['mail_admins'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+        'stachoutils.logger3': {
+            'handlers': ['mail_admins_buffered'],
+            'level': 'WARNING',
             'propagate': True,
         },
     }
