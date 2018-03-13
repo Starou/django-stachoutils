@@ -1,3 +1,4 @@
+from django.core.paginator import EmptyPage
 from django.test import RequestFactory, TestCase
 
 from django_stachoutils import options
@@ -14,8 +15,25 @@ class PaginateTestCase(TestCase):
         Car.objects.create(brand='Subaru', name='Forester')
         Car.objects.create(brand='Subaru', name='Impreza')
 
+        queryset = Car.objects.all().order_by('brand', 'name')
         rf = RequestFactory()
+
         request = rf.get('/')
-        pages = options.paginate(request, Car.objects.all().order_by('brand', 'name'), paginate_by=4)
+        pages = options.paginate(request, queryset, paginate_by=4)
         self.assertEqual(len(pages.object_list), 4)
         self.assertEqual(pages.next_page_number(), 2)
+
+        request = rf.get('/?page=2')
+        pages = options.paginate(request, queryset, paginate_by=4)
+        self.assertEqual(len(pages.object_list), 3)
+        self.assertRaises(EmptyPage, pages.next_page_number)
+
+        # With an invalid 'page' parameter, paginate will returns the first one.
+        request = rf.get('/?page=two')
+        pages = options.paginate(request, queryset, paginate_by=4)
+        self.assertEqual(pages.number, 1)
+
+        # With an 'page' parameter greater than last page, paginate will returns the last one.
+        request = rf.get('/?page=5')
+        pages = options.paginate(request, queryset, paginate_by=4)
+        self.assertEqual(pages.number, 2)
