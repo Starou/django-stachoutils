@@ -1,6 +1,8 @@
 import logging
-from django.test import RequestFactory, TestCase
+
 from django.contrib.messages.storage.base import BaseStorage
+from django.core import mail
+from django.test import RequestFactory, TestCase
 
 
 class MessageStorage(BaseStorage):
@@ -33,3 +35,22 @@ class MessageHandlerTestCase(TestCase):
         logger.info("This is a info message", extra={'request': request})  # ignored
         self.assertEqual([str(m) for m in request._messages], ["This is a error message"])
 
+
+# Can't use @override_settings here since BufferingSMTPHandler is initialized
+# with settings values.
+class AdminEmailHandlerTestCase(TestCase):
+    def test_admin_email_handler(self):
+        logger = logging.getLogger("stachoutils.logger2")
+        logger.error("This is a error message")
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, '[Project Lambda][ERROR] : [MY PROJECT]')
+        self.assertEqual(mail.outbox[0].body, 'This is a error message')
+
+    def test_buffered_admin_email_handler(self):
+        logger = logging.getLogger("stachoutils.logger3")
+        for i in range(3):
+            logger.error("This is error message #%d" % i)
+        self.assertEqual(len(mail.outbox), 0)
+
+        logger.handlers[0].flush()
+        self.assertEqual(len(mail.outbox), 1)
