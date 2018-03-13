@@ -28,6 +28,11 @@ class PaginateTestCase(TestCase):
         self.assertEqual(len(pages.object_list), 3)
         self.assertRaises(EmptyPage, pages.next_page_number)
 
+        request = rf.get('/?page=2&paginate_by=2')
+        pages = options.paginate(request, queryset)
+        self.assertEqual(len(pages.object_list), 2)
+        self.assertEqual(pages.next_page_number(), 3)
+
         # With an invalid 'page' parameter, paginate will returns the first one.
         request = rf.get('/?page=two')
         pages = options.paginate(request, queryset, paginate_by=4)
@@ -37,3 +42,8 @@ class PaginateTestCase(TestCase):
         request = rf.get('/?page=5')
         pages = options.paginate(request, queryset, paginate_by=4)
         self.assertEqual(pages.number, 2)
+
+        # With an invalid 'paginate_by' GET parameter, paginate will use the default value.
+        request = rf.get('/?page=2&paginate_by=five')
+        pages = options.paginate(request, queryset)
+        self.assertFalse(pages.has_next())
