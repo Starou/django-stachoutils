@@ -1,35 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import get_object_or_404, render
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
-from django.utils.translation import ugettext as _
 from django.utils.encoding import force_text
-from django.utils.text import capfirst
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-
-def detail_historique(request, model, object_id):
-    opts = model._meta
-    app_label = opts.app_label
-    action_list = LogEntry.objects.filter(
-        object_id = object_id,
-        content_type__id__exact = ContentType.objects.get_for_model(model).id
-    ).select_related().order_by('action_time')
-    obj = get_object_or_404(model, pk=object_id)
-    context = {
-        'title': _('Change history: %s') % force_text(obj),
-        'action_list': action_list,
-        'module_name': capfirst(force_text(opts.verbose_name_plural)),
-        'object': obj,
-        'root_path': '',
-        'app_label': app_label,
-    }
-    return render(request, [
-        "admin/%s/%s/object_history.html" % (app_label, opts.object_name.lower()),
-        "admin/%s/object_history.html" % app_label,
-        "admin/object_history.html"
-    ], context)
 
 
 def log_addition(request, object):
