@@ -2,12 +2,10 @@
 
 import logging
 import logging.handlers
-import string
 from django.core import mail
 from django.conf import settings
 from django.contrib import messages
 from . import strip_accents
-
 
 levelname_to_int = {
     'DEBUG': messages.DEBUG,
@@ -43,7 +41,7 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
                     port = smtplib.SMTP_PORT
                 smtp = smtplib.SMTP(self.mailhost, port)
                 msg = u"From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (
-                    self.fromaddr, string.join(self.toaddrs, u","), self.subject)
+                    self.fromaddr, u",".join(self.toaddrs), self.subject)
                 for record in self.buffer:
                     s = self.format(record)
                     msg = msg + strip_accents(s) + u"\r\n"
@@ -85,7 +83,7 @@ class BufferingAdminEmailHandler(BufferingSMTPHandler):
         if len(self.buffer) > 0:
             msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (
                 self.fromaddr,
-                string.join(self.toaddrs, ","),
+                ",".join(self.toaddrs),
                 self.subject)
             body = "\r\n".join([self.format(r) for r in self.buffer])
             email = mail.EmailMessage(self.subject, msg + body, self.fromaddr, self.toaddrs)
