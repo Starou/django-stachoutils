@@ -196,15 +196,16 @@ def _table_header(columns, get_params, padding=0, sortable=True):
             link = u'%s' % c['label']
             if sortable:
                 order_type = 'asc'
-                order_by = _get_params.get(ORDER_BY_ATTR)
+                order_by = get_params.get(ORDER_BY_ATTR)
                 if order_by and order_by == str(i + padding):
                     style.append('sorted')
-                    if _get_params[ORDER_TYPE_ATTR] == 'asc':
+                    if get_params[ORDER_TYPE_ATTR] == 'asc':
                         style.append('ascending')
                         order_type = 'desc'
                     else:
                         style.append('descending')
                 _get_params.update({ORDER_BY_ATTR: i + padding, ORDER_TYPE_ATTR: order_type})
+                _get_params = sorted([(k, v) for k, v in _get_params.items()])
                 link = u'<a href="?%s">%s</a>' % (urlencode(_get_params), link)
             out.append(u'<th%s>%s<input class="fieldname" type="hidden" value="%s"/></th>' % (
                 (style and ' class="%s"' % ' '.join(style) or ''), link, c['field']
@@ -222,11 +223,11 @@ def table_row_tag(columns, instance):
 def _table_row(columns, instance):
     out = []
     for c in columns:
-        if c.has_key('with'):
+        if 'with' in c:
             out += _table_row(c['columns'], getattr(instance, c['with'])())
         else:
             style, filters = [], u''
-            if c.has_key('label'):
+            if 'label' in c:
                 value = instance
                 # related lookup. On utilise pas qset.values() en amont qui eviterait ce truc récursif
                 # car empêche d'accéder des attr virtuels sur les instances.
@@ -246,13 +247,13 @@ def _table_row(columns, instance):
                 if c.get('tags'):
                     for tag in c['tags']:
                         value = tag(value)
-                if value and c.has_key('link'):
+                if value and 'link' in c:
                     href, title, a_style = "", "", ""
-                    if c['link'].has_key("href"):
+                    if 'href' in c['link']:
                         href = getattr(instance, c['link']['href'])()
-                    if c['link'].has_key("title"):
+                    if 'title' in c['link']:
                         title = getattr(instance, c['link']['title'])()
-                    if c['link'].has_key("style"):
+                    if 'style' in c['link']:
                         a_style = ' class="%s"' % c["link"]["style"]
                     value = u'<a%s title="%s" href="%s">%s</a>' % (a_style, title, href, value)
                 if c.get('editable'):

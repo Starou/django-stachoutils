@@ -2,6 +2,7 @@
 
 from django.template.engine import Engine
 from django.test import TestCase
+from django.utils.http import urlencode
 from functools import wraps
 
 from .models import Car
@@ -40,13 +41,29 @@ class TableTagTestCase(TestCase):
     def test_table_header_tag(self):
         result = self.engine.render_to_string('template1', {
             'columns': self.column,
-            'full_path': "/cars?sort=price&order=asc"})
+            'full_path': "/cars?theme=dark&paginate_by=25"})
+
         self.assertHTMLEqual(result, """
             <th class="action-checkbox-column"> <input id="action-toggle" type="checkbox" style="display: inline;"></th>
-            <th><a href="?sort=price&ot=asc&order=asc&o=0">Name</a><input class="fieldname" type="hidden" value="name"/></th>
-            <th><a href="?sort=price&ot=asc&order=asc&o=1">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
-            <th><a href="?sort=price&ot=asc&order=asc&o=2">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
-        """)
+            <th><a href="?%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
+            <th><a href="?%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
+            <th><a href="?%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
+        """ % (
+            urlencode([('o', '0'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '1'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '2'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+        ))
+
+        self.assertHTMLEqual(result, """
+            <th class="action-checkbox-column"> <input id="action-toggle" type="checkbox" style="display: inline;"></th>
+            <th><a href="%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
+            <th><a href="%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
+            <th><a href="%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
+        """ % (
+            href % 0,
+            href % 1,
+            href % 2,
+        ))
 
     @set_templates({'template1': '{% table_row_tag columns car %}'})
     def test_table_row_tag(self):
