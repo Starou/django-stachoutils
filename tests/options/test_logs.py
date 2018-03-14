@@ -4,10 +4,11 @@ from builtins import str
 from django import forms
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
+from django.forms.models import inlineformset_factory
 from django.test import RequestFactory, TestCase
 
 from django_stachoutils import options
-from .models import Car
+from .models import Car, CarOption
 
 
 class CarForm(forms.ModelForm):
@@ -17,11 +18,16 @@ class CarForm(forms.ModelForm):
 
 
 class LogsForFormsetTestCase(TestCase):
-    def test_logs_for_formsets(self):
-        rf = RequestFactory()
-        request = rf.get('/')
-        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-        request.user = user
+    rf = RequestFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+
+    def setUp(self):
+        self.request = self.rf.get('/')
+        self.request.user = self.user
+
+    def test_logs_for_forms(self):
 
         # Addition
         form = CarForm({
@@ -29,10 +35,10 @@ class LogsForFormsetTestCase(TestCase):
             'brand': 'Saab',
         })
         car = form.save()
-        options.logs_for_formsets('addition', request, car, [form])
+        options.logs_for_formsets('addition', self.request, car, [form])
         log = LogEntry.objects.latest('pk')
         self.assertTrue(log.is_addition())
-        self.assertEqual(log.user, user)
+        self.assertEqual(log.user, self.user)
         self.assertEqual(str(log), 'Added "9.3 2.0t".')
 
         # Modification
@@ -42,8 +48,29 @@ class LogsForFormsetTestCase(TestCase):
             'brand': 'Saab',
         }, instance=car)
         car = form.save()
-        options.logs_for_formsets('change', request, car, [form])
+        options.logs_for_formsets('change', self.request, car, [form])
         log = LogEntry.objects.latest('pk')
         self.assertFalse(log.is_addition())
-        self.assertEqual(log.user, user)
+        self.assertEqual(log.user, self.user)
         self.assertEqual(str(log), u'Changed "900 Turbo 16" - a modifié : name (car [900 Turbo 16]) ; ')
+
+    def test_logs_for_formsets(self):
+        car = Car.objects.create(brand='Lada', name='Niva')
+
+        CarOptionFormSet = inlineformset_factory(Car, CarOption, fields=['name'])
+        formset = CarOptionFormSet({
+            'caroption_set-INITIAL_FORMS': '0',
+            'caroption_set-TOTAL_FORMS': '1',
+            'caroption_set-MIN_NUM_FORMS': '0',
+            'caroption_set-MAX_NUM_FORMS': '10',
+            'caroption_set-0-id': '',
+            'caroption_set-0-car': car.pk,
+            'caroption_set-0-name': 'BVA',
+            'caroption_set-0-DELETE': '',
+        }, instance=car)
+        formset.is_valid()
+        formset.save()
+
+        options.logs_for_formsets('change', self.request, car, [formset])
+        log = LogEntry.objects.latest('pk')
+        self.assertEqual(log.change_message, u'a modifié : name (car option [BVA]) ; ')
