@@ -12,10 +12,6 @@ from .models import Car
 
 
 class StorageTestCase(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        pass
-
     def setUp(self):
         self.tmp_media_root = tempfile.mkdtemp()
 
