@@ -7,3 +7,11 @@ class Car(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CarOption(models.Model):
+    car = models.ForeignKey('Car')
+    name = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
