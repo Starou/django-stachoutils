@@ -19,36 +19,36 @@ class PaginateTestCase(TestCase):
         rf = RequestFactory()
 
         request = rf.get('/')
-        pages = options.paginate(request, queryset, paginate_by=4)
-        self.assertEqual(len(pages.object_list), 4)
-        self.assertEqual(pages.next_page_number(), 2)
+        page = options.paginate(request, queryset, paginate_by=4)
+        self.assertEqual(len(page.object_list), 4)
+        self.assertEqual(page.next_page_number(), 2)
 
         request = rf.get('/?page=2')
-        pages = options.paginate(request, queryset, paginate_by=4)
-        self.assertEqual(len(pages.object_list), 3)
-        self.assertRaises(EmptyPage, pages.next_page_number)
+        page = options.paginate(request, queryset, paginate_by=4)
+        self.assertEqual(len(page.object_list), 3)
+        self.assertRaises(EmptyPage, page.next_page_number)
 
         request = rf.get('/?page=2&paginate_by=2')
-        pages = options.paginate(request, queryset)
-        self.assertEqual(len(pages.object_list), 2)
-        self.assertEqual(pages.next_page_number(), 3)
+        page = options.paginate(request, queryset)
+        self.assertEqual(len(page.object_list), 2)
+        self.assertEqual(page.next_page_number(), 3)
 
         request = rf.get('/?page=2&paginate_by=All')
-        pages = options.paginate(request, queryset)
-        self.assertEqual(len(pages.object_list), 7)
-        self.assertRaises(EmptyPage, pages.next_page_number)
+        page = options.paginate(request, queryset)
+        self.assertEqual(len(page.object_list), 7)
+        self.assertRaises(EmptyPage, page.next_page_number)
 
         # With an invalid 'page' parameter, paginate will returns the first one.
         request = rf.get('/?page=two')
-        pages = options.paginate(request, queryset, paginate_by=4)
-        self.assertEqual(pages.number, 1)
+        page = options.paginate(request, queryset, paginate_by=4)
+        self.assertEqual(page.number, 1)
 
         # With an 'page' parameter greater than last page, paginate will returns the last one.
         request = rf.get('/?page=5')
-        pages = options.paginate(request, queryset, paginate_by=4)
-        self.assertEqual(pages.number, 2)
+        page = options.paginate(request, queryset, paginate_by=4)
+        self.assertEqual(page.number, 2)
 
         # With an invalid 'paginate_by' GET parameter, paginate will use the default value.
         request = rf.get('/?page=2&paginate_by=five')
-        pages = options.paginate(request, queryset)
-        self.assertFalse(pages.has_next())
+        page = options.paginate(request, queryset)
+        self.assertFalse(page.has_next())
