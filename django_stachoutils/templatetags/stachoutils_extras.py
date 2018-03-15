@@ -133,7 +133,7 @@ def progressbar(value):
         total = value[1]
         perc_completed = 0
         if total > 0:
-            perc_completed = progress / total * 100
+            perc_completed = progress / total * 100  #FIXME with Integers.
             label = "%s/%s" % (progress, total)
     else:
         perc_completed = int(value)
