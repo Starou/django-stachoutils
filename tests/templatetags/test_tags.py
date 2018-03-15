@@ -73,7 +73,6 @@ class TableTagTestCase(TestCase):
 
     @set_templates({'template1': '{% table_header_tag columns full_path %}'})
     def test_table_header_tag_sorted_desc(self):
-        self.maxDiff = None
         result = self.engine.render_to_string('template1', {
             'columns': self.column,
             'full_path': "/cars?theme=dark&paginate_by=25&ot=desc&o=1"})
