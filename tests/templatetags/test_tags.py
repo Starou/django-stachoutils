@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 from django.template.engine import Engine
 from django.test import TestCase
 from django.utils.http import urlencode
@@ -35,6 +36,7 @@ class TableTagTestCase(TestCase):
         {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url'}},
         {'label': 'Brand', 'field': 'brand'},
         {'label': 'Price', 'field': 'price_html'},
+        {'label': 'Purchased Year', 'field': 'purchased_on', 'filters': [('date', 'Y')]},
     ]
 
     @set_templates({'template1': '{% table_header_tag columns full_path %}'})
@@ -48,10 +50,12 @@ class TableTagTestCase(TestCase):
             <th><a href="?%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
             <th><a href="?%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
             <th><a href="?%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
+            <th><a href="?%s">Purchased Year</a><input class="fieldname" type="hidden" value="purchased_on" /></th>
         """ % (
             urlencode([('o', '0'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
             urlencode([('o', '1'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
             urlencode([('o', '2'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '3'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
         ))
 
     @set_templates({'template1': '{% table_header_tag columns full_path %}'})
@@ -65,10 +69,12 @@ class TableTagTestCase(TestCase):
             <th><a href="?%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
             <th class="ascending sorted"><a href="?%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
             <th><a href="?%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
+            <th><a href="?%s">Purchased Year</a><input class="fieldname" type="hidden" value="purchased_on" /></th>
         """ % (
             urlencode([('o', '0'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
             urlencode([('o', '1'), ('ot', 'desc'), ('paginate_by', '25'), ('theme', 'dark')]),
             urlencode([('o', '2'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '3'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
         ))
 
     @set_templates({'template1': '{% table_header_tag columns full_path %}'})
@@ -82,19 +88,24 @@ class TableTagTestCase(TestCase):
             <th><a href="?%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
             <th class="descending sorted"><a href="?%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
             <th><a href="?%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
+            <th><a href="?%s">Purchased Year</a><input class="fieldname" type="hidden" value="purchased_on" /></th>
         """ % (
             urlencode([('o', '0'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
             urlencode([('o', '1'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
             urlencode([('o', '2'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '3'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
         ))
 
     @set_templates({'template1': '{% table_row_tag columns car %}'})
     def test_table_row_tag(self):
-        car = Car.objects.create(brand='Saab', name='9.3 2.0t', price=12500)
+        car = Car.objects.create(brand='Saab', name='9.3 2.0t', price=12500, purchased_on=datetime.date(2015, 7, 29))
         result = self.engine.render_to_string('template1', {
             'columns': self.column,
             'car': car})
         self.assertHTMLEqual(result, """
             <td class="pk"><input type="checkbox" name="_selected_action" value="1" class="action-select"></td>
-            <td class=""><a title="" href="cars/1/">9.3 2.0t</a></td> <td class="">Saab</td> <td class=""><em>12500</em>€</td>
+            <td class=""><a title="" href="cars/1/">9.3 2.0t</a></td>
+            <td class="">Saab</td>
+            <td class=""><em>12500</em>€</td>
+            <td class="">2015</td>
         """)
