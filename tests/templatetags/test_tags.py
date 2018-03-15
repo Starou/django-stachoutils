@@ -37,7 +37,7 @@ def simple_bool_tag(value):
 
 class TableTagTestCase(TestCase):
     column = [
-        {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url'}},
+        {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url', 'style': 'nowrap', 'title': '__str__'}},
         {'label': 'Brand', 'field': 'brand'},
         {'label': 'Price', 'field': 'price_html'},
         {'label': 'Purchased Year', 'field': 'purchased_on', 'filters': [('date', 'Y')]},
@@ -117,7 +117,7 @@ class TableTagTestCase(TestCase):
             'car': car})
         self.assertHTMLEqual(result, """
             <td class="pk"><input type="checkbox" name="_selected_action" value="1" class="action-select"></td>
-            <td class=""><a title="" href="cars/1/">9.3 2.0t</a></td>
+            <td class=""><a class="nowrap" href="cars/1/" title="9.3 2.0t">9.3 2.0t</a></td>
             <td class="">Saab</td>
             <td class=""><em>12500</em>€</td>
             <td class="">2015</td>
