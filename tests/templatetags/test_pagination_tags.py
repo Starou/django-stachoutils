@@ -6,8 +6,8 @@ from .utils import set_templates
 
 
 class PaginationTagTestCase(TestCase):
-    @set_templates({'template1': '{% paginator_number page current_page_index get_params %}'})
-    def test_paginator_number(self):
+    @classmethod
+    def setUpTestData(cls):
         Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))
         Car.objects.create(brand='Saab', name='900', price=1800, purchased_on=datetime.date(2001, 3, 29))
         Car.objects.create(brand='Saab', name='9.5', price=23700, purchased_on=datetime.date(2012, 2, 11))
@@ -16,10 +16,14 @@ class PaginationTagTestCase(TestCase):
         Car.objects.create(brand='Subaru', name='Forester', price=34500, purchased_on=datetime.date(2016, 1, 29))
         Car.objects.create(brand='Subaru', name='Impreza', price=11200, purchased_on=datetime.date(2012, 6, 29))
 
-        queryset = Car.objects.all().order_by('brand', 'name')
-        rf = RequestFactory()
-        request = rf.get('/cars?page=2')
-        page = options.paginate(request, queryset, paginate_by=3)
+    def setUp(self):
+        self.queryset = Car.objects.all().order_by('brand', 'name')
+        self.rf = RequestFactory()
+
+    @set_templates({'template1': '{% paginator_number page current_page_index get_params %}'})
+    def test_paginator_number(self):
+        request = self.rf.get('/cars?page=2')
+        page = options.paginate(request, self.queryset, paginate_by=3)
 
         # The usage is to loop over all pages of page (current_page_index being the
         # iterator position).
@@ -43,3 +47,15 @@ class PaginationTagTestCase(TestCase):
             'get_params': {'page': 2},
         })
         self.assertHTMLEqual(result, '<a class="end" href="?page=3">3</a>')
+
+    @set_templates({'template1': '{% paginate_by_number page paginate_by current_pagination get_params %}'})
+    def test_paginate_by_number(self):
+        request = self.rf.get('/cars?page=2&paginate_by=3')
+        page = options.paginate(request, self.queryset, paginate_by=3)
+
+        result = self.engine.render_to_string('template1', {
+            'page': page,
+            'paginate_by': 5,
+            'get_params': {'page': 2, 'paginate_by': 3},
+        })
+        self.assertHTMLEqual(result, '<a href="?paginate_by=5&page=2">5</a>')
