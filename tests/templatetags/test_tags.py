@@ -39,7 +39,7 @@ class TableTagTestCase(TestCase):
     column = [
         {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url', 'style': 'nowrap', 'title': '__str__'}},
         {'label': 'Brand', 'field': 'brand'},
-        {'label': 'Price', 'field': 'price_html'},
+        {'label': 'Price', 'field': 'price_html', 'editable': True},
         {'label': 'Purchased Year', 'field': 'purchased_on', 'filters': [('date', 'Y')]},
         {'label': 'For Sale', 'field': 'for_sale', 'tags': [simple_bool_tag]},
     ]
@@ -119,7 +119,7 @@ class TableTagTestCase(TestCase):
             <td class="pk"><input type="checkbox" name="_selected_action" value="1" class="action-select"></td>
             <td class=""><a class="nowrap" href="cars/1/" title="9.3 2.0t">9.3 2.0t</a></td>
             <td class="">Saab</td>
-            <td class=""><em>12500</em>€</td>
+            <td class="editable"><em>12500</em>€</td>
             <td class="">2015</td>
             <td class="">yes</td>
         """)
