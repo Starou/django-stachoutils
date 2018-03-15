@@ -58,4 +58,4 @@ class PaginationTagTestCase(TestCase):
             'paginate_by': 5,
             'get_params': {'page': 2, 'paginate_by': 3},
         })
-        self.assertHTMLEqual(result, '<a href="?paginate_by=5&page=2">5</a>')
+        self.assertHTMLEqual(result, '<a href="?page=2&paginate_by=5">5</a>')

@@ -39,6 +39,7 @@ def paginate_by_number(page, i, current_pagination, get_params={}):
     else:
         params = get_params.copy()
         params.update({PAGINATE_BY_VAR: i})
+        params = sorted([(k, v) for k, v in params.items()])
         return mark_safe(u'<a href="?%s"%s>%s</a> ' % (urlencode(params), '', str(i)))
 paginate_by_number = register.simple_tag(paginate_by_number)
 
