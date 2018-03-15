@@ -54,15 +54,39 @@ class TableTagTestCase(TestCase):
             urlencode([('o', '2'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
         ))
 
+    @set_templates({'template1': '{% table_header_tag columns full_path %}'})
+    def test_table_header_tag_sorted_asc(self):
+        result = self.engine.render_to_string('template1', {
+            'columns': self.column,
+            'full_path': "/cars?theme=dark&paginate_by=25&ot=asc&o=1"})
+
         self.assertHTMLEqual(result, """
             <th class="action-checkbox-column"> <input id="action-toggle" type="checkbox" style="display: inline;"></th>
-            <th><a href="%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
-            <th><a href="%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
-            <th><a href="%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
+            <th><a href="?%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
+            <th class="ascending sorted"><a href="?%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
+            <th><a href="?%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
         """ % (
-            href % 0,
-            href % 1,
-            href % 2,
+            urlencode([('o', '0'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '1'), ('ot', 'desc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '2'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+        ))
+
+    @set_templates({'template1': '{% table_header_tag columns full_path %}'})
+    def test_table_header_tag_sorted_desc(self):
+        self.maxDiff = None
+        result = self.engine.render_to_string('template1', {
+            'columns': self.column,
+            'full_path': "/cars?theme=dark&paginate_by=25&ot=desc&o=1"})
+
+        self.assertHTMLEqual(result, """
+            <th class="action-checkbox-column"> <input id="action-toggle" type="checkbox" style="display: inline;"></th>
+            <th><a href="?%s">Name</a><input class="fieldname" type="hidden" value="name"/></th>
+            <th class="descending sorted"><a href="?%s">Brand</a><input class="fieldname" type="hidden" value="brand"/></th>
+            <th><a href="?%s">Price</a><input class="fieldname" type="hidden" value="price_html"/></th>
+        """ % (
+            urlencode([('o', '0'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '1'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
+            urlencode([('o', '2'), ('ot', 'asc'), ('paginate_by', '25'), ('theme', 'dark')]),
         ))
 
     @set_templates({'template1': '{% table_row_tag columns car %}'})
