@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from past.builtins import basestring
+
 from django.conf import settings
 from django.template import Library, Context, Template
 from django.utils.safestring import mark_safe
