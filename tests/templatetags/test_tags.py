@@ -96,3 +96,44 @@ class TableTagTestCase(TestCase):
             <td class="">2015</td>
             <td class="">yes</td>
         """)
+
+
+class InlineTagTestCase(TestCase):
+    @set_templates({'template1': '{% inline_display_class inlines_visibles inline counter %}'})
+    def test_inline_display_class(self):
+        result = self.engine.render_to_string('template1', {
+            'inlines_visibles': {'caroption_set': '1,3',
+                                 'cardriver_set': '0'},
+            'inline': 'caroption_set',
+            'counter': '3'})
+        self.assertHTMLEqual(result, '')
+
+        result = self.engine.render_to_string('template1', {
+            'inlines_visibles': {'caroption_set': '1,3',
+                                 'cardriver_set': '0'},
+            'inline': 'caroption_set',
+            'counter': '2'})
+        self.assertHTMLEqual(result, 'closed')
+
+        result = self.engine.render_to_string('template1', {
+            'inlines_visibles': {'caroption_set': '1,3',
+                                 'cardriver_set': '0'},
+            'inline': 'carbuyer_set',
+            'counter': '2'})
+        self.assertHTMLEqual(result, '')
+
+    @set_templates({'template1': '{% inline_display_style inlines_visibles inline counter %}'})
+    def test_inline_display_style(self):
+        result = self.engine.render_to_string('template1', {
+            'inlines_visibles': {'caroption_set': '1,3',
+                                 'cardriver_set': '0'},
+            'inline': 'caroption_set',
+            'counter': '3'})
+        self.assertHTMLEqual(result, '')
+
+        result = self.engine.render_to_string('template1', {
+            'inlines_visibles': {'caroption_set': '1,3',
+                                 'cardriver_set': '0'},
+            'inline': 'caroption_set',
+            'counter': '2'})
+        self.assertHTMLEqual(result, 'display: none;')
