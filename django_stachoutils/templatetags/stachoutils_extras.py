@@ -228,7 +228,7 @@ def _table_row(columns, instance):
         if 'with' in c:
             out += _table_row(c['columns'], getattr(instance, c['with'])())
         else:
-            style, filters = [], u''
+            style = []
             if 'label' in c:
                 value = instance
                 # related lookup. On utilise pas qset.values() en amont qui eviterait ce truc récursif
