@@ -2,6 +2,7 @@
 
 import datetime
 from django.contrib.auth.models import User
+from django.contrib.messages.storage.base import BaseStorage
 from django.test import RequestFactory, TestCase
 from django_stachoutils.views import generic
 from .actions import sell_cars
@@ -9,16 +10,35 @@ from .admin import CarAdmin
 from .models import Car
 
 
+class MessageStorage(BaseStorage):
+    """This is a basic messages storage since RequestFactory does not provide
+       a complete request object according to settings.MIDDLEWARE.
+    """
+    def __init__(self, request, *args, **kwargs):
+        self.messages = None
+        super(MessageStorage, self).__init__(request, *args, **kwargs)
+
+    def _get(self, *args, **kwargs):
+        return self.messages, True
+
+    def _store(self, messages, response, *args, **kwargs):
+        if messages:
+            self.messages = messages
+        else:
+            self.messages = None
+        return []
+
+
 class GenericListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))
-        Car.objects.create(brand='Saab', name='900', price=1800, purchased_on=datetime.date(2001, 3, 29))
-        Car.objects.create(brand='Saab', name='9.5', price=23700, purchased_on=datetime.date(2012, 2, 11))
-        Car.objects.create(brand='Alfa-Romeo', name='Giullia', price=19500, purchased_on=datetime.date(2014, 7, 12))
-        Car.objects.create(brand='Alfa-Romeo', name='Sprint', price=11200, purchased_on=datetime.date(2015, 9, 29))
-        Car.objects.create(brand='Subaru', name='Forester', price=34500, purchased_on=datetime.date(2016, 1, 29))
-        Car.objects.create(brand='Subaru', name='Impreza', price=11200, purchased_on=datetime.date(2012, 6, 29))
+        cls.c1 = Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))
+        cls.c2 = Car.objects.create(brand='Saab', name='900', price=1800, purchased_on=datetime.date(2001, 3, 29))
+        cls.c3 = Car.objects.create(brand='Saab', name='9.5', price=23700, purchased_on=datetime.date(2012, 2, 11))
+        cls.c4 = Car.objects.create(brand='Alfa-Romeo', name='Giullia', price=19500, purchased_on=datetime.date(2014, 7, 12))
+        cls.c5 = Car.objects.create(brand='Alfa-Romeo', name='Sprint', price=11200, purchased_on=datetime.date(2015, 9, 29))
+        cls.c6 = Car.objects.create(brand='Subaru', name='Forester', price=34500, purchased_on=datetime.date(2016, 1, 29))
+        cls.c7 = Car.objects.create(brand='Subaru', name='Impreza', price=11200, purchased_on=datetime.date(2012, 6, 29))
 
         cls.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
 
@@ -56,15 +76,23 @@ class GenericListTestCase(TestCase):
                 </div>
               </form>
               <div>
-                <div>Alfa-Romeo - Giullia</div>
-                <div>Alfa-Romeo - Sprint</div>
-                <div>Saab - 9.3</div>
-                <div>Saab - 9.5</div>
-                <div>Saab - 900</div>
-                <div>Subaru - Forester</div>
-                <div>Subaru - Impreza</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa1)d" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa2)d" />Saab - 9.5</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa3)d" />Saab - 900</div>
+                <div><input type="checkbox" name="_selected_action" value="%(su1)d" />Subaru - Forester</div>
+                <div><input type="checkbox" name="_selected_action" value="%(su2)d" />Subaru - Impreza</div>
               <div>
-            </html>""")
+            </html>""" % {
+                'al1': self.c4.pk,
+                'al2': self.c5.pk,
+                'sa1': self.c1.pk,
+                'sa2': self.c3.pk,
+                'sa3': self.c2.pk,
+                'su1': self.c6.pk,
+                'su2': self.c7.pk,
+            })
 
     def test_ordered_generic_list(self):
         request = self.rf.get('/cars?page=2')
@@ -88,15 +116,23 @@ class GenericListTestCase(TestCase):
                 </div>
               </form>
               <div>
-                <div>Saab - 9.3</div>
-                <div>Saab - 9.5</div>
-                <div>Saab - 900</div>
-                <div>Subaru - Forester</div>
-                <div>Alfa-Romeo - Giullia</div>
-                <div>Subaru - Impreza</div>
-                <div>Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa1)d" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa2)d" />Saab - 9.5</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa3)d" />Saab - 900</div>
+                <div><input type="checkbox" name="_selected_action" value="%(su1)d" />Subaru - Forester</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="%(su2)d" />Subaru - Impreza</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
               <div>
-            </html>""")
+            </html>""" % {
+                'al1': self.c4.pk,
+                'al2': self.c5.pk,
+                'sa1': self.c1.pk,
+                'sa2': self.c3.pk,
+                'sa3': self.c2.pk,
+                'su1': self.c6.pk,
+                'su2': self.c7.pk,
+            })
 
     def test_generic_list_with_object_list(self):
         request = self.rf.get('/cars?page=2')
@@ -119,15 +155,23 @@ class GenericListTestCase(TestCase):
                 </div>
               </form>
               <div>
-                <div>Alfa-Romeo - Giullia</div>
-                <div>Alfa-Romeo - Sprint</div>
-                <div>Saab - 9.3</div>
-                <div>Saab - 9.5</div>
-                <div>Saab - 900</div>
-                <div>Subaru - Forester</div>
-                <div>Subaru - Impreza</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa1)d" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa2)d" />Saab - 9.5</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa3)d" />Saab - 900</div>
+                <div><input type="checkbox" name="_selected_action" value="%(su1)d" />Subaru - Forester</div>
+                <div><input type="checkbox" name="_selected_action" value="%(su2)d" />Subaru - Impreza</div>
               <div>
-            </html>""")
+            </html>""" % {
+                'al1': self.c4.pk,
+                'al2': self.c5.pk,
+                'sa1': self.c1.pk,
+                'sa2': self.c3.pk,
+                'sa3': self.c2.pk,
+                'su1': self.c6.pk,
+                'su2': self.c7.pk,
+            })
 
     def test_filtering_generic_list(self):
         request = self.rf.get('/cars?page=2&q=alfa')
@@ -151,7 +195,43 @@ class GenericListTestCase(TestCase):
                 </div>
               </form>
               <div>
-                <div>Alfa-Romeo - Giullia</div>
-                <div>Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
               <div>
-            </html>""")
+            </html>""" % {
+                'al1': self.c4.pk,
+                'al2': self.c5.pk,
+            })
+
+    def test_post_without_selected_ation_generic_list(self):
+        request = self.rf.post('/cars?page=2', {})
+        request.user = self.user
+        request._messages = MessageStorage(request)
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/cars?page=2')
+        self.assertEqual(list(Car.objects.filter(for_sale=True).order_by('name').values_list('pk', flat=True)),
+                         [])
+
+    def test_post_without_selected_items_generic_list(self):
+        request = self.rf.post('/cars?page=2', {'action': 'sell_cars'})
+        request.user = self.user
+        request._messages = MessageStorage(request)
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/cars?page=2')
+        self.assertEqual(list(Car.objects.filter(for_sale=True).order_by('name').values_list('pk', flat=True)),
+                         [])
+
+    def test_post_generic_list(self):
+        request = self.rf.post('/cars?page=2', {'action': 'sell_cars',
+                                                '_selected_action': [self.c1.pk, self.c4.pk]})
+        request.user = self.user
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/cars?page=2')
+        self.assertEqual(list(Car.objects.filter(for_sale=True).order_by('name').values_list('pk', flat=True)),
+                         [self.c1.pk, self.c4.pk])
