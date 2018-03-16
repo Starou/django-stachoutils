@@ -9,7 +9,7 @@ from .utils import set_templates, simple_bool_tag
 
 
 class TableTagTestCase(TestCase):
-    column = [
+    columns = [
         {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url', 'style': 'nowrap', 'title': '__str__'}},
         {'label': 'Brand', 'field': 'brand'},
         {'label': 'Price', 'field': 'price_html', 'editable': True},
@@ -20,7 +20,7 @@ class TableTagTestCase(TestCase):
     @set_templates({'template1': '{% table_header_tag columns full_path %}'})
     def test_table_header_tag(self):
         result = self.engine.render_to_string('template1', {
-            'columns': self.column,
+            'columns': self.columns,
             'full_path': "/cars?theme=dark&paginate_by=25"})
 
         self.assertHTMLEqual(result, """
@@ -41,7 +41,7 @@ class TableTagTestCase(TestCase):
     @set_templates({'template1': '{% table_header_tag columns full_path %}'})
     def test_table_header_tag_sorted_asc(self):
         result = self.engine.render_to_string('template1', {
-            'columns': self.column,
+            'columns': self.columns,
             'full_path': "/cars?theme=dark&paginate_by=25&ot=asc&o=1"})
 
         self.assertHTMLEqual(result, """
@@ -62,7 +62,7 @@ class TableTagTestCase(TestCase):
     @set_templates({'template1': '{% table_header_tag columns full_path %}'})
     def test_table_header_tag_sorted_desc(self):
         result = self.engine.render_to_string('template1', {
-            'columns': self.column,
+            'columns': self.columns,
             'full_path': "/cars?theme=dark&paginate_by=25&ot=desc&o=1"})
 
         self.assertHTMLEqual(result, """
@@ -86,7 +86,7 @@ class TableTagTestCase(TestCase):
                                  purchased_on=datetime.date(2015, 7, 29),
                                  for_sale=True)
         result = self.engine.render_to_string('template1', {
-            'columns': self.column,
+            'columns': self.columns,
             'car': car})
         self.assertHTMLEqual(result, """
             <td class="pk"><input type="checkbox" name="_selected_action" value="1" class="action-select"></td>
