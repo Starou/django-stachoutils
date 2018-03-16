@@ -66,6 +66,38 @@ class GenericListTestCase(TestCase):
               <div>
             </html>""")
 
+    def test_ordered_generic_list(self):
+        request = self.rf.get('/cars?page=2')
+        request.user = self.user
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions,
+                                        default_order=['name', 'brand'])
+        self.assertHTMLEqual(response.content.decode('utf8'), """
+            <html>
+              <form action="" method="post">
+                <div class="actions">
+                  <label>Action&nbsp;:
+                    <select name="action">
+                      <option selected="selected" value="">---------</option>
+                      <optgroup label="autres">
+                        <option value="sell_cars">Sell the cars</option>
+                      </optgroup>
+                    </select>
+                  </label>
+                  <button value="0" name="index" title="Execute the selected action" class="button" type="submit">Execute</button>
+                </div>
+              </form>
+              <div>
+                <div>Saab - 9.3</div>
+                <div>Saab - 9.5</div>
+                <div>Saab - 900</div>
+                <div>Subaru - Forester</div>
+                <div>Alfa-Romeo - Giullia</div>
+                <div>Subaru - Impreza</div>
+                <div>Alfa-Romeo - Sprint</div>
+              <div>
+            </html>""")
+
 
     def test_filtering_generic_list(self):
         request = self.rf.get('/cars?page=2&q=alfa')
