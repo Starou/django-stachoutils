@@ -47,7 +47,7 @@ paginate_by_number = register.simple_tag(paginate_by_number)
 # Librement inspiré de : http://code.djangoproject.com/browser/django/trunk/django/contrib/admin/templatetags/admin_list.py
 def pagination(page, current_pagination, paginates_by=[], get_params={}):
     paginates_by = paginates_by and (paginates_by + ['All']) or []
-    paginator, num_page = page.paginator, page.number
+    paginator = page.paginator
     pagination_required = (paginator.num_pages - 1)
     if not pagination_required:
         page_range = []
