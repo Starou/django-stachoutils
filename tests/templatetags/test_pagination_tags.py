@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import datetime
 from django.test import RequestFactory, TestCase
 from django_stachoutils import options
@@ -59,3 +61,22 @@ class PaginationTagTestCase(TestCase):
             'get_params': {'page': 2, 'paginate_by': 3},
         })
         self.assertHTMLEqual(result, '<a href="?page=2&paginate_by=5">5</a>')
+
+    @set_templates({'template1': '{% pagination page get_params %}'})
+    def test_pagination(self):
+        request = self.rf.get('/cars?page=2&paginate_by=3')
+        page = options.paginate(request, self.queryset, paginate_by=3)
+        result = self.engine.render_to_string('template1', {
+            'page': page,
+            'get_params': {'page': 2, 'paginate_by': 3},
+        })
+        self.assertHTMLEqual(result,
+            """
+            <p class="paginator">
+                <a href="?page=1">1</a>
+                <span class="this-page">2</span>
+                <a href="?page=3" class="end">3</a>
+            7 entrées
+            </p>
+            """
+        )
