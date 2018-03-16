@@ -1,3 +1,3 @@
 def sell_cars(modeladmin, request, queryset):
-    pass
+    queryset.update(for_sale=True)
 sell_cars.short_description = 'Sell the cars'

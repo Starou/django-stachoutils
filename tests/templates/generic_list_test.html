@@ -18,7 +18,7 @@
   </form>
   <div>
   {% for o in object_list %}
-  <div>{{ o.brand }} - {{ o.name }}</div>
+  <div><input type="checkbox" name="_selected_action" value="{{ o.pk }}" />{{ o.brand }} - {{ o.name }}</div>
   {% endfor %}
   <div>
 </html>
