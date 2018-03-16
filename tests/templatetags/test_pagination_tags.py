@@ -80,3 +80,59 @@ class PaginationTagTestCase(TestCase):
             </p>
             """
         )
+
+    @set_templates({'template1': '{% pagination page get_params %}'})
+    def test_pagination_with_more_than_10_pages(self):
+        Car.objects.create(brand='Volvo', name='850', price=11500, purchased_on=datetime.date(2011, 7, 29))
+        Car.objects.create(brand='Triumph', name='SpitFire', price=5800, purchased_on=datetime.date(2002, 4, 29))
+        Car.objects.create(brand='Fiat', name='126', price=2700, purchased_on=datetime.date(2014, 2, 11))
+        Car.objects.create(brand='Honda', name='Civic', price=9500, purchased_on=datetime.date(2012, 7, 11))
+        Car.objects.create(brand='Honda', name='S2000', price=11900, purchased_on=datetime.date(2010, 9, 9))
+        Car.objects.create(brand='Mercedes', name='Class G', price=44500, purchased_on=datetime.date(2017, 1, 21))
+        Car.objects.create(brand='Jaguar', name='XJ12', price=12200, purchased_on=datetime.date(2011, 5, 29))
+
+        request = self.rf.get('/cars?page=10&paginate_by=1')
+        page = options.paginate(request, self.queryset, paginate_by=1)
+        result = self.engine.render_to_string('template1', {
+            'page': page,
+            'get_params': {'page': 10, 'paginate_by': 1},
+        })
+        self.assertHTMLEqual(result,
+            """
+            <p class="paginator">
+                <a href="?page=1">1</a>
+                <a href="?page=2">2</a>
+                ...
+                <a href="?page=8">8</a>
+                <a href="?page=9">9</a>
+                <span class="this-page">10</span>
+                <a href="?page=11">11</a>
+                <a href="?page=12">12</a>
+                <a href="?page=13">13</a>
+                <a href="?page=14" class="end">14</a>
+            14 entrées
+            </p>
+            """
+        )
+
+        request = self.rf.get('/cars?page=1&paginate_by=1')
+        page = options.paginate(request, self.queryset, paginate_by=1)
+        result = self.engine.render_to_string('template1', {
+            'page': page,
+            'get_params': {'page': 1, 'paginate_by': 1},
+        })
+        self.assertHTMLEqual(result,
+            """
+            <p class="paginator">
+                <span class="this-page">1</span>
+                <a href="?page=2">2</a>
+                <a href="?page=3">3</a>
+                <a href="?page=4">4</a>
+                <a href="?page=5">5</a>
+                ...
+                <a href="?page=13">13</a>
+                <a href="?page=14" class="end">14</a>
+            14 entrées
+            </p>
+            """
+        )
