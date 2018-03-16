@@ -52,7 +52,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         admin_actions = adm.get_actions(request)
         for group, actions_in_group in actions:
             actions_dispos = [
-                (callable(action) and action.func_name or action,
+                (callable(action) and action.__name__ or action,
                  action in admin_actions and admin_actions[action][2] or action.short_description)
                 for action in actions_in_group if action in admin_actions or callable(action)
             ]

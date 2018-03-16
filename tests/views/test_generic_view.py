@@ -39,7 +39,7 @@ class GenericListTestCase(TestCase):
         actions = [sell_cars]
         response = generic.generic_list(request, self.queryset, columns, 'generic_list_test.html',
                                         Car, ClassAdmin=CarAdmin, actions=actions)
-        self.assertHTMLEqual(response.content, """
+        self.assertHTMLEqual(response.content.decode('utf8'), """
             <html>
               <form action="" method="post">
                 <div class="actions">
