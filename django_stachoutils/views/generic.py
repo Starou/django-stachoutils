@@ -75,7 +75,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         # l'action est un callable.
         for group, actions_in_group in actions:
             for act in actions_in_group:
-                if callable(act) and act.func_name == action:
+                if callable(act) and act.__name__ == action:
                     # On filtre les objets selectionnés si le queryset est un vrai queryset.
                     if not int(request.POST.get('select_across', 0)) and hasattr(queryset, 'filter'):
                         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
