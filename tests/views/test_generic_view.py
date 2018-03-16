@@ -25,20 +25,21 @@ class GenericListTestCase(TestCase):
     def setUp(self):
         self.queryset = Car.objects.all().order_by('brand', 'name')
         self.rf = RequestFactory()
-
-    def test_generic_list(self):
-        request = self.rf.get('/cars?page=2')
-        request.user = self.user
-        columns = [
+        self.actions = [sell_cars]
+        self.columns = [
             {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url'}},
             {'label': 'Brand', 'field': 'brand'},
             {'label': 'Price', 'field': 'price_html'},
             {'label': 'Purchased Year', 'field': 'purchased_on', 'filters': [('date', 'Y')]},
             {'label': 'For Sale', 'field': 'for_sale'},
         ]
-        actions = [sell_cars]
-        response = generic.generic_list(request, self.queryset, columns, 'generic_list_test.html',
-                                        Car, ClassAdmin=CarAdmin, actions=actions)
+        self.template = 'generic_list_test.html'
+
+    def test_generic_list(self):
+        request = self.rf.get('/cars?page=2')
+        request.user = self.user
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions)
         self.assertHTMLEqual(response.content.decode('utf8'), """
             <html>
               <form action="" method="post">
@@ -69,17 +70,9 @@ class GenericListTestCase(TestCase):
     def test_filtering_generic_list(self):
         request = self.rf.get('/cars?page=2&q=alfa')
         request.user = self.user
-        columns = [
-            {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url'}},
-            {'label': 'Brand', 'field': 'brand'},
-            {'label': 'Price', 'field': 'price_html'},
-            {'label': 'Purchased Year', 'field': 'purchased_on', 'filters': [('date', 'Y')]},
-            {'label': 'For Sale', 'field': 'for_sale'},
-        ]
-        actions = [sell_cars]
         search = [('Name', 'name__icontains'), ('Brand', 'brand__icontains')]
-        response = generic.generic_list(request, self.queryset, columns, 'generic_list_test.html',
-                                        Car, ClassAdmin=CarAdmin, actions=actions, search=search)
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions, search=search)
         self.assertHTMLEqual(response.content.decode('utf8'), """
             <html>
               <form action="" method="post">
