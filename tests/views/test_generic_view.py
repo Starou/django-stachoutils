@@ -141,6 +141,37 @@ class UnitTestCase(TestCase):
                'perms': ['!views.see_car_purchased_on']}
         self.assertFalse(generic.has_column_perm(user, col))
 
+
+class GenericChangeResponseTestCase(TestCase):
+    url_continue = '/cars/1/'
+    url_add_another = '/cars/add/'
+    url_default = '/cars/'
+
+    def setUp(self):
+        self.rf = RequestFactory()
+
+    def test_generic_change_response(self):
+        request = self.rf.post('/cars/1/')
+        response = generic.generic_change_response(request, self.url_continue,
+                                                   self.url_add_another, self.url_default)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.url_default)
+
+    def test_generic_change_response_continue(self):
+        request = self.rf.post('/cars/1/', {'_continue': '1'})
+        response = generic.generic_change_response(request, self.url_continue,
+                                                   self.url_add_another, self.url_default)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.url_continue)
+
+    def test_generic_change_response_add_another(self):
+        request = self.rf.post('/cars/1/', {'_addanother': '1'})
+        response = generic.generic_change_response(request, self.url_continue,
+                                                   self.url_add_another, self.url_default)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.url_add_another)
+
+
 class GenericListTestCase(BaseGenericListTestCase):
     template = 'generic_list_test.html'
 
