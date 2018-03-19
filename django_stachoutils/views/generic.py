@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import object
 from django import VERSION as DJ_VERSION
 from django.contrib import admin, messages
 from django.contrib.admin.utils import label_for_field
