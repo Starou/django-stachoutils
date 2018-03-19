@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.storage.base import BaseStorage
 from django.test import RequestFactory, TestCase
 from django_stachoutils.views import generic
@@ -120,6 +121,25 @@ class UnitTestCase(TestCase):
         ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
         self.assertEqual(ordering, ['-brand', '-name'])
 
+    def test_has_column_perm(self):
+        user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        col = {'field': 'purchased_on',
+               'perms': ['views.see_car_purchased_on']}
+        self.assertFalse(generic.has_column_perm(user, col))
+
+        # Add the permission to the user
+        car_content_type = ContentType.objects.get_for_model(Car)
+        perm = Permission.objects.create(name="Can see puchased on date of a car",
+                                         content_type=car_content_type,
+                                        codename='see_car_purchased_on')
+        user.user_permissions.add(perm)
+        user = User.objects.get(pk=user.pk)
+        self.assertTrue(generic.has_column_perm(user, col))
+
+        # Test the 'not' operator
+        col = {'field': 'price',
+               'perms': ['!views.see_car_purchased_on']}
+        self.assertFalse(generic.has_column_perm(user, col))
 
 class GenericListTestCase(BaseGenericListTestCase):
     template = 'generic_list_test.html'
