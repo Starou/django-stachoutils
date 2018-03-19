@@ -59,7 +59,7 @@ class UnitTestCase(TestCase):
     def setUp(self):
         self.rf = RequestFactory()
         self.columns = [
-            {'field': 'name', 'link': {'href': 'get_absolute_url'}},
+            {'field': 'name', 'link': {'href': 'get_absolute_url'}, 'ordering': ['brand', 'name']},
             {'field': 'brand'},
             {'field': 'price_html'},
             {'field': 'purchased_on', 'filters': [('date', 'Y')]},
@@ -93,15 +93,32 @@ class UnitTestCase(TestCase):
         ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
         self.assertEqual(ordering, ['brand'])
 
+        request = self.rf.get('/cars?page=2&o=1&ot=desc')  # Descending order
+        ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
+        self.assertEqual(ordering, ['-brand'])
+
     def test_get_ordering_params_by_method(self):
         request = self.rf.get('/cars?page=2&o=2&ot=asc')  # Order by Price, then name (price_html method)
         ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
         self.assertEqual(ordering, ['price', 'name'])
 
+        request = self.rf.get('/cars?page=2&o=2&ot=desc')  # Descending order
+        ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
+        self.assertEqual(ordering, ['-price', '-name'])
+
     def test_get_ordering_params_default(self):
         request = self.rf.get('/cars?page=2')
         ordering = generic.get_ordering_params(request, Car, self.columns, default_order='name')
         self.assertEqual(ordering, 'name')
+
+    def test_get_ordering_params_with_ordering_set_in_column(self):
+        request = self.rf.get('/cars?page=2&o=0&ot=asc')  # Order by name
+        ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
+        self.assertEqual(ordering, ['brand', 'name'])
+
+        request = self.rf.get('/cars?page=2&o=0&ot=desc')  # Descending
+        ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
+        self.assertEqual(ordering, ['-brand', '-name'])
 
 
 class GenericListTestCase(BaseGenericListTestCase):
