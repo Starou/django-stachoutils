@@ -21,6 +21,7 @@ class Car(models.Model):
         return u'<em>{}</em>€'.format(self.price)
     price_html.allow_tags = True
     price.short_description = 'price'
+    price_html.ordering = ['price', 'name']
 
 
 class Person(models.Model):

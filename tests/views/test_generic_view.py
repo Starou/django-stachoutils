@@ -56,16 +56,20 @@ class BaseGenericListTestCase(TestCase):
 
 
 class UnitTestCase(TestCase):
-    def test_set_columns_labels(self):
-        columns = [
+    def setUp(self):
+        self.rf = RequestFactory()
+        self.columns = [
             {'field': 'name', 'link': {'href': 'get_absolute_url'}},
             {'field': 'brand'},
             {'field': 'price_html'},
             {'field': 'purchased_on', 'filters': [('date', 'Y')]},
             {'field': 'for_sale'},
         ]
-        generic.set_columns_labels(Car, columns)
-        self.assertEqual([c['label'] for c in columns], [u'name', u'brand', u'Price html', u'purchased on', u'for sale'])
+
+    def test_set_columns_labels(self):
+        generic.set_columns_labels(Car, self.columns)
+        self.assertEqual([c['label'] for c in self.columns],
+                         [u'name', u'brand', u'Price html', u'purchased on', u'for sale'])
 
     def test_recursion_in_set_columns_labels(self):
         columns = [
@@ -83,6 +87,21 @@ class UnitTestCase(TestCase):
             },
         ]
         generic.set_columns_labels(Car, columns)
+
+    def test_get_ordering_params(self):
+        request = self.rf.get('/cars?page=2&o=1&ot=asc')  # Order by Brand
+        ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
+        self.assertEqual(ordering, ['brand'])
+
+    def test_get_ordering_params_by_method(self):
+        request = self.rf.get('/cars?page=2&o=2&ot=asc')  # Order by Price, then name (price_html method)
+        ordering = generic.get_ordering_params(request, Car, self.columns, default_order=None)
+        self.assertEqual(ordering, ['price', 'name'])
+
+    def test_get_ordering_params_default(self):
+        request = self.rf.get('/cars?page=2')
+        ordering = generic.get_ordering_params(request, Car, self.columns, default_order='name')
+        self.assertEqual(ordering, 'name')
 
 
 class GenericListTestCase(BaseGenericListTestCase):
