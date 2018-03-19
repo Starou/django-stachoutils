@@ -398,8 +398,8 @@ class Filter(object):
             out = filters.copy()
             for k, v in filters.items():
                 if not v:
-                    del out[k]  # supp les filtres vides.
-            self._url = urlencode(out)
+                    del out[k]  # del empty filters
+            self._url = urlencode(sorted((k, v) for k, v in out.items()))  # sorted to pass the tests...
         return self._url
     url = property(_get_url)
 
