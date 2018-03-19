@@ -280,9 +280,9 @@ class GenericListFiltersTestCase(BaseGenericListTestCase):
               <h3><a></a><input type="hidden" name="filter_key" value="last driver" />By last driver</h3>
               <ul>
                 <li class="selected"><a href="?">All</a></li>
-                <li><a href="?last_driver__exact=1">Stanislas Guerra</a></li>
-                <li><a href="?last_driver__exact=2">Michael Schumacher</a></li>
+                <li><a href="?last_driver__exact=%d">Stanislas Guerra</a></li>
+                <li><a href="?last_driver__exact=%d">Michael Schumacher</a></li>
                 <li><a href="?last_driver__isnull=True">Aucun</a></li>
               </ul>
-            </div>"""
+            </div>""" % (self.p1.pk, self.p2.pk)
         )
