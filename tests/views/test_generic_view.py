@@ -69,7 +69,7 @@ class UnitTestCase(TestCase):
     def test_set_columns_labels(self):
         generic.set_columns_labels(Car, self.columns)
         self.assertEqual([c['label'] for c in self.columns],
-                         [u'name', u'brand', u'Price html', u'purchased on', u'for sale'])
+                         [u'name', u'brand', u'price', u'purchased on', u'for sale'])
 
     def test_recursion_in_set_columns_labels(self):
         columns = [

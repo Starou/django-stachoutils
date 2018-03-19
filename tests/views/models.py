@@ -20,7 +20,7 @@ class Car(models.Model):
     def price_html(self):
         return u'<em>{}</em>€'.format(self.price)
     price_html.allow_tags = True
-    price.short_description = 'price'
+    price_html.short_description = 'price'
     price_html.ordering = ['price', 'name']
 
 
