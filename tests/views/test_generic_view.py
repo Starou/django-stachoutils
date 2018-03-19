@@ -286,3 +286,26 @@ class GenericListFiltersTestCase(BaseGenericListTestCase):
               </ul>
             </div>""" % (self.p1.pk, self.p2.pk)
         )
+
+    def test_fk_filters_filtered_generic_list(self):
+        """The url is filtered by one of the filter values."""
+
+        request = self.rf.get('/cars?page=2&last_driver__exact=%d' % self.p2.pk)
+        request.user = self.user
+        filters = [('last_driver', {
+            'choices': Person.objects.all().order_by('last_name'),
+            'empty_choice': True,
+        })]
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions, filters=filters)
+        self.assertHTMLEqual(response.content.decode('utf8'), """
+            <div>
+              <h3><a></a><input type="hidden" name="filter_key" value="last driver" />By last driver</h3>
+              <ul>
+                <li><a href="?">All</a></li>
+                <li><a href="?last_driver__exact=%d">Stanislas Guerra</a></li>
+                <li class="selected"><a href="?last_driver__exact=%d">Michael Schumacher</a></li>
+                <li><a href="?last_driver__exact=%d&last_driver__isnull=True">Aucun</a></li>
+              </ul>
+            </div>""" % (self.p1.pk, self.p2.pk, self.p2.pk)
+        )
