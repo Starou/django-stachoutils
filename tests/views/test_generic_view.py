@@ -7,7 +7,7 @@ from django.test import RequestFactory, TestCase
 from django_stachoutils.views import generic
 from .actions import sell_cars
 from .admin import CarAdmin
-from .models import Car
+from .models import Car, Person
 
 
 class MessageStorage(BaseStorage):
@@ -29,7 +29,7 @@ class MessageStorage(BaseStorage):
         return []
 
 
-class GenericListTestCase(TestCase):
+class BaseGenericListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.c1 = Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))
@@ -53,7 +53,10 @@ class GenericListTestCase(TestCase):
             {'label': 'Purchased Year', 'field': 'purchased_on', 'filters': [('date', 'Y')]},
             {'label': 'For Sale', 'field': 'for_sale'},
         ]
-        self.template = 'generic_list_test.html'
+
+
+class GenericListTestCase(BaseGenericListTestCase):
+    template = 'generic_list_test.html'
 
     def test_generic_list(self):
         request = self.rf.get('/cars?page=2')
@@ -235,3 +238,51 @@ class GenericListTestCase(TestCase):
         self.assertEqual(response.url, '/cars?page=2')
         self.assertEqual(list(Car.objects.filter(for_sale=True).order_by('name').values_list('pk', flat=True)),
                          [self.c1.pk, self.c4.pk])
+
+
+class GenericListFiltersTestCase(BaseGenericListTestCase):
+    template = 'generic_list_filters_test.html'
+
+    @classmethod
+    def setUpTestData(cls):
+        super(GenericListFiltersTestCase, cls).setUpTestData()
+        cls.p1 = Person.objects.create(first_name='Stanislas', last_name='Guerra')
+        cls.p2 = Person.objects.create(first_name='Michael', last_name='Schumacher')
+
+    def test_boolean_filters_generic_list(self):
+        request = self.rf.get('/cars?page=2')
+        request.user = self.user
+        filters = [('for_sale', )]
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions, filters=filters)
+        self.assertHTMLEqual(response.content.decode('utf8'), """
+            <div>
+              <h3><a></a><input type="hidden" name="filter_key" value="for sale" />By for sale</h3>
+              <ul>
+                <li class="selected"><a href="?">All</a></li>
+                <li><a href="?for_sale__exact=1">Oui</a></li>
+                <li><a href="?for_sale__exact=0">Non</a></li>
+              </ul>
+            </div>"""
+        )
+
+    def test_fk_filters_generic_list(self):
+        request = self.rf.get('/cars?page=2')
+        request.user = self.user
+        filters = [('last_driver', {
+            'choices': Person.objects.all().order_by('last_name'),
+            'empty_choice': True,
+        })]
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions, filters=filters)
+        self.assertHTMLEqual(response.content.decode('utf8'), """
+            <div>
+              <h3><a></a><input type="hidden" name="filter_key" value="last driver" />By last driver</h3>
+              <ul>
+                <li class="selected"><a href="?">All</a></li>
+                <li><a href="?last_driver__exact=1">Stanislas Guerra</a></li>
+                <li><a href="?last_driver__exact=2">Michael Schumacher</a></li>
+                <li><a href="?last_driver__isnull=True">Aucun</a></li>
+              </ul>
+            </div>"""
+        )

@@ -9,6 +9,7 @@ class Car(models.Model):
     price = models.IntegerField()
     purchased_on = models.DateField()
     for_sale = models.BooleanField(default=False)
+    last_driver = models.ForeignKey('Person', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -20,3 +21,14 @@ class Car(models.Model):
         return u'<em>{}</em>€'.format(self.price)
     price_html.allow_tags = True
     price.short_description = 'price'
+
+
+class Person(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
+
+    def __unicode__(self):
+        return self.__str__()
