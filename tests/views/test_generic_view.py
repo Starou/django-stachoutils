@@ -55,6 +55,36 @@ class BaseGenericListTestCase(TestCase):
         ]
 
 
+class UnitTestCase(TestCase):
+    def test_set_columns_labels(self):
+        columns = [
+            {'field': 'name', 'link': {'href': 'get_absolute_url'}},
+            {'field': 'brand'},
+            {'field': 'price_html'},
+            {'field': 'purchased_on', 'filters': [('date', 'Y')]},
+            {'field': 'for_sale'},
+        ]
+        generic.set_columns_labels(Car, columns)
+        self.assertEqual([c['label'] for c in columns], [u'name', u'brand', u'Price html', u'purchased on', u'for sale'])
+
+    def test_recursion_in_set_columns_labels(self):
+        columns = [
+            {'field': 'name', 'link': {'href': 'get_absolute_url'}},
+            {'field': 'brand'},
+            {'field': 'price_html'},
+            {'field': 'purchased_on', 'filters': [('date', 'Y')]},
+            {'field': 'for_sale'},
+            {
+                'with': 'description_by_lang',
+                'columns': (
+                    {'label': u'Description (Fr)', 'field': 'fr'},  # This should call set_columns_labels() if no label
+                    {'label': u'Description (En)', 'field': 'en'},  # is provided but still I can't see a use case...
+                )
+            },
+        ]
+        generic.set_columns_labels(Car, columns)
+
+
 class GenericListTestCase(BaseGenericListTestCase):
     template = 'generic_list_test.html'
 
