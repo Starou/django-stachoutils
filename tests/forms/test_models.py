@@ -87,7 +87,7 @@ class ModelFormTestCase(TestCase):
             """
         )
 
-    def test_bound_model_form(self):
+    def test_model_form_not_valid(self):
         form = CarForm({
             'name': '9.3 2.0t',
             'None_OPTIONS-INITIAL_FORMS': '0',
@@ -97,6 +97,46 @@ class ModelFormTestCase(TestCase):
         })
         self.assertFalse(form.is_valid())
 
+    def test_model_form_is_valid(self):
+        form = CarForm({
+            'name': '9.3 2.0t',
+            'brand': 'Saab',
+            'None_OPTIONS-INITIAL_FORMS': '0',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+        })
+        self.assertTrue(form.is_valid())
+
+    def test_model_form_with_inlines_not_valid(self):
+        form = CarForm({
+            'name': '900 Turbo 16',
+            'brand': 'Saab',
+            'None_OPTIONS-INITIAL_FORMS': '0',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+            'None_OPTIONS-0-name': 'Climatisation',
+            'None_OPTIONS-1-name': 'Cruise-Control',
+            'None_OPTIONS-2-name': 'Super extra audio sound system',
+        })
+        self.assertFalse(form.is_valid())
+
+    def test_model_form_with_inlines_is_valid(self):
+        form = CarForm({
+            'name': '900 Turbo 16',
+            'brand': 'Saab',
+            'None_OPTIONS-INITIAL_FORMS': '0',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+            'None_OPTIONS-0-name': 'Climatisation',
+            'None_OPTIONS-1-name': 'Cruise-Control',
+            'None_OPTIONS-2-name': 'Sound system',
+        })
+        self.assertTrue(form.is_valid())
+
+    def test_model_form_save(self):
         form = CarForm({
             'name': '9.3 2.0t',
             'brand': 'Saab',
@@ -111,19 +151,7 @@ class ModelFormTestCase(TestCase):
         self.assertEqual(my_car.name, '9.3 2.0t')
         self.assertEqual(my_car.caroption_set.all().count(), 0)
 
-        form = CarForm({
-            'name': '900 Turbo 16',
-            'brand': 'Saab',
-            'None_OPTIONS-INITIAL_FORMS': '0',
-            'None_OPTIONS-TOTAL_FORMS': '3',
-            'None_OPTIONS-MIN_NUM_FORMS': '0',
-            'None_OPTIONS-MAX_NUM_FORMS': '1000',
-            'None_OPTIONS-0-name': 'Climatisation',
-            'None_OPTIONS-1-name': 'Cruise-Control',
-            'None_OPTIONS-2-name': 'Super extra audio sound system',
-        })
-        self.assertFalse(form.is_valid())
-
+    def test_model_form_save_with_inlines(self):
         form = CarForm({
             'name': '900 Turbo 16',
             'brand': 'Saab',
