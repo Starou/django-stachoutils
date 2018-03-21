@@ -4,6 +4,7 @@ language: python
 
 python:
   - 2.7
+  - 3.4
 
 env:
   - DJANGO_VERSION=1.11.11
@@ -12,6 +13,9 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -q coverage
   - pip install -q coveralls
+  - pip install -q Pillow
+  - pip install -q sorl-thumbnail
+  - pip install -q django_thumbor
   - pip install .
 
 before_script:
@@ -19,4 +23,4 @@ before_script:
 
 script: make coverage
 
-after_script: coveralls
+after_script: coverage combine .coverage_py2 .coverage_py3 && coveralls

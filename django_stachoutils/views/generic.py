@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import object
 from django import VERSION as DJ_VERSION
 from django.contrib import admin, messages
 from django.contrib.admin.utils import label_for_field
@@ -52,7 +53,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         admin_actions = adm.get_actions(request)
         for group, actions_in_group in actions:
             actions_dispos = [
-                (callable(action) and action.func_name or action,
+                (callable(action) and action.__name__ or action,
                  action in admin_actions and admin_actions[action][2] or action.short_description)
                 for action in actions_in_group if action in admin_actions or callable(action)
             ]
@@ -75,7 +76,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         # l'action est un callable.
         for group, actions_in_group in actions:
             for act in actions_in_group:
-                if callable(act) and act.func_name == action:
+                if callable(act) and act.__name__ == action:
                     # On filtre les objets selectionnés si le queryset est un vrai queryset.
                     if not int(request.POST.get('select_across', 0)) and hasattr(queryset, 'filter'):
                         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -396,10 +397,10 @@ class Filter(object):
         if self._url is None:
             filters = self.get_base_filters()
             out = filters.copy()
-            for k, v in filters.iteritems():
+            for k, v in filters.items():
                 if not v:
-                    del out[k]  # supp les filtres vides.
-            self._url = urlencode(out)
+                    del out[k]  # del empty filters
+            self._url = urlencode(sorted((k, v) for k, v in out.items()))  # sorted to pass the tests...
         return self._url
     url = property(_get_url)
 

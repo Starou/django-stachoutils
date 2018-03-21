@@ -1,0 +1,24 @@
+<html>
+  <form action="" method="post">
+    <div class="actions">
+      <label>Action&nbsp;:
+        <select name="action">
+          <option selected="selected" value="">---------</option>
+          {% for group, list_actions in actions %}
+          <optgroup label="{{ group }}">
+            {% for action in list_actions %}
+            <option value="{{ action.0 }}">{{ action.1 }}</option>
+            {% endfor %}
+          </optgroup>
+          {% endfor %}
+        </select>
+      </label>
+      <button value="0" name="index" title="Execute the selected action" class="button" type="submit">Execute</button>
+    </div>
+  </form>
+  <div>
+  {% for o in object_list %}
+  <div><input type="checkbox" name="_selected_action" value="{{ o.pk }}" />{{ o.brand }} - {{ o.name }}</div>
+  {% endfor %}
+  <div>
+</html>

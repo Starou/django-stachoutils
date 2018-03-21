@@ -2,12 +2,10 @@
 
 import logging
 import logging.handlers
-import string
 from django.core import mail
 from django.conf import settings
 from django.contrib import messages
 from . import strip_accents
-
 
 levelname_to_int = {
     'DEBUG': messages.DEBUG,
@@ -25,14 +23,14 @@ class NullHandler(logging.Handler):
 
 # http://www.red-dove.com/python_logging.html
 class BufferingSMTPHandler(logging.handlers.BufferingHandler):
-    def __init__(self, mailhost, fromaddr, toaddrs, subject, capacity):
+    def __init__(self, mailhost, fromaddr, toaddrs, subject, capacity, fmt="%(asctime)s %(levelname)-5s %(message)s"):
         logging.handlers.BufferingHandler.__init__(self, capacity)
         self.mailhost = mailhost
         self.mailport = None
         self.fromaddr = fromaddr
         self.toaddrs = toaddrs
         self.subject = subject
-        self.setFormatter(logging.Formatter("%(asctime)s %(levelname)-5s %(message)s"))
+        self.setFormatter(logging.Formatter(fmt))
 
     def flush(self):
         if len(self.buffer) > 0:
@@ -42,11 +40,14 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
                 if not port:
                     port = smtplib.SMTP_PORT
                 smtp = smtplib.SMTP(self.mailhost, port)
-                msg = u"From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (
-                    self.fromaddr, string.join(self.toaddrs, u","), self.subject)
+                msg = u"From: {}\r\nTo: {}\r\nSubject: {}\r\n\r\n".format(
+                    self.fromaddr,
+                    ",".join(self.toaddrs),
+                    self.subject
+                ).encode('utf8')
                 for record in self.buffer:
-                    s = self.format(record)
-                    msg = msg + strip_accents(s) + u"\r\n"
+                    msg_bit = self.format(record)
+                    msg = msg + strip_accents(msg_bit) + b"\r\n"
                 smtp.sendmail(self.fromaddr, self.toaddrs, msg)
                 smtp.quit()
             except:
@@ -85,7 +86,7 @@ class BufferingAdminEmailHandler(BufferingSMTPHandler):
         if len(self.buffer) > 0:
             msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % (
                 self.fromaddr,
-                string.join(self.toaddrs, ","),
+                ",".join(self.toaddrs),
                 self.subject)
             body = "\r\n".join([self.format(r) for r in self.buffer])
             email = mail.EmailMessage(self.subject, msg + body, self.fromaddr, self.toaddrs)
