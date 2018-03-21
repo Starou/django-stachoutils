@@ -1,6 +1,8 @@
-# https://gist.github.com/sidmitra/646372
 from builtins import str
 from builtins import object
+
+
+# https://gist.github.com/sidmitra/646372
 class ExceptionUserInfoMiddleware(object):
     def __init__(self, get_response=None):
         self.get_response = get_response

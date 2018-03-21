@@ -34,3 +34,12 @@ class ExceptionUserInfoMiddlewareTestCase(TestCase):
         self.assertIn('USER_EMAIL', request.META)
         self.assertEqual(request.META['USERNAME'], 'john')
         self.assertEqual(request.META['USER_EMAIL'], 'lennon@thebeatles.com')
+
+    def test_middleware_call(self):
+        def a_view(request):
+            from django.http import HttpResponse
+            return HttpResponse("Hello")
+        request = self.rf.get('/ok/')
+        middleware = ExceptionUserInfoMiddleware(a_view)
+        response = middleware(request)
+        self.assertEqual(response.content, b'Hello')
