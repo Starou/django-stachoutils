@@ -27,9 +27,21 @@ class Car(models.Model):
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    employed_by = models.ForeignKey('Company', null=True, blank=True)
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
+
+    def __unicode__(self):
+        return self.__str__()
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=100)
+    short_name = models.CharField(max_length=16, null=True, blank=True)
+
+    def __str__(self):
+        return self.short_name or self.name
 
     def __unicode__(self):
         return self.__str__()
