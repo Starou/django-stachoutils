@@ -23,4 +23,4 @@ before_script:
 
 script: make coverage
 
-after_script: coveralls
+after_script: coverage combine .coverage_py2 .coverage_py3 && coveralls
