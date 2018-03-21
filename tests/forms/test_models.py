@@ -151,6 +151,17 @@ class ModelFormTestCase(TestCase):
         self.assertEqual(my_car.name, '9.3 2.0t')
         self.assertEqual(my_car.caroption_set.all().count(), 0)
 
+        form = CarForm({
+            'id': my_car.pk,
+            'name': '900 Turbo 16',
+            'brand': 'Saab',
+            'None_OPTIONS-INITIAL_FORMS': '0',
+            'None_OPTIONS-TOTAL_FORMS': '3',
+            'None_OPTIONS-MIN_NUM_FORMS': '0',
+            'None_OPTIONS-MAX_NUM_FORMS': '1000',
+        })
+        self.assertTrue(form.has_changed())
+
     def test_model_form_save_with_inlines(self):
         form = CarForm({
             'name': '900 Turbo 16',
