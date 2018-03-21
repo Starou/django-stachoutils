@@ -15,6 +15,7 @@ class StachoutilsTestCase(unittest.TestCase):
         from django_stachoutils import format_number
         self.assertEqual(format_number(2312), "2,312")
         self.assertEqual(format_number(2312, u" "), "2 312")
+        self.assertEqual(format_number(), "")
 
     def test_truncate_chars(self):
         from django_stachoutils import truncate_chars
