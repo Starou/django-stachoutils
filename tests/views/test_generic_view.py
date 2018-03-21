@@ -8,7 +8,7 @@ from django.test import RequestFactory, TestCase
 from django_stachoutils.views import generic
 from .actions import sell_cars
 from .admin import CarAdmin
-from .models import Car, Person
+from .models import Car, Person, Company
 
 
 class MessageStorage(BaseStorage):
@@ -140,6 +140,45 @@ class UnitTestCase(TestCase):
         col = {'field': 'price',
                'perms': ['!views.see_car_purchased_on']}
         self.assertFalse(generic.has_column_perm(user, col))
+
+    def test_get_filter(self):
+        current_filters = {'brand': 'Saab'}
+
+        filter_1 = ('for_sale', )
+        self.assertEqual(generic.get_filter(Car, current_filters, filter_1), (
+            u'for sale', [
+                ('brand=Saab', u'All', True),
+                ('brand=Saab&for_sale__exact=1', 'Oui', False),
+                ('brand=Saab&for_sale__exact=0', 'Non', False)
+            ]
+        ))
+
+        # Related filter
+        Company.objects.create(name='Thomson Reuters')
+        Company.objects.create(name='Id Software')
+        Company.objects.create(name='Industrial Light & Magic', short_name='ILM')
+
+        filter_2 = ('last_driver__employed_by', )
+        self.assertEqual(generic.get_filter(Car, current_filters, filter_2), (
+            u'employed by', [
+                ('brand=Saab', u'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False)
+            ]
+        ))
+
+        # Use a title for the filter
+        filter_3 = ('last_driver__employed_by', {'title': 'Company'})
+        self.assertEqual(generic.get_filter(Car, current_filters, filter_3), (
+            u'Company', [
+                ('brand=Saab', u'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False)
+            ]
+        ))
+
 
 
 class GenericChangeResponseTestCase(TestCase):
