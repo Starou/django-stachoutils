@@ -20,6 +20,12 @@ class ResponseTestCase(TestCase):
         response = shortcuts.macroman_text_response(data)
         self.assertEqual(response.content, b'B\xf0#\xbd')
 
+    def test_macroman_response_with_filename(self):
+        data = u"B#Ω"
+        response = shortcuts.macroman_text_response(data, filename='export.txt')
+        self.assertEqual(response.content, b'B\xf0#\xbd')
+        self.assertEqual(response['Content-Disposition'], 'attachment; filename="export.txt"')
+
     def test_xml_response(self):
         data = u"""<?xml version="1.0"?><foo>This is a XML Document</foo>"""
         response = shortcuts.xml_response(data, filename="foo.xml")
@@ -59,6 +65,15 @@ class ResponseExtrasTestCase(TestCase):
                                     default=shortcuts.encode_default),
                          '{"date": "2018-03-14", "price": 14.99}')
 
+    def test_encode_default_raises_exception(self):
+        from .models import Car
+        self.assertRaises(TypeError, json.dumps, {
+            "date": datetime.date(2018, 3, 14),
+            "price": decimal.Decimal("14.99"),
+            "car": Car.objects.create(brand="Saab", name="9.3"),
+        },
+        default=shortcuts.encode_default)
+
     def test_get_object_or_none(self):
         from .models import Car
         c1 = Car.objects.create(brand="Subaru", name="Impreza")
@@ -71,3 +86,9 @@ class ResponseExtrasTestCase(TestCase):
         doc = impl.createDocument(None, 'my_elements', None)
         node = shortcuts.createAndAppendElement(doc, doc.documentElement, 'my_node')
         self.assertXMLEqual(node.toxml(), '<my_node/>')
+
+    def test_create_and_append_element_with_text(self):
+        impl = minidom.getDOMImplementation('')
+        doc = impl.createDocument(None, 'my_elements', None)
+        node = shortcuts.createAndAppendElement(doc, doc.documentElement, 'my_node', 'Some text')
+        self.assertXMLEqual(node.toxml(), '<my_node>Some text</my_node>')
