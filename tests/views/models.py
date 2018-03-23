@@ -10,6 +10,7 @@ class Car(models.Model):
     purchased_on = models.DateField()
     for_sale = models.BooleanField(default=False)
     last_driver = models.ForeignKey('Person', null=True, blank=True)
+    maintained_by = models.ForeignKey('Garage', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -45,3 +46,11 @@ class Company(models.Model):
 
     def __unicode__(self):
         return self.__str__()
+
+
+class Garage(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.ForeignKey('Person', null=True, blank=True)
+
+    def __str__(self):
+        return self.name

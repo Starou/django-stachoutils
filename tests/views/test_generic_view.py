@@ -8,7 +8,7 @@ from django.test import RequestFactory, TestCase
 from django_stachoutils.views import generic
 from .actions import sell_cars
 from .admin import CarAdmin
-from .models import Car, Person, Company
+from .models import Car, Company, Garage, Person
 
 
 class MessageStorage(BaseStorage):
@@ -153,7 +153,9 @@ class UnitTestCase(TestCase):
             ]
         ))
 
-        # Related filter
+    def test_get_filter_fk(self):
+        current_filters = {'brand': 'Saab'}
+
         Company.objects.create(name='Thomson Reuters')
         Company.objects.create(name='Id Software')
         Company.objects.create(name='Industrial Light & Magic', short_name='ILM')
@@ -168,7 +170,7 @@ class UnitTestCase(TestCase):
             ]
         ))
 
-        # Use a title for the filter
+        # Set the title
         filter_3 = ('last_driver__employed_by', {'title': 'Company'})
         self.assertEqual(generic.get_filter(Car, current_filters, filter_3), (
             u'Company', [
@@ -176,6 +178,35 @@ class UnitTestCase(TestCase):
                 ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
                 ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
                 ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False)
+            ]
+        ))
+
+    def test_get_filter_through_related(self):
+        self.maxDiff = None
+        current_filters = {'owner': 'Luigi'}
+
+        Company.objects.create(name='Thomson Reuters')
+        Company.objects.create(name='Id Software')
+        Company.objects.create(name='Industrial Light & Magic', short_name='ILM')
+
+        filter_1 = ('car__last_driver__employed_by', )
+        self.assertEqual(generic.get_filter(Garage, current_filters, filter_1), (
+            u'employed by', [
+                ('owner=Luigi', u'All', True),
+                ('car__last_driver__employed_by__exact=1&owner=Luigi', u'Thomson Reuters', False),
+                ('car__last_driver__employed_by__exact=2&owner=Luigi', u'Id Software', False),
+                ('car__last_driver__employed_by__exact=3&owner=Luigi', u'ILM', False)
+            ]
+        ))
+
+        # Set the title
+        filter_1 = ('car__last_driver__employed_by', {'title': 'Partners'})
+        self.assertEqual(generic.get_filter(Garage, current_filters, filter_1), (
+            u'Partners', [
+                ('owner=Luigi', u'All', True),
+                ('car__last_driver__employed_by__exact=1&owner=Luigi', u'Thomson Reuters', False),
+                ('car__last_driver__employed_by__exact=2&owner=Luigi', u'Id Software', False),
+                ('car__last_driver__employed_by__exact=3&owner=Luigi', u'ILM', False)
             ]
         ))
 
