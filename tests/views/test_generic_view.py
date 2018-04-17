@@ -182,7 +182,6 @@ class UnitTestCase(TestCase):
         ))
 
     def test_get_filter_through_related(self):
-        self.maxDiff = None
         current_filters = {'owner': 'Luigi'}
 
         Company.objects.create(name='Thomson Reuters')
