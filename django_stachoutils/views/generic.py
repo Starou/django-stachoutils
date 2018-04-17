@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from builtins import object
-from django import VERSION as DJ_VERSION
 from django.contrib import admin, messages
 from django.contrib.admin.utils import label_for_field
 from django.db.models import Q
@@ -271,18 +270,7 @@ def get_filter(model, current_filters, filter_params):
         attr = attrs[-1]
         mod = model
         for rel_model in rel_models:
-            try:
-                # As of Django 1.9, Field.rel has been replaced with remote_field.
-                # This may not works (not encountered yet).
-                mod = mod._meta.get_field(rel_model).remote_field.model
-            except:
-                if DJ_VERSION >= (1, 9):
-                    mod = getattr(mod, '%s_set' % rel_model).rel.related_model
-                elif DJ_VERSION >= (1, 8):
-                    mod = getattr(mod, '%s_set' % rel_model).related.related_model
-                else:
-                    mod = getattr(mod, '%s_set' % rel_model).related.model
-
+            mod = mod._meta.get_field(rel_model).remote_field.model
         field = mod._meta.get_field(attr)
 
         return field, attr
