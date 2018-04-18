@@ -25,7 +25,7 @@ class WidgetsTestCase(TestCase):
             """
             <tr>
               <th><label for="id_name">Name:</label></th>
-              <td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
+              <td><input type="text" name="name" required id="id_name" maxlength="20" /></td>
             </tr>
             <tr>
               <th><label for="id_brand">Brand:</label></th>
@@ -74,7 +74,7 @@ class WidgetsTestCase(TestCase):
             """
             <tr>
               <th><label for="id_name">Name:</label></th>
-              <td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
+              <td><input type="text" name="name" required id="id_name" maxlength="20" /></td>
             </tr>
             <tr>
               <th><label for="id_brand">Brand:</label></th>
@@ -125,7 +125,7 @@ class WidgetsTestCase(TestCase):
             """
             <tr>
               <th><label for="id_name">Name:</label></th>
-              <td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
+              <td><input type="text" name="name" required id="id_name" maxlength="20" /></td>
             </tr>
             <tr>
               <th><label for="id_brand">Brand:</label></th>

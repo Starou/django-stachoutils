@@ -34,7 +34,7 @@ class NestedModelFormTestCase(TestCase):
             """
             <tr>
               <th><label for="id_name">Name:</label></th>
-              <td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
+              <td><input type="text" name="name" required id="id_name" maxlength="20" /></td>
             </tr>
             <tr>
               <th><label for="id_brand">Brand:</label></th>
@@ -80,6 +80,28 @@ class NestedModelFormTestCase(TestCase):
         self.assertEqual(my_car.brand, 'Saab')
         self.assertEqual(my_car.name, '9.3 2.0t')
 
+        # Data hasn't changed.
+        form = CarForm({
+            'name': '9.3 2.0t',
+            'brand': 'Saab',
+            'owner': '',
+        }, instance=my_car)
+        self.assertFalse(form.has_changed())
+
+        # Data has changed.
+        form = CarForm({
+            'name': '9.3 2.0T Biopower',
+            'brand': 'Saab',
+            'owner': '',
+        }, instance=my_car)
+        self.assertTrue(form.has_changed())
+
+        form.save()
+        my_car = Car.objects.get(pk=my_car.pk)
+        self.assertEqual(my_car.brand, 'Saab')
+        self.assertEqual(my_car.name, '9.3 2.0T Biopower')
+
+        # With nested data.
         form = CarForm({
             'name': '900 Turbo 16',
             'brand': 'Saab',
@@ -94,6 +116,15 @@ class NestedModelFormTestCase(TestCase):
         self.assertEqual(my_car.brand, 'Saab')
         self.assertEqual(my_car.name, '900 Turbo 16')
         self.assertEqual(my_car.owner.name, 'Stan')
+
+    def test_bound_nested_model_form_with_invalid_data(self):
+        form = CarForm({
+            'name': 'Nine Three Two-liters Turbocharged',
+            'brand': 'Saab',
+            'owner': '',
+        })
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.non_nested_errors, {'name':['Ensure this value has at most 20 characters (it has 34).']})
 
     def test_prefixed_bound_nested_model_form(self):
         form = CarForm({

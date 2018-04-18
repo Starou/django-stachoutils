@@ -31,7 +31,7 @@ class ModelFormTestCase(TestCase):
             form.as_table(),
             """<tr>
                 <th><label for="id_name">Name:</label></th>
-                <td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
+                <td><input type="text" name="name" required id="id_name" maxlength="20" /></td>
                </tr>
                <tr>
                  <th><label for="id_brand">Brand:</label></th>
@@ -44,7 +44,7 @@ class ModelFormTestCase(TestCase):
         self.assertHTMLEqual(
             form.as_tr(),
             """<td>
-                 <input type="text" name="name" required id="id_name" maxlength="100" />
+                 <input type="text" name="name" required id="id_name" maxlength="20" />
                </td>
                <td>
                  <input type="text" name="brand" required id="id_brand" maxlength="100" />
