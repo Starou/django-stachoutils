@@ -4,7 +4,6 @@ from builtins import str
 import csv
 import decimal
 import datetime
-import sys
 import zipfile
 
 from io import BytesIO
@@ -52,8 +51,6 @@ def zip_response(files, filename):
     buffer = BytesIO()
     zip = zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED)
     for name, bytes in files:
-        if sys.version_info < (2, 6):
-            name = name.encode('latin1')
         zip.writestr(name, bytes)
     zip.close()
     buffer.flush()
