@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django import forms
 from django.forms.models import inlineformset_factory
 from django.test import TestCase
 
@@ -11,6 +12,8 @@ CarOptionFormSet = inlineformset_factory(Car, CarOption, fields=['name'])
 
 
 class CarForm(ModelForm):
+    pk = forms.IntegerField(widget=forms.HiddenInput, required=False)
+
     class Meta:
         model = Car
         fields = ('name', 'brand')
@@ -26,15 +29,27 @@ class ModelFormTestCase(TestCase):
         form = CarForm()
         self.assertHTMLEqual(
             form.as_table(),
-            """<tr><th><label for="id_name">Name:</label></th>
-                   <td><input type="text" name="name" required id="id_name" maxlength="100" /></td></tr>
-               <tr><th><label for="id_brand">Brand:</label></th>
-                   <td><input type="text" name="brand" required id="id_brand" maxlength="100" /></td></tr>"""
+            """<tr>
+                <th><label for="id_name">Name:</label></th>
+                <td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
+               </tr>
+               <tr>
+                 <th><label for="id_brand">Brand:</label></th>
+                 <td>
+                   <input type="text" name="brand" required id="id_brand" maxlength="100" />
+                   <input id="id_pk" name="pk" type="hidden" />
+                 </td>
+               </tr>"""
         )
         self.assertHTMLEqual(
             form.as_tr(),
-            """<td><input type="text" name="name" required id="id_name" maxlength="100" /></td>
-               <td><input type="text" name="brand" required id="id_brand" maxlength="100" /></td>"""
+            """<td>
+                 <input type="text" name="name" required id="id_name" maxlength="100" />
+               </td>
+               <td>
+                 <input type="text" name="brand" required id="id_brand" maxlength="100" />
+               </td>
+               <input id="id_pk" name="pk" type="hidden" /><span class="row_end" />"""
         )
         self.assertHTMLEqual(
             form.labels_as_tr(),
