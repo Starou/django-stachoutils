@@ -76,5 +76,10 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': True,
         },
+        'stachoutils.logger4': {
+            'handlers': ['null'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     }
 }

@@ -54,3 +54,9 @@ class AdminEmailHandlerTestCase(TestCase):
 
         logger.handlers[0].flush()
         self.assertEqual(len(mail.outbox), 1)
+
+
+class NullHandlerTestCase(TestCase):
+    def test_null_handler(self):
+        logger = logging.getLogger("stachoutils.logger4")
+        logger.error("This error is not handled")
