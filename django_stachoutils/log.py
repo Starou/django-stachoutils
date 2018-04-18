@@ -15,10 +15,9 @@ levelname_to_int = {
 }
 
 
-# Python < 2.7.
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
+# Kept for backward compatibility.
+class NullHandler(logging.NullHandler):
+    pass
 
 
 # http://www.red-dove.com/python_logging.html
