@@ -25,5 +25,23 @@ $(document).ready(function () {
         $(this).children(".toolbar").children("button.gras_phrases").click(function() {
             textArea.val(editeur.graissePhraseSuivante(textArea.val()));
         });
+        $(this).children(".toolbar").children("button.gras").click(function() {
+            var selection = textArea.getSelection().text;
+            textArea.replaceSelection("[" + selection + "]", true);
+        });
+        $(this).children(".toolbar").children("button.sup").click(function() {
+            var selection = textArea.getSelection().text;
+            textArea.replaceSelection("{" + selection + "}", true);
+        });
+        $(this).children(".toolbar").children("button.bas").click(function() {
+            var selection = textArea.getSelection().text;
+            textArea.replaceSelection(selection.toLowerCase(), true);
+        });
+    });
+
+    $(".titre-box button.bas").click(function() {
+        var input = $(this).parent().find("input:text");
+        var selection = input.getSelection().text;
+        input.replaceSelection(selection.toLowerCase(), true);
     });
 });
