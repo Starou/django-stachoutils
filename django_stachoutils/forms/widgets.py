@@ -9,7 +9,7 @@ STATICS = {
     'js': [
         'django_stachoutils/js/jquery.charcounter.js',
         'django_stachoutils/js/jquery.fieldselection.js',
-        'django_stachoutils/js/widgets.js',
+        'django_stachoutils/js/editeur.js',
     ]
 }
 
