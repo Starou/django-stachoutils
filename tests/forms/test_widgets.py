@@ -39,6 +39,7 @@ class WidgetsTestCase(TestCase):
                     <button type="button" accesskey="g" class="gras">Gras</button>
                     <button type="button" accesskey="s" class="sup">Supérieur</button>
                     <button type="button" accesskey="b" class="bas">Bas de casse</button>
+                    <button type="button" accesskey="G" class="gras_phrases">Gras phrases</button>
                   </div>
                   <textarea name="description" id="id_description" rows="10" cols="40" class="vLargeTextField">
                   </textarea>
@@ -52,7 +53,7 @@ class WidgetsTestCase(TestCase):
             """
             <script type="text/javascript" src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
             <script type="text/javascript" src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/widgets.js"></script>
+            <script type="text/javascript" src="/static/django_stachoutils/js/editeur.js"></script>
             """
         )
 
@@ -88,6 +89,7 @@ class WidgetsTestCase(TestCase):
                     <button type="button" accesskey="g" class="gras">Gras</button>
                     <button type="button" accesskey="s" class="sup">Supérieur</button>
                     <button type="button" accesskey="b" class="bas">Bas de casse</button>
+                    <button type="button" accesskey="G" class="gras_phrases">Gras phrases</button>
                   </div>
                   <textarea name="description" id="id_description" rows="10" cols="40" class="vLargeTextField">
                   </textarea>
@@ -102,13 +104,12 @@ class WidgetsTestCase(TestCase):
             """
             <script type="text/javascript" src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
             <script type="text/javascript" src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/widgets.js"></script>
+            <script type="text/javascript" src="/static/django_stachoutils/js/editeur.js"></script>
             """
         )
 
     def test_render_textarea_counter_widget_reversed_counter(self):
         from django_stachoutils.forms.widgets import TextareaCounter
-        self.maxDiff = None
 
         class CarForm(forms.ModelForm):
             description = forms.CharField(widget=TextareaCounter(max_signs=200, direction='down'),
@@ -139,6 +140,7 @@ class WidgetsTestCase(TestCase):
                     <button type="button" accesskey="g" class="gras">Gras</button>
                     <button type="button" accesskey="s" class="sup">Supérieur</button>
                     <button type="button" accesskey="b" class="bas">Bas de casse</button>
+                    <button type="button" accesskey="G" class="gras_phrases">Gras phrases</button>
                   </div>
                   <textarea name="description" id="id_description" rows="10" cols="40" class="vLargeTextField">
                   </textarea>
@@ -183,7 +185,7 @@ class WidgetsTestCase(TestCase):
             """
             <script type="text/javascript" src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
             <script type="text/javascript" src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/widgets.js"></script>
+            <script type="text/javascript" src="/static/django_stachoutils/js/editeur.js"></script>
             """
         )
 
