@@ -25,7 +25,7 @@ class UtilsTestCase(SimpleTestCase):
         self.assertEqual(utils.truncate_chars(u"¿ Holà señor, como estas ?", 12), u"¿ Holà señor...")
 
     def test_strip_accents(self):
-        self.assertEqual(utils.strip_accents(u"Midi-Pyrénées"), b'Midi-Pyrenees')
+        self.assertEqual(utils.strip_accents(u"Midi-Pyrénées"), u'Midi-Pyrenees')
 
     def test_format_xml_entity(self):
         self.assertEqual(utils.format_xml_entity(u"Côtes d'Armor"), b'COTES-D-ARMOR')

@@ -46,7 +46,7 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
                 ).encode('utf8')
                 for record in self.buffer:
                     msg_bit = self.format(record)
-                    msg = msg + strip_accents(msg_bit) + b"\r\n"
+                    msg = msg + strip_accents(msg_bit).encode('ascii') + b"\r\n"
                 smtp.sendmail(self.fromaddr, self.toaddrs, msg)
                 smtp.quit()
             except:

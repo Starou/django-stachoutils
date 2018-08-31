@@ -36,7 +36,7 @@ def format_number(value=None, separator=','):
 import unicodedata
 def strip_accents(txt):
     #return ''.join([c for c in unicodedata.normalize('NFD', txt) if not unicodedata.combining(c)])
-    return unicodedata.normalize('NFD', str(txt)).encode('ascii', 'ignore')
+    return unicodedata.normalize('NFD', str(txt)).encode('ascii', 'ignore').decode('ascii')
 
 
 def latin1_safe_xml_encode(txt):
@@ -49,7 +49,7 @@ if sys.version_info.major == 2:
 else:
     xml_entity_table = bytes.maketrans(b' \'', b'--')
 def format_xml_entity(txt):
-    return strip_accents(txt).upper().translate(xml_entity_table)
+    return strip_accents(txt).encode('ascii').upper().translate(xml_entity_table)
 
 
 @keep_lazy_text
