@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Car(models.Model):
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100)
@@ -25,6 +27,7 @@ class Car(models.Model):
     price_html.ordering = ['price', 'name']
 
 
+@python_2_unicode_compatible
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -33,19 +36,14 @@ class Person(models.Model):
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
 
-    def __unicode__(self):
-        return self.__str__()
 
-
+@python_2_unicode_compatible
 class Company(models.Model):
     name = models.CharField(max_length=100)
     short_name = models.CharField(max_length=16, null=True, blank=True)
 
     def __str__(self):
         return self.short_name or self.name
-
-    def __unicode__(self):
-        return self.__str__()
 
 
 class Garage(models.Model):

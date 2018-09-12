@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from builtins import object
+from builtins import str as text
 from django.contrib import admin, messages
 from django.contrib.admin.utils import label_for_field
 from django.db.models import Q
@@ -372,7 +373,7 @@ class Filter(object):
     def __init__(self, instance, attr, filter_string, test, current_filters):
         if instance:
             self.instance = instance
-            self.label = instance.__unicode__()
+            self.label = text(instance)
             self.value = str(instance.pk)
         self.current_filters = current_filters
         self.key = '%s__%s' % (filter_string, test)
