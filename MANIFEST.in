@@ -1,7 +1,7 @@
-include LICENCE.txt
-include README.rst
-recursive-include django_stachoutils/static *.css *.js *.png *.jpg *.gif *.html
-recursive-include django_stachoutils/templates *.html
-recursive-include tests *
-recursive-exclude tests *.pyc .DS_Store
+include LICENSE
+graft tests
+exclude tests/coveralls.yaml
+exclude tests/.coverage
+global-exclude *.pyc
+global-exclude *.sqlite
 global-exclude .DS_Store

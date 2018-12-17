@@ -1,7 +1,11 @@
 import os
-from distutils.core import setup
+from setuptools import setup
 
-README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
+# Python 2.7
+from io import open
+
+with open(os.path.join(os.path.dirname(__file__), 'README.rst'), encoding='utf-8') as f:
+    README = f.read()
 
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
@@ -9,12 +13,16 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="django-stachoutils",
-    version="3.0.0",
+    version="3.0.1",
     license='BSD Licence',
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
     description='Commons for Django',
     url='https://github.com/Starou/django-stachoutils',
+    project_urls={
+        'Source Code': 'https://github.com/Starou/django-stachoutils',
+        'Issue Tracker': 'https://github.com/Starou/django-stachoutils/issues',
+    },
     long_description=README,
     install_requires=['future'],
     packages=[
@@ -25,13 +33,6 @@ setup(
         'django_stachoutils.views',
         'django_stachoutils.templatetags',
     ],
-    # I fucking hate distutils-wasting-time-machine.
-    # python setup.py build does not give a shit about what is in MANIFEST.in
-    # and here in package_data there is now fucking way to use ** glob style so
-    # you have to maintain that fucking list.
-    # A workaround is to use from setuptools import find_packages and
-    # set include_package_data=True but in that case you cannot upload to Pypi!
-    # Or maybe the doc sucks. Or maybe I am stupid.
     package_data={
         'django_stachoutils': [
             'static/django_stachoutils/css/*.css',
@@ -56,6 +57,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ]
