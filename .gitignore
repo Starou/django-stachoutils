@@ -6,4 +6,5 @@ MANIFEST
 *.pyc
 *.pyo
 *.sqlite
+*.egg-info
 .vagrant

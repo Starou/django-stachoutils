@@ -1,0 +1,10 @@
+<div>
+  {% for name, set in filters %}
+  <h3><a></a><input type="hidden" name="filter_key" value="{{ name }}" />By {{ name }}</h3>
+  <ul>
+    {% for filter, display, selected in set %}
+    <li{% if selected %} class="selected"{% endif %}><a href="?{{ filter }}">{{ display }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+</div>

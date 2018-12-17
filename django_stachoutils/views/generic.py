@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from django import VERSION as DJ_VERSION
+from builtins import object
+from builtins import str as text
 from django.contrib import admin, messages
 from django.contrib.admin.utils import label_for_field
 from django.db.models import Q
@@ -52,7 +53,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         admin_actions = adm.get_actions(request)
         for group, actions_in_group in actions:
             actions_dispos = [
-                (callable(action) and action.func_name or action,
+                (callable(action) and action.__name__ or action,
                  action in admin_actions and admin_actions[action][2] or action.short_description)
                 for action in actions_in_group if action in admin_actions or callable(action)
             ]
@@ -75,7 +76,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         # l'action est un callable.
         for group, actions_in_group in actions:
             for act in actions_in_group:
-                if callable(act) and act.func_name == action:
+                if callable(act) and act.__name__ == action:
                     # On filtre les objets selectionnés si le queryset est un vrai queryset.
                     if not int(request.POST.get('select_across', 0)) and hasattr(queryset, 'filter'):
                         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -270,18 +271,7 @@ def get_filter(model, current_filters, filter_params):
         attr = attrs[-1]
         mod = model
         for rel_model in rel_models:
-            try:
-                # As of Django 1.9, Field.rel has been replaced with remote_field.
-                # This may not works (not encountered yet).
-                mod = mod._meta.get_field(rel_model).remote_field.model
-            except:
-                if DJ_VERSION >= (1, 9):
-                    mod = getattr(mod, '%s_set' % rel_model).rel.related_model
-                elif DJ_VERSION >= (1, 8):
-                    mod = getattr(mod, '%s_set' % rel_model).related.related_model
-                else:
-                    mod = getattr(mod, '%s_set' % rel_model).related.model
-
+            mod = mod._meta.get_field(rel_model).remote_field.model
         field = mod._meta.get_field(attr)
 
         return field, attr
@@ -383,7 +373,7 @@ class Filter(object):
     def __init__(self, instance, attr, filter_string, test, current_filters):
         if instance:
             self.instance = instance
-            self.label = instance.__unicode__()
+            self.label = text(instance)
             self.value = str(instance.pk)
         self.current_filters = current_filters
         self.key = '%s__%s' % (filter_string, test)
@@ -396,10 +386,10 @@ class Filter(object):
         if self._url is None:
             filters = self.get_base_filters()
             out = filters.copy()
-            for k, v in filters.iteritems():
+            for k, v in filters.items():
                 if not v:
-                    del out[k]  # supp les filtres vides.
-            self._url = urlencode(out)
+                    del out[k]  # del empty filters
+            self._url = urlencode(sorted((k, v) for k, v in out.items()))  # sorted to pass the tests...
         return self._url
     url = property(_get_url)
 
