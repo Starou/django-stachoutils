@@ -1,6 +1,7 @@
 build
 dist
 tests/.coverage
+tests/coverage-report
 *.pyc
 *.pyo
 *.sqlite

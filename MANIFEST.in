@@ -2,6 +2,8 @@ include LICENSE
 graft tests
 exclude tests/coveralls.yaml
 exclude tests/.coverage
+prune tests/coverage-report
 global-exclude *.pyc
 global-exclude *.sqlite
 global-exclude .DS_Store
+global-exclude .swp
