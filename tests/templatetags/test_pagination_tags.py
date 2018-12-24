@@ -7,7 +7,7 @@ from .models import Car
 from .utils import set_templates
 
 
-class PaginationTagTestCase(TestCase):
+class PaginationTagTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))

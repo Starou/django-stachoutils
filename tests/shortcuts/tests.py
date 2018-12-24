@@ -14,7 +14,7 @@ from django.test import TestCase
 from django_stachoutils import shortcuts
 
 
-class ResponseTestCase(TestCase):
+class ResponseTest(TestCase):
     def test_macroman_response(self):
         data = u"B#Ω"
         response = shortcuts.macroman_text_response(data)
@@ -58,7 +58,7 @@ class ResponseTestCase(TestCase):
         )
 
 
-class ResponseExtrasTestCase(TestCase):
+class ResponseExtrasTest(TestCase):
     def test_encode_default(self):
         self.assertJSONEqual(json.dumps({"date": datetime.date(2018, 3, 14),
                                      "price": decimal.Decimal("14.99")},

@@ -23,7 +23,7 @@ class PersonForm(forms.ModelForm):
         fields = ('name', 'lastname', 'gender', 'house')
 
 
-class FieldsTestCase(TestCase):
+class FieldsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.h1 = House.objects.create(address="12, rue de la Paix", city="Paris")

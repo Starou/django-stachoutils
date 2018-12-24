@@ -8,7 +8,7 @@ from .models import Car
 from .utils import set_templates, simple_bool_tag
 
 
-class TableTagTestCase(TestCase):
+class TableTagTest(TestCase):
     columns = [
         {'label': 'Name', 'field': 'name', 'link': {'href': 'get_absolute_url', 'style': 'nowrap', 'title': '__str__'}},
         {'label': 'Brand', 'field': 'brand'},
@@ -98,7 +98,7 @@ class TableTagTestCase(TestCase):
         """)
 
 
-class InlineTagTestCase(TestCase):
+class InlineTagTest(TestCase):
     @set_templates({'template1': '{% inline_display_class inlines_visibles inline counter %}'})
     def test_inline_display_class(self):
         result = self.engine.render_to_string('template1', {

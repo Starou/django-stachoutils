@@ -6,7 +6,7 @@ from django.test import TestCase
 from .models import Car
 
 
-class WidgetsTestCase(TestCase):
+class WidgetsTest(TestCase):
     def test_render_admin_texte_editeur_widget(self):
         from django_stachoutils.forms.widgets import AdminTexteEditeur
 

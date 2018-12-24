@@ -142,7 +142,7 @@ if __name__ == "__main__":
     parser.add_argument(
         'modules', nargs='*', metavar='module',
         help='Optional path(s) to test modules; e.g. "autocomplete" or '
-        '"utils.tests.UtilsTestCase.test_clean_fieldname_prefix".')
+        '"utils.tests.UtilsTest.test_clean_fieldname_prefix".')
     parser.add_argument(
         '-v', '--verbosity', default=1, type=int, choices=[0, 1, 2, 3],
         help='Verbosity level; 0=minimal output, 1=normal output, 2=all output')

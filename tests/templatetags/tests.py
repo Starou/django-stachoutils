@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 
-class TemplateTagsTestCase(TestCase):
+class TemplateTagsTest(TestCase):
     def test_current_filters_html(self):
         from django_stachoutils.templatetags.stachoutils_extras import current_filters
         filters = [

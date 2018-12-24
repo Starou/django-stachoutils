@@ -3,7 +3,7 @@
 import unittest
 
 
-class ActionsTestCase(unittest.TestCase):
+class ActionsTest(unittest.TestCase):
     def test_regroup_actions(self):
         from django_stachoutils.views.actions import regroup_actions
 
@@ -37,5 +37,5 @@ class ActionsTestCase(unittest.TestCase):
 
 
 def suite():
-    suite = unittest.TestLoader().loadTestsFromTestCase(ActionsTestCase)
+    suite = unittest.TestLoader().loadTestsFromTestCase(ActionsTest)
     return suite

@@ -8,7 +8,7 @@ from .models import Car
 from .utils import set_templates
 
 
-class FilterTestCase(TestCase):
+class FilterTest(TestCase):
     @set_templates({'template1': '{{ val|iconify }}'})
     def test_iconify(self):
         result = self.engine.render_to_string('template1', {'val': True})

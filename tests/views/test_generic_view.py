@@ -30,7 +30,7 @@ class MessageStorage(BaseStorage):
         return []
 
 
-class BaseGenericListTestCase(TestCase):
+class BaseGenericListTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.c1 = Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))
@@ -56,7 +56,7 @@ class BaseGenericListTestCase(TestCase):
         ]
 
 
-class UnitTestCase(TestCase):
+class UnitTest(TestCase):
     def setUp(self):
         self.rf = RequestFactory()
         self.columns = [
@@ -211,7 +211,7 @@ class UnitTestCase(TestCase):
 
 
 
-class GenericChangeResponseTestCase(TestCase):
+class GenericChangeResponseTest(TestCase):
     url_continue = '/cars/1/'
     url_add_another = '/cars/add/'
     url_default = '/cars/'
@@ -241,7 +241,7 @@ class GenericChangeResponseTestCase(TestCase):
         self.assertEqual(response.url, self.url_add_another)
 
 
-class GenericListTestCase(BaseGenericListTestCase):
+class GenericListTest(BaseGenericListTest):
     template = 'generic_list_test.html'
 
     def test_generic_list(self):
@@ -426,12 +426,12 @@ class GenericListTestCase(BaseGenericListTestCase):
                          [self.c1.pk, self.c4.pk])
 
 
-class GenericListFiltersTestCase(BaseGenericListTestCase):
+class GenericListFiltersTest(BaseGenericListTest):
     template = 'generic_list_filters_test.html'
 
     @classmethod
     def setUpTestData(cls):
-        super(GenericListFiltersTestCase, cls).setUpTestData()
+        super(GenericListFiltersTest, cls).setUpTestData()
         cls.p1 = Person.objects.create(first_name='Stanislas', last_name='Guerra')
         cls.p2 = Person.objects.create(first_name='Michael', last_name='Schumacher')
 

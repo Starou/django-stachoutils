@@ -24,7 +24,7 @@ class MessageStorage(BaseStorage):
         return []
 
 
-class MessageHandlerTestCase(TestCase):
+class MessageHandlerTest(TestCase):
     def test_message_handler(self):
         logger = logging.getLogger("stachoutils.logger1")
         rf = RequestFactory()
@@ -38,7 +38,7 @@ class MessageHandlerTestCase(TestCase):
 
 # Can't use @override_settings here since BufferingSMTPHandler is initialized
 # with settings values.
-class AdminEmailHandlerTestCase(TestCase):
+class AdminEmailHandlerTest(TestCase):
     def test_admin_email_handler(self):
         logger = logging.getLogger("stachoutils.logger2")
         logger.error("This is a error message")
@@ -56,7 +56,7 @@ class AdminEmailHandlerTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
 
-class NullHandlerTestCase(TestCase):
+class NullHandlerTest(TestCase):
     def test_null_handler(self):
         logger = logging.getLogger("stachoutils.logger4")
         logger.error("This error is not handled")

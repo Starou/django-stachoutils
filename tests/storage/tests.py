@@ -11,7 +11,7 @@ from django.test import TestCase
 from .models import Car
 
 
-class StorageTestCase(TestCase):
+class StorageTest(TestCase):
     def setUp(self):
         self.tmp_media_root = tempfile.mkdtemp()
 

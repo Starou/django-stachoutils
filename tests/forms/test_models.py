@@ -24,7 +24,7 @@ class CarForm(ModelForm):
         }
 
 
-class ModelFormTestCase(TestCase):
+class ModelFormTest(TestCase):
     def test_render_model_form(self):
         form = CarForm()
         self.assertHTMLEqual(

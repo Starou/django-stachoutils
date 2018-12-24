@@ -5,7 +5,7 @@ from django.test import RequestFactory, TestCase
 from django_stachoutils.middlewares import ExceptionUserInfoMiddleware
 
 
-class ExceptionUserInfoMiddlewareTestCase(TestCase):
+class ExceptionUserInfoMiddlewareTest(TestCase):
     rf = RequestFactory()
 
     @classmethod

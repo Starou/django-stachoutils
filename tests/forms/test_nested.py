@@ -26,7 +26,7 @@ class CarForm(NestedModelForm):
         fk = 'owner'
 
 
-class NestedModelFormTestCase(TestCase):
+class NestedModelFormTest(TestCase):
     def test_render_nested_model_form(self):
         form = CarForm()
         self.assertHTMLEqual(

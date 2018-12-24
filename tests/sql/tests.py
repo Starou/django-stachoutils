@@ -6,7 +6,7 @@ from unittest import skipIf
 from .models import Car
 
 
-class AggregateTestCase(TestCase):
+class AggregateTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.c1 = Car.objects.create(brand=u"Saab", name=u"9-3 2.0T", type=u"Coupé",

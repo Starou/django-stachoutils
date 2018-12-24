@@ -14,7 +14,7 @@ from .models import House, Person
 
 
 @modify_settings(INSTALLED_APPS={'append': 'django_thumbor', 'remove': 'sorl.thumbnail'})
-class ThumborFieldsTestCase(TestCase):
+class ThumborFieldsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.h1 = House.objects.create(address="12, rue de la Paix", city="Paris")

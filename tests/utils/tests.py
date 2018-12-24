@@ -9,7 +9,7 @@ from django.test import SimpleTestCase
 import django_stachoutils as utils
 
 
-class UtilsTestCase(SimpleTestCase):
+class UtilsTest(SimpleTestCase):
     def test_format_datetime(self):
         self.assertEqual(utils.format_datetime(datetime(2017, 1, 31, 16, 58, 33)), u'Jan. 31, 2017, 4:58 p.m.')
         self.assertEqual(utils.format_datetime(datetime(2017, 1, 31, 16, 58, 33), time=False), u'Jan. 31, 2017')

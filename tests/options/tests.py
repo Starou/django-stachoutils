@@ -5,7 +5,7 @@ from django_stachoutils import options
 from .models import Car
 
 
-class PaginateTestCase(TestCase):
+class PaginateTest(TestCase):
     def test_paginate(self):
         Car.objects.create(brand='Saab', name='9.3')
         Car.objects.create(brand='Saab', name='900')

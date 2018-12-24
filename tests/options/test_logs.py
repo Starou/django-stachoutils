@@ -4,7 +4,6 @@ from builtins import str
 from django import forms
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
-from django.contrib.admin.models import LogEntry
 from django.forms.models import inlineformset_factory
 from django.test import RequestFactory, TestCase
 
@@ -18,7 +17,7 @@ class CarForm(forms.ModelForm):
         fields = ('name', 'brand')
 
 
-class LogsTestCase(TestCase):
+class LogsTest(TestCase):
     rf = RequestFactory()
     @classmethod
     def setUpTestData(cls):

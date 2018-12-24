@@ -7,7 +7,7 @@ except:
     import mock
 
 
-class BufferingSMTPHandlerTestCase(TestCase):
+class BufferingSMTPHandlerTest(TestCase):
     mailhost = "my_smtp"
     fromaddr = "me@my_compagny.com"
     toaddrs = ["chris.mannix@redrock.org", "bob.ruth@bassocied-bhunters.com"]
