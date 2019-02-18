@@ -118,7 +118,10 @@ class ModelForm(with_metaclass(ModelFormMetaclass, forms.ModelForm)):
         return False
 
     def _get_formset_prefix(self, key):
-        return u'%s_%s' % (self.prefix, key.upper())
+        formset_prefix = key.upper()
+        if self.prefix:
+            formset_prefix = u'{}_{}'.format(self.prefix, formset_prefix)
+        return formset_prefix
 
     def _clean_form(self):
         super(ModelForm, self)._clean_form()
