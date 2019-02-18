@@ -10,7 +10,7 @@ class Car(models.Model):
 
 
 class CarOption(models.Model):
-    car = models.ForeignKey('Car')
+    car = models.ForeignKey('Car', on_delete=models.CASCADE)
     name = models.CharField(max_length=15)
 
     def __str__(self):

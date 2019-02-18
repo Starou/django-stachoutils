@@ -33,7 +33,7 @@ Vagrant.configure(2) do |config|
 
     stachoutils.vm.provision "pip3-install", type: :shell, privileged: false, inline: <<-SHELL
       source ~/venv_py3/bin/activate
-      pip3 install coverage django==1.11 future Pillow sorl-thumbnail django_thumbor
+      pip3 install coverage django==2.1.7 future Pillow sorl-thumbnail django_thumbor
     SHELL
 
     stachoutils.vm.provision "bashrc", type: :shell, privileged: false, inline: <<-SHELL

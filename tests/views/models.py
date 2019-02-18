@@ -11,8 +11,8 @@ class Car(models.Model):
     price = models.IntegerField()
     purchased_on = models.DateField()
     for_sale = models.BooleanField(default=False)
-    last_driver = models.ForeignKey('Person', null=True, blank=True)
-    maintained_by = models.ForeignKey('Garage', null=True, blank=True)
+    last_driver = models.ForeignKey('Person', on_delete=models.CASCADE, null=True, blank=True)
+    maintained_by = models.ForeignKey('Garage', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -31,7 +31,7 @@ class Car(models.Model):
 class Person(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    employed_by = models.ForeignKey('Company', null=True, blank=True)
+    employed_by = models.ForeignKey('Company', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
@@ -48,7 +48,7 @@ class Company(models.Model):
 
 class Garage(models.Model):
     name = models.CharField(max_length=100)
-    owner = models.ForeignKey('Person', null=True, blank=True)
+    owner = models.ForeignKey('Person', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
