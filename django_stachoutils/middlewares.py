@@ -12,9 +12,7 @@ class ExceptionUserInfoMiddleware(object):
 
     def process_exception(self, request, exception):
         try:
-            # TODO replace with `is_authenticated` attribute when support
-            # for django < 1.10 is dropped and django-2.0 is supported.
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 request.META['USERNAME'] = str(request.user.username)
                 request.META['USER_EMAIL'] = str(request.user.email)
         except:
