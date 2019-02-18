@@ -115,7 +115,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
         }
         js = ('django_stachoutils/js/forms.js',)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         hidden_input = super(ImageDroppableHiddenInput, self).render(name, value, attrs=None)
         image_tag = '<img />'
         if value:
