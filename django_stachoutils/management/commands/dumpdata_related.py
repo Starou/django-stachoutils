@@ -1,6 +1,8 @@
-from collections import OrderedDict
-from optparse import make_option
+# -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
+from collections import OrderedDict
 from django.apps import apps
 from django.core.management.base import BaseCommand, CommandError
 from django.core import serializers
@@ -8,39 +10,25 @@ from django.db import router, DEFAULT_DB_ALIAS
 
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('--format', default='json', dest='format',
-            help='Specifies the output serialization format for fixtures.'),
-        make_option('--indent', default=None, dest='indent', type='int',
-            help='Specifies the indent level to use when pretty-printing output'),
-        make_option('--database', action='store', dest='database',
-            default=DEFAULT_DB_ALIAS,
-            help='Nominates a specific database to dump fixtures from. '
-                 'Defaults to the "default" database.'),
-        make_option('-e', '--exclude', dest='exclude', action='append', default=[],
-            help='An appname or appname.ModelName to exclude (use multiple --exclude to exclude multiple apps/models).'),
-        make_option('--natural-foreign', action='store_true', dest='use_natural_foreign_keys', default=False,
-            help='Use natural foreign keys if they are available.'),
-        make_option('--natural-primary', action='store_true', dest='use_natural_primary_keys', default=False,
-            help='Use natural primary keys if they are available.'),
-        make_option('-a', '--all', action='store_true', dest='use_base_manager', default=False,
-            help="Use Django's base manager to dump all models stored in the database, "
-                 "including those that would otherwise be filtered or modified by a custom manager."),
-        make_option('--pks', dest='primary_keys',
-            help="Only dump objects with given primary keys. "
-                 "Accepts a comma separated list of keys. "
-                 "This option will only work when you specify one model."),
-        make_option('-o', '--output', default=None, dest='output',
-            help='Specifies file to which the output is written.'),
-        make_option('--related', dest='related'),
-    )
     help = ("Output the contents of the database as a fixture of the given "
             "format (using each model's default manager unless --all is "
             "specified).")
-    args = '[app_label app_label.ModelName ...]'
 
-    def handle(self, *app_labels, **options):
+    def add_arguments(self, parser):
+        parser.add_argument('app_labels', nargs="*", help='[app_label app_label.ModelName ...]')
+        parser.add_argument('--format', default="json", help='Specifies the output serialization format for fixtures.')
+        parser.add_argument('--indent', type=int, default=None, help='Specifies the indent level to use when pretty-printing output')
+        parser.add_argument('--database', default=DEFAULT_DB_ALIAS, help='Nominates a specific database to dump fixtures from. Defaults to the "default" database.')
+        parser.add_argument('--exclude', action='append', default=[], help='An appname or appname.ModelName to exclude (use multiple --exclude to exclude multiple apps/models).')
+        parser.add_argument('--natural-foreign', action='store_true', dest='use_natural_foreign_keys', default=False, help='Use natural foreign keys if they are available.')
+        parser.add_argument('--natural-primary', action='store_true', dest='use_natural_primary_keys', default=False, help='Use natural primary keys if they are available.')
+        parser.add_argument('-a', '--all', action='store_true', dest='use_base_manager', default=False, help="Use Django's base manager to dump all models stored in the database, including those that would otherwise be filtered or modified by a custom manager.")
+        parser.add_argument('--pks', dest='primary_keys', help="Only dump objects with given primary keys. Accepts a comma separated list of keys. This option will only work when you specify one model.")
+        parser.add_argument('-o', '--output', default=None, help='Specifies file to which the output is written.')
+        parser.add_argument('--related')
 
+    def handle(self, *args, **options):
+        app_labels = options.get('app_labels')
         format = options.get('format')
         indent = options.get('indent')
         using = options.get('database')
