@@ -307,7 +307,7 @@ def get_filter(model, current_filters, filter_params):
         displayed_choices.insert(0, (lambda f=FilterAll(attrib, filter_key, filter_test, current_filters): (
             f.url, f.label, f.is_selected))())
         if empty_choice:
-            displayed_choices.append((lambda f=FilterNone(model, attrib, filter_key, current_filters): (
+            displayed_choices.append((lambda f=FilterNone(model, attrib, filter_key, filter_test, current_filters): (
                 f.url, f.label, f.is_selected))())
 
         return displayed_choices
@@ -441,8 +441,9 @@ class FilterAll(Filter):
 
 
 class FilterNone(Filter):
-    def __init__(self, model, attr, filter_string, current_filters):
+    def __init__(self, model, attr, filter_string, test, current_filters):
         super(FilterNone, self).__init__(None, attr, filter_string, 'isnull', current_filters)
+        self.sibling_key = '%s__%s' % (filter_string, test)  # key for actual filtering
         self.label = u'Aucun'
         self.value = True
 
@@ -455,4 +456,6 @@ class FilterNone(Filter):
     def get_base_filters(self):
         filters = super(FilterNone, self).get_base_filters()
         filters.update({self.key: self.value})
+        if self.sibling_key in filters:
+            del filters[self.sibling_key]
         return filters
