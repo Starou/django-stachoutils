@@ -131,7 +131,7 @@ class UnitTest(TestCase):
         car_content_type = ContentType.objects.get_for_model(Car)
         perm = Permission.objects.create(name="Can see puchased on date of a car",
                                          content_type=car_content_type,
-                                        codename='see_car_purchased_on')
+                                         codename='see_car_purchased_on')
         user.user_permissions.add(perm)
         user = User.objects.get(pk=user.pk)
         self.assertTrue(generic.has_column_perm(user, col))
@@ -491,7 +491,7 @@ class GenericListFiltersTest(BaseGenericListTest):
                 <li><a href="?">All</a></li>
                 <li><a href="?last_driver__exact=%d">Stanislas Guerra</a></li>
                 <li class="selected"><a href="?last_driver__exact=%d">Michael Schumacher</a></li>
-                <li><a href="?last_driver__exact=%d&last_driver__isnull=True">Aucun</a></li>
+                <li><a href="?last_driver__isnull=True">Aucun</a></li>
               </ul>
-            </div>""" % (self.p1.pk, self.p2.pk, self.p2.pk)
+            </div>""" % (self.p1.pk, self.p2.pk)
         )
