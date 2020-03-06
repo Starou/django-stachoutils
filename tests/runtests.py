@@ -10,11 +10,10 @@ import django
 from django.apps import apps
 from django.conf import settings
 from django.test.utils import get_runner
-from django.utils._os import upath
 
 TEST_TEMPLATE_DIR = 'templates'
 
-RUNTESTS_DIR = os.path.abspath(os.path.dirname(upath(__file__)))
+RUNTESTS_DIR = os.path.abspath(os.path.dirname(__file__))
 
 SUBDIRS_TO_SKIP = [
     'data',
