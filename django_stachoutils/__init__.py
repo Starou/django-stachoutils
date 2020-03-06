@@ -33,21 +33,17 @@ def format_number(value=None, separator=','):
 
 
 # From http://stackoverflow.com/questions/517923/what-is-the-best-way-to-remove-accents-in-a-python-unicode-string
-import unicodedata
 def strip_accents(txt):
-    #return ''.join([c for c in unicodedata.normalize('NFD', txt) if not unicodedata.combining(c)])
     return unicodedata.normalize('NFD', str(txt)).encode('ascii', 'ignore').decode('ascii')
 
 
 def latin1_safe_xml_encode(txt):
     return str(txt.encode('latin-1', 'xmlcharrefreplace'), 'latin-1')
 
-import sys
-if sys.version_info.major == 2:
-    import string
-    xml_entity_table = string.maketrans(b' \'', b'--')
-else:
-    xml_entity_table = bytes.maketrans(b' \'', b'--')
+
+xml_entity_table = bytes.maketrans(b' \'', b'--')
+
+
 def format_xml_entity(txt):
     return strip_accents(txt).encode('ascii').upper().translate(xml_entity_table)
 

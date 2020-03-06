@@ -12,8 +12,6 @@ from django.conf import settings
 from django.test.utils import get_runner
 from django.utils._os import upath
 
-from django import VERSION as DJ_VERSION
-
 TEST_TEMPLATE_DIR = 'templates'
 
 RUNTESTS_DIR = os.path.abspath(os.path.dirname(upath(__file__)))
@@ -43,8 +41,7 @@ ALWAYS_MIDDLEWARE_CLASSES = (
 )
 
 MIDDLEWARE_ATTR = "MIDDLEWARE"
-if DJ_VERSION < (1, 10):
-    MIDDLEWARE_ATTR = "MIDDLEWARE_CLASSES"
+
 
 def get_test_modules():
     modules = []
