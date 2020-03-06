@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from builtins import chr, map, range, str
 import hashlib
 import re
+import unicodedata
 
 from datetime import datetime
 from django.utils import formats, dateformat
@@ -25,6 +26,7 @@ def format_datetime(value=None, date=True, time=True):
 def format_number(value=None, separator=','):
     if not value:
         return ''
+
     def split_thousands(s):
         if len(s) <= 3:
             return s
@@ -33,21 +35,17 @@ def format_number(value=None, separator=','):
 
 
 # From http://stackoverflow.com/questions/517923/what-is-the-best-way-to-remove-accents-in-a-python-unicode-string
-import unicodedata
 def strip_accents(txt):
-    #return ''.join([c for c in unicodedata.normalize('NFD', txt) if not unicodedata.combining(c)])
     return unicodedata.normalize('NFD', str(txt)).encode('ascii', 'ignore').decode('ascii')
 
 
 def latin1_safe_xml_encode(txt):
     return str(txt.encode('latin-1', 'xmlcharrefreplace'), 'latin-1')
 
-import sys
-if sys.version_info.major == 2:
-    import string
-    xml_entity_table = string.maketrans(b' \'', b'--')
-else:
-    xml_entity_table = bytes.maketrans(b' \'', b'--')
+
+xml_entity_table = bytes.maketrans(b' \'', b'--')
+
+
 def format_xml_entity(txt):
     return strip_accents(txt).encode('ascii').upper().translate(xml_entity_table)
 
@@ -62,7 +60,9 @@ def truncate_chars(s, num):
     return txt
 
 
-rx_lettrine = re.compile("(\w)(\s)([\w-]+)([,.]{0,1}\s.*)", re.UNICODE|re.IGNORECASE)
+rx_lettrine = re.compile(r"(\w)(\s)([\w-]+)([,.]{0,1}\s.*)", re.UNICODE | re.IGNORECASE)
+
+
 def clean_lettrine(txt):
     """Vire les espaces ajoutés aux textes suite import QuarkXpress"""
     match = rx_lettrine.match(txt)
@@ -84,8 +84,8 @@ def clean_lettrine(txt):
 # see also: http://en.wikipedia.org/wiki/Roman_numerals
 # tested with Python24       vegaseat        25jan2007
 def int_to_roman(number):
-    numerals = { 1 : "I", 4 : "IV", 5 : "V", 9 : "IX", 10 : "X", 40 : "XL",
-        50 : "L", 90 : "XC", 100 : "C", 400 : "CD", 500 : "D", 900 : "CM", 1000 : "M" }
+    numerals = {1: "I", 4: "IV", 5: "V", 9: "IX", 10: "X", 40: "XL",
+                50: "L", 90: "XC", 100: "C", 400: "CD", 500: "D", 900: "CM", 1000: "M"}
     result = ""
     for value, numeral in sorted(list(numerals.items()), reverse=True):
         while number >= value:
@@ -96,6 +96,8 @@ def int_to_roman(number):
 
 # Inspired by http://stackoverflow.com/questions/92438/stripping-non-printable-characters-from-a-string-in-python
 non_printable_re = re.compile('[%s]' % re.escape(''.join(map(chr, list(range(0, 9)) + list(range(11, 13)) + list(range(14, 32)) + list(range(127, 160))))))
+
+
 def filter_non_printable(txt):
     return non_printable_re.sub('', txt)
 
