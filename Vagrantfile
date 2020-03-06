@@ -3,7 +3,7 @@
 
 Vagrant.configure(2) do |config|
   config.vm.define "stachoutils", primary: true do |stachoutils|
-    stachoutils.vm.box = "bento/ubuntu-16.04"
+    stachoutils.vm.box = "hashicorp/bionic64"
     stachoutils.vm.hostname = "stachoutils"
 
     stachoutils.vm.provider "virtualbox" do |vb|
