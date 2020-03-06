@@ -4,7 +4,6 @@ import csv
 import datetime
 import decimal
 import json
-import os
 import zipfile
 
 from io import BytesIO
@@ -12,6 +11,7 @@ from xml.dom import minidom
 from django.conf import settings
 from django.test import TestCase
 from django_stachoutils import shortcuts
+from pathlib import Path
 
 
 class ResponseTest(TestCase):
@@ -34,8 +34,8 @@ class ResponseTest(TestCase):
 
     def test_zip_response(self):
         files = [
-            ("jardin.jpg", open(os.path.join(settings.MEDIA_ROOT, "jardin.jpg"), "rb").read()),
-            ("terrasse.jpg", open(os.path.join(settings.MEDIA_ROOT, "terrasse.jpg"), "rb").read()),
+            ("jardin.jpg", Path(f"{settings.MEDIA_ROOT}/jardin.jpg").read_bytes()),
+            ("terrasse.jpg", Path(f"{settings.MEDIA_ROOT}/terrasse.jpg").read_bytes()),
         ]
         response = shortcuts.zip_response(files, filename='my_archive.zip')
         fp = BytesIO()
@@ -61,9 +61,9 @@ class ResponseTest(TestCase):
 class ResponseExtrasTest(TestCase):
     def test_encode_default(self):
         self.assertJSONEqual(json.dumps({"date": datetime.date(2018, 3, 14),
-                                     "price": decimal.Decimal("14.99")},
-                                    default=shortcuts.encode_default),
-                         '{"date": "2018-03-14", "price": 14.99}')
+                                         "price": decimal.Decimal("14.99")},
+                                        default=shortcuts.encode_default),
+                             '{"date": "2018-03-14", "price": 14.99}')
 
     def test_encode_default_raises_exception(self):
         from .models import Car
@@ -71,8 +71,7 @@ class ResponseExtrasTest(TestCase):
             "date": datetime.date(2018, 3, 14),
             "price": decimal.Decimal("14.99"),
             "car": Car.objects.create(brand="Saab", name="9.3"),
-        },
-        default=shortcuts.encode_default)
+        }, default=shortcuts.encode_default)
 
     def test_get_object_or_none(self):
         from .models import Car

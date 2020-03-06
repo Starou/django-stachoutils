@@ -79,9 +79,8 @@ class FieldsTest(TestCase):
 
         old_media_root = settings.MEDIA_ROOT
         with self.settings(MEDIA_ROOT=self.tmp_media_root):
-            self.h1.photo.save("some pic", ImageFile(open(os.path.join(old_media_root,
-                                                                      "1st_Saab_9-3_SE.jpg"),
-                                                         mode="rb")))
+            with open(os.path.join(old_media_root, "1st_Saab_9-3_SE.jpg"), mode="rb") as f:
+                self.h1.photo.save("some pic", ImageFile(f))
             form = PersonForm({'name': 'Stan',
                                'lastname': 'Guerra',
                                'gender': 'male',
