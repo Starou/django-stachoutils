@@ -60,7 +60,7 @@ def truncate_chars(s, num):
     return txt
 
 
-rx_lettrine = re.compile("(\w)(\s)([\w-]+)([,.]{0,1}\s.*)", re.UNICODE | re.IGNORECASE)
+rx_lettrine = re.compile(r"(\w)(\s)([\w-]+)([,.]{0,1}\s.*)", re.UNICODE | re.IGNORECASE)
 
 
 def clean_lettrine(txt):
