@@ -1,9 +1,6 @@
 import os
 from setuptools import setup
 
-# Python 2.7
-from io import open
-
 with open(os.path.join(os.path.dirname(__file__), 'README.rst'), encoding='utf-8') as f:
     README = f.read()
 
@@ -13,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="django-stachoutils",
-    version="3.1.2",
+    version="3.2.0",
     license='BSD Licence',
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
@@ -55,7 +52,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP',
