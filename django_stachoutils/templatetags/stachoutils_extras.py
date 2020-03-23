@@ -6,7 +6,7 @@ from django.conf import settings
 from django.template import Library, Context, Template
 from django.utils.safestring import mark_safe
 from django.utils.http import urlencode
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from django_stachoutils import urldecode
 from django_stachoutils.views.generic import ORDER_BY_ATTR, ORDER_TYPE_ATTR
@@ -101,8 +101,6 @@ def processing(value):
 
 @register.filter
 def default_if_newrecord(record, default):
-   # if isinstance(record, ):
-   #     return value.strip()
     if record.pk:
         return record
     else:
@@ -136,7 +134,7 @@ def progressbar(value):
         total = value[1]
         perc_completed = 0
         if total > 0:
-            perc_completed = progress / total * 100  #FIXME with Integers.
+            perc_completed = progress / total * 100  # FIXME with Integers.
             label = "%s/%s" % (progress, total)
     else:
         perc_completed = int(value)

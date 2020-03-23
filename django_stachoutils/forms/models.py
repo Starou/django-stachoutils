@@ -4,7 +4,7 @@ from builtins import range
 from builtins import object
 from django import forms
 from django.forms.models import ModelFormMetaclass
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from future.utils import with_metaclass
@@ -152,10 +152,10 @@ class ModelForm(with_metaclass(ModelFormMetaclass, forms.ModelForm)):
             if bf.is_hidden:
                 continue
             if bf.label:
-                label = conditional_escape(force_text(bf.label))
+                label = conditional_escape(force_str(bf.label))
                 label = bf.label_tag(label, label_suffix="") or ''
             else:
                 label = ''
-            out.append(u"<th>%s</th>" % force_text(label))
+            out.append(u"<th>%s</th>" % force_str(label))
 
         return mark_safe(u'<tr>%s</tr>' % ''.join(out))

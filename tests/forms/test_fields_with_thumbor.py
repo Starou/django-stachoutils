@@ -46,9 +46,8 @@ class ThumborFieldsTest(TestCase):
 
         old_media_root = settings.MEDIA_ROOT
         with self.settings(MEDIA_ROOT=self.tmp_media_root):
-            self.h1.photo.save("some pic", ImageFile(open(os.path.join(old_media_root,
-                                                                      "home_1.jpg"),
-                                                          mode="rb")))
+            with open(os.path.join(old_media_root, "home_1.jpg"), mode="rb") as f:
+                self.h1.photo.save("some pic", ImageFile(f))
             form = PersonForm({'name': 'Stan',
                                'lastname': 'Guerra',
                                'gender': 'male',
@@ -98,4 +97,3 @@ class ThumborFieldsTest(TestCase):
             person = Person.objects.latest('pk')
             self.assertEqual(person.name, 'Stan')
             self.assertEqual(person.house, self.h1)
-

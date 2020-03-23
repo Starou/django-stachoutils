@@ -10,7 +10,7 @@ from django.db.models.fields import BooleanField
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.http import urlencode, urlunquote
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django_stachoutils.options import paginate
 from django_stachoutils.views.actions import regroup_actions
 

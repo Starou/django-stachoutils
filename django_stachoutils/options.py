@@ -2,7 +2,7 @@
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
@@ -12,7 +12,7 @@ def log_addition(request, object):
         user_id         = request.user.pk,
         content_type_id = ContentType.objects.get_for_model(object).pk,
         object_id       = object.pk,
-        object_repr     = force_text(object),
+        object_repr     = force_str(object),
         action_flag     = ADDITION
     )
 
@@ -22,7 +22,7 @@ def log_change(request, object, message):
         user_id         = request.user.pk,
         content_type_id = ContentType.objects.get_for_model(object).pk,
         object_id       = object.pk,
-        object_repr     = force_text(object),
+        object_repr     = force_str(object),
         action_flag     = CHANGE,
         change_message  = message
     )
@@ -43,7 +43,7 @@ def log_change_for_user(user, object, message):
         user_id         = user.pk,
         content_type_id = ContentType.objects.get_for_model(object).pk,
         object_id       = object.pk,
-        object_repr     = force_text(object),
+        object_repr     = force_str(object),
         action_flag     = CHANGE,
         change_message  = message
     )
@@ -83,7 +83,7 @@ def paginate(request, queryset, paginate_by=50):
         try:
             paginate_by = int(request.GET['paginate_by'])
         except ValueError:
-            pass # on retombe sur la valeur par defaut.
+            pass  # on retombe sur la valeur par defaut.
 
     paginator = Paginator(queryset, paginate_by)
     try:

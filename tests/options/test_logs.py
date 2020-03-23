@@ -2,6 +2,7 @@
 
 from builtins import str
 from django import forms
+from django import VERSION as DJ_VERSION
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.forms.models import inlineformset_factory
@@ -80,7 +81,10 @@ class LogsTest(TestCase):
         log = LogEntry.objects.latest('pk')
         self.assertTrue(log.is_addition())
         self.assertEqual(log.user, self.user)
-        self.assertEqual(str(log), 'Added "9.3 2.0t".')
+        if DJ_VERSION >= (3, 0):
+            self.assertEqual(str(log), 'Added “9.3 2.0t”.')
+        else:
+            self.assertEqual(str(log), 'Added "9.3 2.0t".')
 
         # Modification
         form = CarForm({
@@ -93,7 +97,10 @@ class LogsTest(TestCase):
         log = LogEntry.objects.latest('pk')
         self.assertFalse(log.is_addition())
         self.assertEqual(log.user, self.user)
-        self.assertEqual(str(log), u'Changed "900 Turbo 16" - a modifié : name (car [900 Turbo 16]) ; ')
+        if DJ_VERSION >= (3, 0):
+            self.assertEqual(str(log), u'Changed “900 Turbo 16” — a modifié : name (car [900 Turbo 16]) ; ')
+        else:
+            self.assertEqual(str(log), u'Changed "900 Turbo 16" - a modifié : name (car [900 Turbo 16]) ; ')
 
     def test_logs_for_formsets(self):
         car = Car.objects.create(brand='Lada', name='Niva')

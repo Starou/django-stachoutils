@@ -5,6 +5,7 @@ from datetime import datetime
 from django.core.files.base import ContentFile
 from django.conf import settings
 from django.test import SimpleTestCase
+from pathlib import Path
 
 import django_stachoutils as utils
 
@@ -54,19 +55,19 @@ class UtilsTest(SimpleTestCase):
     def test_files_are_equal(self):
         image1 = os.path.join(settings.MEDIA_ROOT, 'jardin.jpg')
         image2 = os.path.join(settings.MEDIA_ROOT, 'terrasse.jpg')
-        f1 = ContentFile(open(image1, 'rb').read())
-        f2 = ContentFile(open(image2, 'rb').read())
+        f1 = ContentFile(Path(image1).read_bytes())
+        f2 = ContentFile(Path(image2).read_bytes())
 
         # Files are differents by size
         self.assertFalse(utils.files_are_equal(f1, f2))
         self.assertNotEqual(f1.size, f2.size)
 
         # Files are equals
-        f1bis = ContentFile(open(image1, 'rb').read())
+        f1bis = ContentFile(Path(image1).read_bytes())
         self.assertTrue(utils.files_are_equal(f1, f1bis))
 
         # Files are differents by content
-        f1_altered = ContentFile(open(image1, 'rb').read().replace(b'\x14', b'\xff'))
+        f1_altered = ContentFile(Path(image1).read_bytes().replace(b'\x14', b'\xff'))
         self.assertFalse(utils.files_are_equal(f1, f1_altered))
         self.assertEqual(f1.size, f1_altered.size)
 

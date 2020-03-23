@@ -8,7 +8,7 @@ import unicodedata
 
 from datetime import datetime
 from django.utils import formats, dateformat
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.functional import keep_lazy_text
 from django.utils.http import urlunquote
 
@@ -53,7 +53,7 @@ def format_xml_entity(txt):
 @keep_lazy_text
 def truncate_chars(s, num):
     "Truncates a string after a certain number of characters."
-    txt = force_text(s)
+    txt = force_str(s)
     length = int(num)
     if len(txt) > length:
         txt = txt[:length] + '...'

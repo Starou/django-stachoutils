@@ -1,15 +1,19 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: python
 
 matrix:
   include:
   - python: 3.6
-    env: DJANGO_VERSION=1.11.11
+    env: DJANGO_VERSION=1.11.29
   - python: 3.6
-    env: DJANGO_VERSION=2.0.10
+    env: DJANGO_VERSION=2.0.13
   - python: 3.6
-    env: DJANGO_VERSION=2.1.7
+    env: DJANGO_VERSION=2.1.15
+  - python: 3.6
+    env: DJANGO_VERSION=2.2.11
+  - python: 3.6
+    env: DJANGO_VERSION=3.0.4
 
 install:
   - pip install -q Django==$DJANGO_VERSION
