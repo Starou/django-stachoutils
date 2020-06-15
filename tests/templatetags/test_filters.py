@@ -110,6 +110,21 @@ class FilterTest(TestCase):
             """
         )
 
+    @set_templates({'template1': '{{ val|progressbar }}'})
+    def test_progressbar_with_tuple_and_null_values(self):
+        result = self.engine.render_to_string('template1', {'val': (0, 0)})
+        self.assertHTMLEqual(result,
+            """
+            <div class="meter-wrap">
+                <div class="meter-value" style="background-color: #009ACD; width: 0%;">
+                    <div class="meter-text">
+                        0/0
+                    </div>
+                </div>
+            </div>
+            """
+        )
+
     @skipIf(True, "Need a fix")
     @set_templates({'template1': '{{ val|progressbar }}'})
     def test_progressbar_with_int(self):
