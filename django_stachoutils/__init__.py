@@ -12,6 +12,8 @@ from django.utils.encoding import force_str
 from django.utils.functional import keep_lazy_text
 from django.utils.http import urlunquote
 
+from .decorators import simple_decorator  # NOQA
+
 
 def format_datetime(value=None, date=True, time=True):
     if not date:
@@ -100,19 +102,6 @@ non_printable_re = re.compile('[%s]' % re.escape(''.join(map(chr, list(range(0, 
 
 def filter_non_printable(txt):
     return non_printable_re.sub('', txt)
-
-
-def simple_decorator(decorator):
-    def new_decorator(f):
-        g = decorator(f)
-        g.__name__ = f.__name__
-        g.__doc__ = f.__doc__
-        g.__dict__.update(f.__dict__)
-        return g
-    new_decorator.__name__ = decorator.__name__
-    new_decorator.__doc__ = decorator.__doc__
-    new_decorator.__dict__.update(decorator.__dict__)
-    return new_decorator
 
 
 def camelize(txt):

@@ -10,7 +10,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name="django-stachoutils",
-    version="3.2.3",
+    version="3.2.4",
     license='BSD Licence',
     author='Stanislas Guerra',
     author_email='stan@slashdev.me',
