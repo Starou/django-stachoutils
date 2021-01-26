@@ -118,17 +118,20 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
     def render(self, name, value, attrs=None, renderer=None):
         hidden_input = super(ImageDroppableHiddenInput, self).render(name, value, attrs=None)
         image_tag = '<img />'
+        display_name = '-'
         if value:
             rel_obj = self.related_model.objects.get(pk=value)  # TODO: Faire un get_object_or_none
             image_tag = self._get_thumbnail(rel_obj)
+            display_name = str(rel_obj)
 
         tag = (
             '<div class="droppableHiddenInput">%s'
+            '    <div>%s</div>'
             '    <div class="droppableContainer"><span class="delete" title="Vider l\'emplacement"></span>%s'
             '        <div class="droppable"><div class="draggable">%s</div></div>'
             '    </div>'
             '    <div class="message">%s</div>'
-            '</div>' % (hidden_input, self.image_container_html, image_tag, self.message)
+            '</div>' % (hidden_input, display_name, self.image_container_html, image_tag, self.message)
         )
         return mark_safe(tag)
 
