@@ -58,6 +58,7 @@ class FieldsTest(TestCase):
                 </select>
                 <div class="droppableHiddenInput">
                   <input type="hidden" name="house" />
+                  <div>-</div>
                   <div class="droppableContainer">
                     <span class="delete" title="Vider l'emplacement"></span>
                     <div class="droppable">
@@ -110,6 +111,7 @@ class FieldsTest(TestCase):
                     </select>
                     <div class="droppableHiddenInput">
                       <input type="hidden" name="house" value="1" />
+                      <div>House object (1)</div>
                       <div class="droppableContainer">
                         <span class="delete" title="Vider l'emplacement"></span>
                         <div class="droppable">
