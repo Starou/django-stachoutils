@@ -12,6 +12,8 @@ if "django_thumbor" in settings.INSTALLED_APPS:
 else:
     from django.template import Context, Template
 
+from ..templatetags.stachoutils_extras import truncate
+
 
 STATICS = {
     'js': [
@@ -122,7 +124,7 @@ class ImageDroppableHiddenInput(forms.HiddenInput):
         if value:
             rel_obj = self.related_model.objects.get(pk=value)  # TODO: Faire un get_object_or_none
             image_tag = self._get_thumbnail(rel_obj)
-            display_name = str(rel_obj)
+            display_name = truncate(str(rel_obj), 23)
 
         tag = (
             '<div class="droppableHiddenInput">%s'
