@@ -73,6 +73,7 @@ class FieldsTest(TestCase):
         )
 
     def test_bound_image_model_choice_field(self):
+        self.maxDiff = None
         form = PersonForm({'name': 'Stan',
                            'lastname': 'Guerra',
                            'gender': 'male'})

@@ -45,6 +45,7 @@ class ThumborFieldsTest(TestCase):
                 fields = ('name', 'lastname', 'gender', 'house')
 
         old_media_root = settings.MEDIA_ROOT
+        self.maxDiff = None
         with self.settings(MEDIA_ROOT=self.tmp_media_root):
             with open(os.path.join(old_media_root, "home_1.jpg"), mode="rb") as f:
                 self.h1.photo.save("some pic", ImageFile(f))
