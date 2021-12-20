@@ -3,6 +3,7 @@
 from builtins import object
 from builtins import str as text
 from django.contrib import admin, messages
+from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
 from django.contrib.admin.utils import label_for_field
 from django.db.models import Q
 from django.db.models.query import QuerySet
@@ -79,7 +80,7 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
                 if callable(act) and act.__name__ == action:
                     # On filtre les objets selectionnés si le queryset est un vrai queryset.
                     if not int(request.POST.get('select_across', 0)) and hasattr(queryset, 'filter'):
-                        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+                        selected = request.POST.getlist(ACTION_CHECKBOX_NAME)
                         queryset = queryset.filter(pk__in=selected)
                     response = act(None, request, queryset)
                     # response is actually a ResponseLike instance: TODO
