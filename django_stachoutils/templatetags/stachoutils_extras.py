@@ -31,6 +31,19 @@ def paginator_number(page, i, get_params={}):
 paginator_number = register.simple_tag(paginator_number)
 
 
+def paginator_bootstrap_number(page, i, get_params={}):
+    css = 'page-item'
+    if i == DOT:
+        return mark_safe(u'<li class="%s">...</li>' % css)
+    if i == page.number - 1:
+        css += ' active'
+    params = get_params.copy()
+    params.update({PAGE_VAR: i + 1})
+    return mark_safe(u'<li class="%s"><a class="page-link py-1" href="?%s">%d</a></li>' % (
+                     css, urlencode(params), i + 1))
+paginator_bootstrap_number = register.simple_tag(paginator_bootstrap_number)
+
+
 def paginate_by_number(page, i, current_pagination, get_params={}):
     if i == DOT:
         return u'... '
@@ -44,8 +57,20 @@ def paginate_by_number(page, i, current_pagination, get_params={}):
 paginate_by_number = register.simple_tag(paginate_by_number)
 
 
+def paginate_by_number_bootstrap(page, i, current_pagination, get_params={}):
+    css = 'page-item'
+    if i == current_pagination:
+        css += ' active'
+    params = get_params.copy()
+    params.update({PAGINATE_BY_VAR: i})
+    params = sorted([(k, v) for k, v in params.items()])
+    return mark_safe(u'<li class="%s"><a class="page-link py-1" href="?%s">%s</a></li>' % (
+                     css, urlencode(params), i))
+paginate_by_number_bootstrap = register.simple_tag(paginate_by_number_bootstrap)
+
+
 # Librement inspiré de : http://code.djangoproject.com/browser/django/trunk/django/contrib/admin/templatetags/admin_list.py
-def pagination(page, current_pagination, paginates_by=[], get_params={}):
+def _pagination(page, current_pagination, paginates_by=[], get_params={}):
     paginates_by = paginates_by and (paginates_by + ['All']) or []
     paginator = page.paginator
     pagination_required = (paginator.num_pages - 1)
@@ -82,7 +107,16 @@ def pagination(page, current_pagination, paginates_by=[], get_params={}):
         'get_params': get_params,
         'current_pagination': current_pagination,
     }
+
+
+def pagination(page, current_pagination, paginates_by=[], get_params={}):
+    return _pagination(page, current_pagination, paginates_by, get_params)
 pagination = register.inclusion_tag('django_stachoutils/pagination.html')(pagination)
+
+
+def pagination_bootstrap(page, current_pagination, paginates_by=[], get_params={}):
+    return _pagination(page, current_pagination, paginates_by, get_params)
+pagination_bootstrap = register.inclusion_tag('django_stachoutils/pagination_bootstrap.html')(pagination_bootstrap)
 
 
 @register.filter

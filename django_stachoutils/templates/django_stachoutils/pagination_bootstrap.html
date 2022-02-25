@@ -1,0 +1,18 @@
+{% load stachoutils_extras %}
+{% load i18n %}
+{% if pagination_required %}
+<ul class="pagination d-inline-flex">
+{% for i in page_range %}
+    {% paginator_bootstrap_number page i get_params %}
+{% endfor %}
+</ul>
+{% endif %}
+{% if paginates_by_required %}
+<span class="ml-2">Paginer par:</span>
+<ul class="pagination d-inline-flex">
+{% for i in paginates_by %}
+    {% paginate_by_number_bootstrap page i current_pagination get_params %}
+{% endfor %}
+</ul>
+{% endif %}
+{{ nb_resultats }} entrée{{ nb_resultats|pluralize }}
