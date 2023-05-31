@@ -51,9 +51,9 @@ class WidgetsTest(TestCase):
         self.assertHTMLEqual(
             str(form.media),
             """
-            <script type="text/javascript" src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/editeur.js"></script>
+            <script src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
+            <script src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
+            <script src="/static/django_stachoutils/js/editeur.js"></script>
             """
         )
 
@@ -102,9 +102,9 @@ class WidgetsTest(TestCase):
         self.assertHTMLEqual(
             str(form.media),
             """
-            <script type="text/javascript" src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/editeur.js"></script>
+            <script src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
+            <script src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
+            <script src="/static/django_stachoutils/js/editeur.js"></script>
             """
         )
 
@@ -183,9 +183,9 @@ class WidgetsTest(TestCase):
         self.assertHTMLEqual(
             str(form.media),
             """
-            <script type="text/javascript" src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
-            <script type="text/javascript" src="/static/django_stachoutils/js/editeur.js"></script>
+            <script src="/static/django_stachoutils/js/jquery.charcounter.js"></script>
+            <script src="/static/django_stachoutils/js/jquery.fieldselection.js"></script>
+            <script src="/static/django_stachoutils/js/editeur.js"></script>
             """
         )
 
