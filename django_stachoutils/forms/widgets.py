@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from builtins import object
+from urllib.parse import quote
 from django import forms
 from django.conf import settings
 from django.contrib.admin import widgets as admin_widgets
-from django.utils.http import quote
 from django.utils.safestring import mark_safe
 
 if "django_thumbor" in settings.INSTALLED_APPS:
