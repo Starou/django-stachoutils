@@ -68,6 +68,10 @@ class TextareaCounter(AdminTexteEditeur):
         return mark_safe(textarea + jscounter)
 
 
+class TextareaCounterSimple(TextareaCounter):
+    template_name = 'django_stachoutils/forms/widgets/textarea_counter_simple.html'
+
+
 class TextInputCounter(forms.TextInput):
     def __init__(self, max_signs=None, direction='up', attrs=None):
         self.max_signs = max_signs

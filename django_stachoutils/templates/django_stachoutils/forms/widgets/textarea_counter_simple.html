@@ -1,0 +1,7 @@
+<div class="editeur">
+  <div class="toolbar mb-1">
+    <button type="button" accesskey="b" class="bas btn btn-outline-secondary py-1">Bas de casse</button>
+  </div>
+  <textarea name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+</div>
