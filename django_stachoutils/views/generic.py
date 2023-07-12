@@ -2,6 +2,7 @@
 
 from builtins import object
 from builtins import str as text
+from urllib.parse import unquote
 from django.contrib import admin, messages
 from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
 from django.contrib.admin.utils import label_for_field
@@ -10,7 +11,7 @@ from django.db.models.query import QuerySet
 from django.db.models.fields import BooleanField
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.http import urlencode, urlunquote
+from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from django_stachoutils.options import paginate
 from django_stachoutils.views.actions import regroup_actions
@@ -327,7 +328,7 @@ def get_current_filters(request, filters, model, ignore=FILTER_IGNORE_DEFAULT):
     current_filters = {}
     for k, v in request.GET.items():
         if k.replace('__exact', '') in filters_keys or is_a_filter(model, k):
-            current_filters[str(k)] = str(urlunquote(v))
+            current_filters[str(k)] = str(unquote(v))
     return current_filters
 
 

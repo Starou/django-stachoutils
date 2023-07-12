@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from builtins import chr, map, range, str
+from urllib.parse import unquote
 import hashlib
 import re
 import unicodedata
@@ -10,7 +11,6 @@ from datetime import datetime
 from django.utils import formats, dateformat
 from django.utils.encoding import force_str
 from django.utils.functional import keep_lazy_text
-from django.utils.http import urlunquote
 
 from .decorators import simple_decorator  # NOQA
 
@@ -130,5 +130,5 @@ def urldecode(url):
     if get_params[0]:
         for param in get_params[0].split('&'):
             k, v = param.split('=')
-            out[k] = urlunquote(v)
+            out[k] = unquote(v)
     return out
