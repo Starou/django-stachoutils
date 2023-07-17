@@ -39,8 +39,9 @@ $(document).ready(function () {
         });
     });
 
-    $(".titre-box button.bas").click(function() {
-        var input = $(this).parent().find("input:text");
+    /* Button and input in 2 cols. */
+    $("button.bas-de-casse").click(function() {
+        var input = $(this).parent().prev().find('input');
         var selection = input.getSelection().text;
         input.replaceSelection(selection.toLowerCase(), true);
     });
