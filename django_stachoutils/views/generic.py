@@ -68,10 +68,13 @@ def generic_list(request, queryset, columns, template, model, ClassAdmin=None,
         selected = request.POST.getlist('_selected_action')
         url_from = request.path + "?%s" % request.GET.urlencode()
         if not action:
-            messages.add_message(request, messages.WARNING, "Veuillez sélectionner une action")
+            messages.add_message(request, messages.WARNING,
+                                 "Veuillez sélectionner une action",
+                                 extra_tags="alert-warning")
         if not selected:
             messages.add_message(request, messages.WARNING,
-                                 "Veuillez sélectionner un ou plusieurs élements")
+                                 "Veuillez sélectionner un ou plusieurs élements",
+                                 extra_tags="alert-warning")
         if not action or not selected:
             return HttpResponseRedirect(url_from)
 
