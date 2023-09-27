@@ -39,7 +39,8 @@ $(document).ready(function () {
             return {
                 name: $('table > thead > tr > th:nth-child(' + ($(this).index() + 1) + ') > input.fieldname').val(),
                 pk: $(this).siblings(".pk").find("input").val(),
-                value: params.value
+                value: params.value,
+                csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
             };
         },
         success: function(response, newValue) {
