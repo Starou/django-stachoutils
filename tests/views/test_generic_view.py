@@ -70,7 +70,7 @@ class UnitTest(TestCase):
     def test_set_columns_labels(self):
         generic.set_columns_labels(Car, self.columns)
         self.assertEqual([c['label'] for c in self.columns],
-                         [u'name', u'brand', u'price', u'purchased on', u'for sale'])
+                         ['name', 'brand', 'price', 'purchased on', 'for sale'])
 
     def test_recursion_in_set_columns_labels(self):
         columns = [
@@ -82,8 +82,8 @@ class UnitTest(TestCase):
             {
                 'with': 'description_by_lang',
                 'columns': (
-                    {'label': u'Description (Fr)', 'field': 'fr'},  # This should call set_columns_labels() if no label
-                    {'label': u'Description (En)', 'field': 'en'},  # is provided but still I can't see a use case...
+                    {'label': 'Description (Fr)', 'field': 'fr'},  # This should call set_columns_labels() if no label
+                    {'label': 'Description (En)', 'field': 'en'},  # is provided but still I can't see a use case...
                 )
             },
         ]
@@ -146,8 +146,8 @@ class UnitTest(TestCase):
 
         filter_1 = ('for_sale', )
         self.assertEqual(generic.get_filter(Car, current_filters, filter_1), (
-            u'for sale', [
-                ('brand=Saab', u'All', True),
+            'for sale', [
+                ('brand=Saab', 'All', True),
                 ('brand=Saab&for_sale__exact=1', 'Oui', False),
                 ('brand=Saab&for_sale__exact=0', 'Non', False)
             ]
@@ -162,33 +162,33 @@ class UnitTest(TestCase):
 
         filter_2 = ('last_driver__employed_by', )
         self.assertEqual(generic.get_filter(Car, current_filters, filter_2), (
-            u'employed by', [
-                ('brand=Saab', u'All', True),
-                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
-                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
-                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False)
+            'employed by', [
+                ('brand=Saab', 'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', 'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', 'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', 'ILM', False)
             ]
         ))
 
         # Set the title
         filter_3 = ('last_driver__employed_by', {'title': 'Company'})
         self.assertEqual(generic.get_filter(Car, current_filters, filter_3), (
-            u'Company', [
-                ('brand=Saab', u'All', True),
-                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
-                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
-                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False)
+            'Company', [
+                ('brand=Saab', 'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', 'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', 'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', 'ILM', False)
             ]
         ))
 
         # Add an option in the filter for unemployed driver.
         filter_4 = ('last_driver__employed_by', {'title': 'Company', 'empty_choice': True})
         self.assertEqual(generic.get_filter(Car, current_filters, filter_4), (
-            u'Company', [
-                ('brand=Saab', u'All', True),
-                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
-                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
-                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False),
+            'Company', [
+                ('brand=Saab', 'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', 'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', 'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', 'ILM', False),
                 ('brand=Saab&last_driver__employed_by__isnull=True', 'Aucun', None)
             ]
         ))
@@ -202,22 +202,22 @@ class UnitTest(TestCase):
 
         filter_1 = ('car__last_driver__employed_by', )
         self.assertEqual(generic.get_filter(Garage, current_filters, filter_1), (
-            u'employed by', [
-                ('owner=Luigi', u'All', True),
-                ('car__last_driver__employed_by__exact=1&owner=Luigi', u'Thomson Reuters', False),
-                ('car__last_driver__employed_by__exact=2&owner=Luigi', u'Id Software', False),
-                ('car__last_driver__employed_by__exact=3&owner=Luigi', u'ILM', False)
+            'employed by', [
+                ('owner=Luigi', 'All', True),
+                ('car__last_driver__employed_by__exact=1&owner=Luigi', 'Thomson Reuters', False),
+                ('car__last_driver__employed_by__exact=2&owner=Luigi', 'Id Software', False),
+                ('car__last_driver__employed_by__exact=3&owner=Luigi', 'ILM', False)
             ]
         ))
 
         # Set the title
         filter_1 = ('car__last_driver__employed_by', {'title': 'Partners'})
         self.assertEqual(generic.get_filter(Garage, current_filters, filter_1), (
-            u'Partners', [
-                ('owner=Luigi', u'All', True),
-                ('car__last_driver__employed_by__exact=1&owner=Luigi', u'Thomson Reuters', False),
-                ('car__last_driver__employed_by__exact=2&owner=Luigi', u'Id Software', False),
-                ('car__last_driver__employed_by__exact=3&owner=Luigi', u'ILM', False)
+            'Partners', [
+                ('owner=Luigi', 'All', True),
+                ('car__last_driver__employed_by__exact=1&owner=Luigi', 'Thomson Reuters', False),
+                ('car__last_driver__employed_by__exact=2&owner=Luigi', 'Id Software', False),
+                ('car__last_driver__employed_by__exact=3&owner=Luigi', 'ILM', False)
             ]
         ))
 
