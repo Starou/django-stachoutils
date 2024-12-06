@@ -17,7 +17,7 @@ class MessageStorage(BaseStorage):
     """
     def __init__(self, request, *args, **kwargs):
         self.messages = None
-        super(MessageStorage, self).__init__(request, *args, **kwargs)
+        super().__init__(request, *args, **kwargs)
 
     def _get(self, *args, **kwargs):
         return self.messages, True
@@ -33,13 +33,13 @@ class MessageStorage(BaseStorage):
 class BaseGenericListTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.c1 = Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))
-        cls.c2 = Car.objects.create(brand='Saab', name='900', price=1800, purchased_on=datetime.date(2001, 3, 29))
-        cls.c3 = Car.objects.create(brand='Saab', name='9.5', price=23700, purchased_on=datetime.date(2012, 2, 11))
-        cls.c4 = Car.objects.create(brand='Alfa-Romeo', name='Giullia', price=19500, purchased_on=datetime.date(2014, 7, 12))
-        cls.c5 = Car.objects.create(brand='Alfa-Romeo', name='Sprint', price=11200, purchased_on=datetime.date(2015, 9, 29))
-        cls.c6 = Car.objects.create(brand='Subaru', name='Forester', price=34500, purchased_on=datetime.date(2016, 1, 29))
-        cls.c7 = Car.objects.create(brand='Subaru', name='Impreza', price=11200, purchased_on=datetime.date(2012, 6, 29))
+        cls.saab_9_3 = Car.objects.create(brand='Saab', name='9.3', price=12500, purchased_on=datetime.date(2015, 7, 29))
+        cls.saab_900 = Car.objects.create(brand='Saab', name='900', price=1800, purchased_on=datetime.date(2001, 3, 29))
+        cls.saab_9_5 = Car.objects.create(brand='Saab', name='9.5', price=23700, purchased_on=datetime.date(2012, 2, 11))
+        cls.alfa_giullia = Car.objects.create(brand='Alfa-Romeo', name='Giullia', price=19500, purchased_on=datetime.date(2014, 7, 12))
+        cls.alfa_sprint = Car.objects.create(brand='Alfa-Romeo', name='Sprint', price=11200, purchased_on=datetime.date(2015, 9, 29))
+        cls.subaru_forester = Car.objects.create(brand='Subaru', name='Forester', price=34500, purchased_on=datetime.date(2016, 1, 29))
+        cls.subaru_impreza = Car.objects.create(brand='Subaru', name='Impreza', price=11200, purchased_on=datetime.date(2012, 6, 29))
 
         cls.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
 
@@ -70,7 +70,7 @@ class UnitTest(TestCase):
     def test_set_columns_labels(self):
         generic.set_columns_labels(Car, self.columns)
         self.assertEqual([c['label'] for c in self.columns],
-                         [u'name', u'brand', u'price', u'purchased on', u'for sale'])
+                         ['name', 'brand', 'price', 'purchased on', 'for sale'])
 
     def test_recursion_in_set_columns_labels(self):
         columns = [
@@ -82,8 +82,8 @@ class UnitTest(TestCase):
             {
                 'with': 'description_by_lang',
                 'columns': (
-                    {'label': u'Description (Fr)', 'field': 'fr'},  # This should call set_columns_labels() if no label
-                    {'label': u'Description (En)', 'field': 'en'},  # is provided but still I can't see a use case...
+                    {'label': 'Description (Fr)', 'field': 'fr'},  # This should call set_columns_labels() if no label
+                    {'label': 'Description (En)', 'field': 'en'},  # is provided but still I can't see a use case...
                 )
             },
         ]
@@ -146,8 +146,8 @@ class UnitTest(TestCase):
 
         filter_1 = ('for_sale', )
         self.assertEqual(generic.get_filter(Car, current_filters, filter_1), (
-            u'for sale', [
-                ('brand=Saab', u'All', True),
+            'for sale', [
+                ('brand=Saab', 'All', True),
                 ('brand=Saab&for_sale__exact=1', 'Oui', False),
                 ('brand=Saab&for_sale__exact=0', 'Non', False)
             ]
@@ -162,22 +162,34 @@ class UnitTest(TestCase):
 
         filter_2 = ('last_driver__employed_by', )
         self.assertEqual(generic.get_filter(Car, current_filters, filter_2), (
-            u'employed by', [
-                ('brand=Saab', u'All', True),
-                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
-                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
-                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False)
+            'employed by', [
+                ('brand=Saab', 'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', 'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', 'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', 'ILM', False)
             ]
         ))
 
         # Set the title
         filter_3 = ('last_driver__employed_by', {'title': 'Company'})
         self.assertEqual(generic.get_filter(Car, current_filters, filter_3), (
-            u'Company', [
-                ('brand=Saab', u'All', True),
-                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
-                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
-                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False)
+            'Company', [
+                ('brand=Saab', 'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', 'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', 'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', 'ILM', False)
+            ]
+        ))
+
+        # Add an option in the filter for unemployed driver.
+        filter_4 = ('last_driver__employed_by', {'title': 'Company', 'empty_choice': True})
+        self.assertEqual(generic.get_filter(Car, current_filters, filter_4), (
+            'Company', [
+                ('brand=Saab', 'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', 'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', 'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', 'ILM', False),
+                ('brand=Saab&last_driver__employed_by__isnull=True', 'Aucun', None)
             ]
         ))
 
@@ -190,25 +202,24 @@ class UnitTest(TestCase):
 
         filter_1 = ('car__last_driver__employed_by', )
         self.assertEqual(generic.get_filter(Garage, current_filters, filter_1), (
-            u'employed by', [
-                ('owner=Luigi', u'All', True),
-                ('car__last_driver__employed_by__exact=1&owner=Luigi', u'Thomson Reuters', False),
-                ('car__last_driver__employed_by__exact=2&owner=Luigi', u'Id Software', False),
-                ('car__last_driver__employed_by__exact=3&owner=Luigi', u'ILM', False)
+            'employed by', [
+                ('owner=Luigi', 'All', True),
+                ('car__last_driver__employed_by__exact=1&owner=Luigi', 'Thomson Reuters', False),
+                ('car__last_driver__employed_by__exact=2&owner=Luigi', 'Id Software', False),
+                ('car__last_driver__employed_by__exact=3&owner=Luigi', 'ILM', False)
             ]
         ))
 
         # Set the title
         filter_1 = ('car__last_driver__employed_by', {'title': 'Partners'})
         self.assertEqual(generic.get_filter(Garage, current_filters, filter_1), (
-            u'Partners', [
-                ('owner=Luigi', u'All', True),
-                ('car__last_driver__employed_by__exact=1&owner=Luigi', u'Thomson Reuters', False),
-                ('car__last_driver__employed_by__exact=2&owner=Luigi', u'Id Software', False),
-                ('car__last_driver__employed_by__exact=3&owner=Luigi', u'ILM', False)
+            'Partners', [
+                ('owner=Luigi', 'All', True),
+                ('car__last_driver__employed_by__exact=1&owner=Luigi', 'Thomson Reuters', False),
+                ('car__last_driver__employed_by__exact=2&owner=Luigi', 'Id Software', False),
+                ('car__last_driver__employed_by__exact=3&owner=Luigi', 'ILM', False)
             ]
         ))
-
 
 
 class GenericChangeResponseTest(TestCase):
@@ -244,12 +255,17 @@ class GenericChangeResponseTest(TestCase):
 class GenericListTest(BaseGenericListTest):
     template = 'generic_list_test.html'
 
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.stan = Person.objects.create(first_name='Stanislas', last_name='Guerra')
+
     def test_generic_list(self):
         request = self.rf.get('/cars?page=2')
         request.user = self.user
         response = generic.generic_list(request, self.queryset, self.columns, self.template,
                                         Car, ClassAdmin=CarAdmin, actions=self.actions)
-        self.assertHTMLEqual(response.content.decode('utf8'), """
+        self.assertHTMLEqual(response.content.decode('utf8'), f"""
             <html>
               <form action="" method="post">
                 <div class="actions">
@@ -265,23 +281,15 @@ class GenericListTest(BaseGenericListTest):
                 </div>
               </form>
               <div>
-                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
-                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa1)d" />Saab - 9.3</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa2)d" />Saab - 9.5</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa3)d" />Saab - 900</div>
-                <div><input type="checkbox" name="_selected_action" value="%(su1)d" />Subaru - Forester</div>
-                <div><input type="checkbox" name="_selected_action" value="%(su2)d" />Subaru - Impreza</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_giullia.pk}" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_sprint.pk}" />Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_9_3.pk}" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_9_5.pk}" />Saab - 9.5</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_900.pk}" />Saab - 900</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.subaru_forester.pk}" />Subaru - Forester</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.subaru_impreza.pk}" />Subaru - Impreza</div>
               <div>
-            </html>""" % {
-                'al1': self.c4.pk,
-                'al2': self.c5.pk,
-                'sa1': self.c1.pk,
-                'sa2': self.c3.pk,
-                'sa3': self.c2.pk,
-                'su1': self.c6.pk,
-                'su2': self.c7.pk,
-            })
+            </html>""")
 
     def test_ordered_generic_list(self):
         request = self.rf.get('/cars?page=2')
@@ -289,7 +297,7 @@ class GenericListTest(BaseGenericListTest):
         response = generic.generic_list(request, self.queryset, self.columns, self.template,
                                         Car, ClassAdmin=CarAdmin, actions=self.actions,
                                         default_order=['name', 'brand'])
-        self.assertHTMLEqual(response.content.decode('utf8'), """
+        self.assertHTMLEqual(response.content.decode('utf8'), f"""
             <html>
               <form action="" method="post">
                 <div class="actions">
@@ -305,30 +313,22 @@ class GenericListTest(BaseGenericListTest):
                 </div>
               </form>
               <div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa1)d" />Saab - 9.3</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa2)d" />Saab - 9.5</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa3)d" />Saab - 900</div>
-                <div><input type="checkbox" name="_selected_action" value="%(su1)d" />Subaru - Forester</div>
-                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
-                <div><input type="checkbox" name="_selected_action" value="%(su2)d" />Subaru - Impreza</div>
-                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_9_3.pk}" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_9_5.pk}" />Saab - 9.5</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_900.pk}" />Saab - 900</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.subaru_forester.pk}" />Subaru - Forester</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_giullia.pk}" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.subaru_impreza.pk}" />Subaru - Impreza</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_sprint.pk}" />Alfa-Romeo - Sprint</div>
               <div>
-            </html>""" % {
-                'al1': self.c4.pk,
-                'al2': self.c5.pk,
-                'sa1': self.c1.pk,
-                'sa2': self.c3.pk,
-                'sa3': self.c2.pk,
-                'su1': self.c6.pk,
-                'su2': self.c7.pk,
-            })
+            </html>""")
 
     def test_generic_list_with_object_list(self):
         request = self.rf.get('/cars?page=2')
         request.user = self.user
         response = generic.generic_list(request, list(self.queryset), self.columns, self.template,
                                         Car, ClassAdmin=CarAdmin, actions=self.actions)
-        self.assertHTMLEqual(response.content.decode('utf8'), """
+        self.assertHTMLEqual(response.content.decode('utf8'), f"""
             <html>
               <form action="" method="post">
                 <div class="actions">
@@ -344,31 +344,23 @@ class GenericListTest(BaseGenericListTest):
                 </div>
               </form>
               <div>
-                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
-                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa1)d" />Saab - 9.3</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa2)d" />Saab - 9.5</div>
-                <div><input type="checkbox" name="_selected_action" value="%(sa3)d" />Saab - 900</div>
-                <div><input type="checkbox" name="_selected_action" value="%(su1)d" />Subaru - Forester</div>
-                <div><input type="checkbox" name="_selected_action" value="%(su2)d" />Subaru - Impreza</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_giullia.pk}" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_sprint.pk}" />Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_9_3.pk}" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_9_5.pk}" />Saab - 9.5</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_900.pk}" />Saab - 900</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.subaru_forester.pk}" />Subaru - Forester</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.subaru_impreza.pk}" />Subaru - Impreza</div>
               <div>
-            </html>""" % {
-                'al1': self.c4.pk,
-                'al2': self.c5.pk,
-                'sa1': self.c1.pk,
-                'sa2': self.c3.pk,
-                'sa3': self.c2.pk,
-                'su1': self.c6.pk,
-                'su2': self.c7.pk,
-            })
+            </html>""")
 
-    def test_filtering_generic_list(self):
+    def test_search_generic_list(self):
         request = self.rf.get('/cars?page=2&q=alfa')
         request.user = self.user
         search = [('Name', 'name__icontains'), ('Brand', 'brand__icontains')]
         response = generic.generic_list(request, self.queryset, self.columns, self.template,
                                         Car, ClassAdmin=CarAdmin, actions=self.actions, search=search)
-        self.assertHTMLEqual(response.content.decode('utf8'), """
+        self.assertHTMLEqual(response.content.decode('utf8'), f"""
             <html>
               <form action="" method="post">
                 <div class="actions">
@@ -384,13 +376,39 @@ class GenericListTest(BaseGenericListTest):
                 </div>
               </form>
               <div>
-                <div><input type="checkbox" name="_selected_action" value="%(al1)d" />Alfa-Romeo - Giullia</div>
-                <div><input type="checkbox" name="_selected_action" value="%(al2)d" />Alfa-Romeo - Sprint</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_giullia.pk}" />Alfa-Romeo - Giullia</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.alfa_sprint.pk}" />Alfa-Romeo - Sprint</div>
               <div>
-            </html>""" % {
-                'al1': self.c4.pk,
-                'al2': self.c5.pk,
-            })
+            </html>""")
+
+    def test_filter_generic_list(self):
+        self.saab_9_5.last_driver = self.stan
+        self.saab_9_5.save()
+
+        request = self.rf.get('/cars?brand=Saab&last_driver__isnull=True')
+        request.user = self.user
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions)
+        self.assertHTMLEqual(response.content.decode('utf8'), f"""
+            <html>
+              <form action="" method="post">
+                <div class="actions">
+                  <label>Action&nbsp;:
+                    <select name="action">
+                      <option selected="selected" value="">---------</option>
+                      <optgroup label="autres">
+                        <option value="sell_cars">Sell the cars</option>
+                      </optgroup>
+                    </select>
+                  </label>
+                  <button value="0" name="index" title="Execute the selected action" class="button" type="submit">Execute</button>
+                </div>
+              </form>
+              <div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_9_3.pk}" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="{self.saab_900.pk}" />Saab - 900</div>
+              <div>
+            </html>""")
 
     def test_post_without_selected_ation_generic_list(self):
         request = self.rf.post('/cars?page=2', {})
@@ -416,14 +434,14 @@ class GenericListTest(BaseGenericListTest):
 
     def test_post_generic_list(self):
         request = self.rf.post('/cars?page=2', {'action': 'sell_cars',
-                                                '_selected_action': [self.c1.pk, self.c4.pk]})
+                                                '_selected_action': [self.saab_9_3.pk, self.alfa_giullia.pk]})
         request.user = self.user
         response = generic.generic_list(request, self.queryset, self.columns, self.template,
                                         Car, ClassAdmin=CarAdmin, actions=self.actions)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/cars?page=2')
         self.assertEqual(list(Car.objects.filter(for_sale=True).order_by('name').values_list('pk', flat=True)),
-                         [self.c1.pk, self.c4.pk])
+                         [self.saab_9_3.pk, self.alfa_giullia.pk])
 
 
 class GenericListFiltersTest(BaseGenericListTest):
@@ -431,9 +449,9 @@ class GenericListFiltersTest(BaseGenericListTest):
 
     @classmethod
     def setUpTestData(cls):
-        super(GenericListFiltersTest, cls).setUpTestData()
-        cls.p1 = Person.objects.create(first_name='Stanislas', last_name='Guerra')
-        cls.p2 = Person.objects.create(first_name='Michael', last_name='Schumacher')
+        super().setUpTestData()
+        cls.stan = Person.objects.create(first_name='Stanislas', last_name='Guerra')
+        cls.michael = Person.objects.create(first_name='Michael', last_name='Schumacher')
 
     def test_boolean_filters_generic_list(self):
         request = self.rf.get('/cars?page=2')
@@ -461,22 +479,22 @@ class GenericListFiltersTest(BaseGenericListTest):
         })]
         response = generic.generic_list(request, self.queryset, self.columns, self.template,
                                         Car, ClassAdmin=CarAdmin, actions=self.actions, filters=filters)
-        self.assertHTMLEqual(response.content.decode('utf8'), """
+        self.assertHTMLEqual(response.content.decode('utf8'), f"""
             <div>
               <h3><a></a><input type="hidden" name="filter_key" value="last driver" />By last driver</h3>
               <ul>
                 <li class="selected"><a href="?">All</a></li>
-                <li><a href="?last_driver__exact=%d">Stanislas Guerra</a></li>
-                <li><a href="?last_driver__exact=%d">Michael Schumacher</a></li>
+                <li><a href="?last_driver__exact={self.stan.pk}">Stanislas Guerra</a></li>
+                <li><a href="?last_driver__exact={self.michael.pk}">Michael Schumacher</a></li>
                 <li><a href="?last_driver__isnull=True">Aucun</a></li>
               </ul>
-            </div>""" % (self.p1.pk, self.p2.pk)
+            </div>"""
         )
 
     def test_fk_filters_filtered_generic_list(self):
         """The url is filtered by one of the filter values."""
 
-        request = self.rf.get('/cars?page=2&last_driver__exact=%d' % self.p2.pk)
+        request = self.rf.get('/cars?page=2&last_driver__exact=%d' % self.michael.pk)
         request.user = self.user
         filters = [('last_driver', {
             'choices': Person.objects.all().order_by('last_name'),
@@ -484,14 +502,14 @@ class GenericListFiltersTest(BaseGenericListTest):
         })]
         response = generic.generic_list(request, self.queryset, self.columns, self.template,
                                         Car, ClassAdmin=CarAdmin, actions=self.actions, filters=filters)
-        self.assertHTMLEqual(response.content.decode('utf8'), """
+        self.assertHTMLEqual(response.content.decode('utf8'), f"""
             <div>
               <h3><a></a><input type="hidden" name="filter_key" value="last driver" />By last driver</h3>
               <ul>
                 <li><a href="?">All</a></li>
-                <li><a href="?last_driver__exact=%d">Stanislas Guerra</a></li>
-                <li class="selected"><a href="?last_driver__exact=%d">Michael Schumacher</a></li>
+                <li><a href="?last_driver__exact={self.stan.pk}">Stanislas Guerra</a></li>
+                <li class="selected"><a href="?last_driver__exact={self.michael.pk}">Michael Schumacher</a></li>
                 <li><a href="?last_driver__isnull=True">Aucun</a></li>
               </ul>
-            </div>""" % (self.p1.pk, self.p2.pk)
+            </div>"""
         )
