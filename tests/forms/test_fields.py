@@ -116,7 +116,7 @@ class FieldsTest(TestCase):
                         <span class="delete" title="Vider l'emplacement"></span>
                         <div class="droppable">
                           <div class="draggable">
-                            <img src="{}cache/5f/7f/5f7fd7419603eb53e5519c1eda28e81b.jpg"width="120" height="58">
+                            <img src="{}cache/5c/32/5c32672a29e276012198cf7aaf2e5f60.jpg"width="120" height="58">
                           </div>
                         </div>
                       </div>
