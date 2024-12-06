@@ -331,7 +331,12 @@ def get_current_filters(request, filters, model, ignore=FILTER_IGNORE_DEFAULT):
     current_filters = {}
     for k, v in request.GET.items():
         if k.replace('__exact', '') in filters_keys or is_a_filter(model, k):
-            current_filters[str(k)] = str(unquote(v))
+            value = str(unquote(v))
+            if value == 'True':
+                value = True
+            elif value == 'False':
+                value = False
+            current_filters[str(k)] = value
     return current_filters
 
 

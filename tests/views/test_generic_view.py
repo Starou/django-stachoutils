@@ -181,6 +181,18 @@ class UnitTest(TestCase):
             ]
         ))
 
+        # Add an option in the filter for unemployed driver.
+        filter_4 = ('last_driver__employed_by', {'title': 'Company', 'empty_choice': True})
+        self.assertEqual(generic.get_filter(Car, current_filters, filter_4), (
+            u'Company', [
+                ('brand=Saab', u'All', True),
+                ('brand=Saab&last_driver__employed_by__exact=1', u'Thomson Reuters', False),
+                ('brand=Saab&last_driver__employed_by__exact=2', u'Id Software', False),
+                ('brand=Saab&last_driver__employed_by__exact=3', u'ILM', False),
+                ('brand=Saab&last_driver__employed_by__isnull=True', 'Aucun', None)
+            ]
+        ))
+
     def test_get_filter_through_related(self):
         current_filters = {'owner': 'Luigi'}
 
@@ -243,6 +255,11 @@ class GenericChangeResponseTest(TestCase):
 
 class GenericListTest(BaseGenericListTest):
     template = 'generic_list_test.html'
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.p1 = Person.objects.create(first_name='Stanislas', last_name='Guerra')
 
     def test_generic_list(self):
         request = self.rf.get('/cars?page=2')
@@ -362,7 +379,7 @@ class GenericListTest(BaseGenericListTest):
                 'su2': self.c7.pk,
             })
 
-    def test_filtering_generic_list(self):
+    def test_search_generic_list(self):
         request = self.rf.get('/cars?page=2&q=alfa')
         request.user = self.user
         search = [('Name', 'name__icontains'), ('Brand', 'brand__icontains')]
@@ -390,6 +407,38 @@ class GenericListTest(BaseGenericListTest):
             </html>""" % {
                 'al1': self.c4.pk,
                 'al2': self.c5.pk,
+            })
+
+    def test_filter_generic_list(self):
+        self.c3.last_driver = self.p1
+        self.c3.save()
+
+        request = self.rf.get('/cars?brand=Saab&last_driver__isnull=True')
+        request.user = self.user
+        response = generic.generic_list(request, self.queryset, self.columns, self.template,
+                                        Car, ClassAdmin=CarAdmin, actions=self.actions)
+        self.assertHTMLEqual(response.content.decode('utf8'), """
+            <html>
+              <form action="" method="post">
+                <div class="actions">
+                  <label>Action&nbsp;:
+                    <select name="action">
+                      <option selected="selected" value="">---------</option>
+                      <optgroup label="autres">
+                        <option value="sell_cars">Sell the cars</option>
+                      </optgroup>
+                    </select>
+                  </label>
+                  <button value="0" name="index" title="Execute the selected action" class="button" type="submit">Execute</button>
+                </div>
+              </form>
+              <div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa1)d" />Saab - 9.3</div>
+                <div><input type="checkbox" name="_selected_action" value="%(sa3)d" />Saab - 900</div>
+              <div>
+            </html>""" % {
+                'sa1': self.c1.pk,
+                'sa3': self.c2.pk,
             })
 
     def test_post_without_selected_ation_generic_list(self):
