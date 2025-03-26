@@ -11,5 +11,5 @@ coverage-report: coverage
 	@coverage report -m
 
 coverage:
-	@coverage run --rcfile=coveragerc runtests.py
+	@PYTHONPATH=..:${PYTHONPATH} coverage run --rcfile=coveragerc runtests.py
 	@coverage lcov
