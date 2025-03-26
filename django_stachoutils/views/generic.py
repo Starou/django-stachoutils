@@ -285,7 +285,7 @@ def get_filter(model, current_filters, filter_params):
         field, attrib = discover_field(model, filter_key)
         title = field.verbose_name
 
-    if choices:
+    if choices is not None:
         FilterKlass = FilterSimple
         if type(choices) == QuerySet:
             FilterKlass = Filter
