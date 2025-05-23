@@ -1,0 +1,25 @@
+{% if errors %}
+    <td colspan="2">
+      {{ errors }}
+      {% if not fields %}
+        {% for field in hidden_fields %}{{ field }}{% endfor %}
+      {% endif %}
+    </td>
+{% endif %}
+{% for field, errors in fields %}
+    <td>
+      {{ errors }}
+      {{ field }}
+      {% if field.help_text %}
+        <br>
+        <span class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</span>
+      {% endif %}
+      {% if forloop.last %}
+        {% for field in hidden_fields %}{{ field }}{% endfor %}
+      {% endif %}
+    </td>
+{% endfor %}
+{% if not fields and not errors %}
+  {% for field in hidden_fields %}{{ field }}{% endfor %}
+{% endif %}
+<span class="row_end"></span>

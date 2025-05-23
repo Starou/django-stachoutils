@@ -48,8 +48,9 @@ class ModelFormTest(TestCase):
                </td>
                <td>
                  <input type="text" name="brand" required id="id_brand" maxlength="100" />
+                 <input id="id_pk" name="pk" type="hidden" />
                </td>
-               <input id="id_pk" name="pk" type="hidden" /><span class="row_end" />"""
+               <span class="row_end" />"""
         )
         self.assertHTMLEqual(
             form.labels_as_tr(),
@@ -255,8 +256,9 @@ class PrefixedModelFormTest(TestCase):
                </td>
                <td>
                  <input type="text" name="customer-brand" required id="id_customer-brand" maxlength="100" />
+                 <input id="id_customer-pk" name="customer-pk" type="hidden" />
                </td>
-               <input id="id_customer-pk" name="customer-pk" type="hidden" /><span class="row_end" />"""
+               <span class="row_end" />"""
         )
         self.assertHTMLEqual(
             form.labels_as_tr(),
