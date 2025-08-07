@@ -64,7 +64,7 @@ class BaseEmailHandler(logging.Handler):
 
     def emit(self, record):
         subject = u'%s[%s] : %s' % (settings.EMAIL_SUBJECT_PREFIX, record.levelname, self.subject)
-        message = record.msg
+        message = self.format(record)
         mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, self.recipient_list,
                        fail_silently=True)
 
