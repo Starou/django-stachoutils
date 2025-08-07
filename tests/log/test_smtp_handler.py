@@ -22,10 +22,14 @@ class BufferingSMTPHandlerTest(TestCase):
                                        self.subject, self.capacity, fmt="%(levelname)-5s %(message)s")
         logger.addHandler(handler)
 
-        logger.info(u"I am pleased to announce you that your bounty is ready to be collected.")
+        logger.info("Hello dear Mr %s,"
+                    " I am pleased to announce you that your $%d bounty is ready to be collected.",
+                    "Mannix", 9000)
         handler.flush()
         smtp_m.assert_called_with(self.mailhost, 25)
-        smtp_m().sendmail.assert_called_with(self.fromaddr, self.toaddrs,
-            b'From: me@my_compagny.com\r\nTo: chris.mannix@redrock.org,bob.ruth@bassocied-bhunters.com\r\nSubject: Concerning Daisy D.\r\n\r\nINFO  I am pleased to announce you that your bounty is ready to be collected.\r\n')
+        smtp_m().sendmail.assert_called_with(
+            self.fromaddr,
+            self.toaddrs,
+            b'From: me@my_compagny.com\r\nTo: chris.mannix@redrock.org,bob.ruth@bassocied-bhunters.com\r\nSubject: Concerning Daisy D.\r\n\r\nINFO  Hello dear Mr Mannix, I am pleased to announce you that your $9000 bounty is ready to be collected.\r\n'
+        )
         smtp_m().quit.assert_called_with()
-
