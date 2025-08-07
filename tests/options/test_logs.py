@@ -98,9 +98,9 @@ class LogsTest(TestCase):
         self.assertFalse(log.is_addition())
         self.assertEqual(log.user, self.user)
         if DJ_VERSION >= (3, 0):
-            self.assertEqual(str(log), u'Changed “900 Turbo 16” — a modifié : name (car [900 Turbo 16]) ; ')
+            self.assertEqual(str(log), u'Changed “900 Turbo 16” — a modifié : name. ')
         else:
-            self.assertEqual(str(log), u'Changed "900 Turbo 16" - a modifié : name (car [900 Turbo 16]) ; ')
+            self.assertEqual(str(log), u'Changed "900 Turbo 16" - a modifié : name. ')
 
     def test_logs_for_formsets(self):
         car = Car.objects.create(brand='Lada', name='Niva')
@@ -121,4 +121,4 @@ class LogsTest(TestCase):
 
         options.logs_for_formsets('change', self.request, car, [formset])
         log = LogEntry.objects.latest('pk')
-        self.assertEqual(log.change_message, u'a modifié : name (car option [BVA]) ; ')
+        self.assertEqual(log.change_message, u'a modifié : [BVA]: name. ')

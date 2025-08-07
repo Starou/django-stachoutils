@@ -63,28 +63,36 @@ def log_change_for_user(user, obj, message):
 
 
 def logs_for_formsets(mode, request_or_user, obj, forms):
-    """forms est une liste de forms ou formsets."""
+    logs_for_forms(mode, request_or_user, obj, forms)
+
+
+def logs_for_forms(mode, request_or_user, obj, forms):
+    """forms est une liste de forms/formsets."""
+
     if mode == 'addition':
         log_addition(request_or_user, obj)
     elif mode == 'change':
-        msg = u'a modifié : '
-        for f in forms:
-            msg += _log_for_forms(f)
+        msg = 'a modifié : '
+        for form in forms:
+            msg += _log_for_forms(form)
         log_change(request_or_user, obj, msg)
 
 
-def _log_for_forms(f):
+def _log_for_forms(form, prefix=''):
+    """ Fonction récursive, jusqu'à 3 niveaux. """
+
     msg = ''
-    if hasattr(f, 'changed_data'):
-        if f.changed_data:
-            msg += u', '.join(f.changed_data)
-            if hasattr(f, 'instance'):
-                msg += u' (%s [%s]) ; ' % (f.instance._meta.verbose_name, f.instance)
-            else:
-                msg += u' (%s) ; ' % (f.__class__.__name__)
-    if hasattr(f, 'forms'):
-        for f2 in f.forms:
-            msg += _log_for_forms(f2)
+    if hasattr(form, 'changed_data'):
+        if form.changed_data:
+            msg += prefix + ', '.join(form.changed_data) + '. '
+    if hasattr(form, 'forms'):  # cas du formset.
+        for formset_form in form.forms:
+            # Dans le cas d'un niveau de récursion 3, le prefix souhaité
+            # est celui du second niveau.
+            msg += _log_for_forms(formset_form, prefix or f"[{formset_form.instance}]: ")
+            if hasattr(formset_form, 'inlineformsets'):
+                for inlineformset in formset_form.inlineformsets.values():
+                    msg += _log_for_forms(inlineformset, f"[{formset_form.instance}]: ")
     return msg
 
 
