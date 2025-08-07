@@ -41,15 +41,15 @@ class MessageHandlerTest(TestCase):
 class AdminEmailHandlerTest(TestCase):
     def test_admin_email_handler(self):
         logger = logging.getLogger("stachoutils.logger2")
-        logger.error("This is a error message")
+        logger.error("Invoice #%d : the following item « %s » is out of stock", 2345, "Japanese Rice, 500g")
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, '[Project Lambda][ERROR] : [MY PROJECT]')
-        self.assertEqual(mail.outbox[0].body, 'This is a error message')
+        self.assertEqual(mail.outbox[0].body, 'Invoice #2345 : the following item « Japanese Rice, 500g » is out of stock')
 
     def test_buffered_admin_email_handler(self):
         logger = logging.getLogger("stachoutils.logger3")
         for i in range(3):
-            logger.error("This is error message #%d" % i)
+            logger.error("This is error message #%d", i)
         self.assertEqual(len(mail.outbox), 0)
 
         logger.handlers[0].flush()
