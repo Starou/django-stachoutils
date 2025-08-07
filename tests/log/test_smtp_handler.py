@@ -33,4 +33,3 @@ class BufferingSMTPHandlerTest(TestCase):
             b'From: me@my_compagny.com\r\nTo: chris.mannix@redrock.org,bob.ruth@bassocied-bhunters.com\r\nSubject: Concerning Daisy D.\r\n\r\nINFO  Hello dear Mr Mannix, I am pleased to announce you that your $9000 bounty is ready to be collected.\r\n'
         )
         smtp_m().quit.assert_called_with()
-

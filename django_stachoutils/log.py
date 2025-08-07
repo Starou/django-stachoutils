@@ -2,6 +2,7 @@
 
 import logging
 import logging.handlers
+import smtplib
 from django.core import mail
 from django.conf import settings
 from django.contrib import messages
@@ -22,7 +23,8 @@ class NullHandler(logging.NullHandler):
 
 # http://www.red-dove.com/python_logging.html
 class BufferingSMTPHandler(logging.handlers.BufferingHandler):
-    def __init__(self, mailhost, fromaddr, toaddrs, subject, capacity, fmt="%(asctime)s %(levelname)-5s %(message)s"):
+    def __init__(self, mailhost, fromaddr, toaddrs, subject, capacity,
+                 fmt="%(asctime)s %(levelname)-5s %(message)s"):
         logging.handlers.BufferingHandler.__init__(self, capacity)
         self.mailhost = mailhost
         self.mailport = None
@@ -34,7 +36,6 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
     def flush(self):
         if len(self.buffer) > 0:
             try:
-                import smtplib
                 port = self.mailport
                 if not port:
                     port = smtplib.SMTP_PORT
@@ -57,13 +58,16 @@ class BufferingSMTPHandler(logging.handlers.BufferingHandler):
 
 class BaseEmailHandler(logging.Handler):
     """Beneficie de la conf SMTP dans settings par rapport à logging.handlers.SMTPHandler. """
+
     def __init__(self, subject=""):
         """Allow one to set the subject in settings.LOGGING DictConfig. """
+
         logging.Handler.__init__(self)
         self.subject = subject
+        self.recipient_list = []
 
     def emit(self, record):
-        subject = u'%s[%s] : %s' % (settings.EMAIL_SUBJECT_PREFIX, record.levelname, self.subject)
+        subject = f'{settings.EMAIL_SUBJECT_PREFIX}[{record.levelname}] : {self.subject}'
         message = self.format(record)
         mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, self.recipient_list,
                        fail_silently=True)
